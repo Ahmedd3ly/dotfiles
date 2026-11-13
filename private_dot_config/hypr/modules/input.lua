@@ -5,8 +5,10 @@
 
 hl.config({
     input = {
-        kb_layout  = "us",
-        kb_variant = "",
+        -- English + Arabic; SUPER+Space cycles (binds.lua). The variant list
+        -- needs one entry per layout, hence the comma.
+        kb_layout  = "us,ara",
+        kb_variant = ",",
         kb_model   = "",
         kb_options = "",
         kb_rules   = "",
