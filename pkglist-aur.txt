@@ -1,0 +1,3 @@
+bibata-cursor-theme-bin
+paru-bin
+paru-bin-debug

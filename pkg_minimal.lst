@@ -1,0 +1,153 @@
+# =====================================================================
+# pkg_minimal.lst: trimmed from HyDE's pkg_core.lst + pkg_extra.lst
+# Install (paru handles repo + AUR):
+#   awk '!/^[[:space:]]*#/ && NF {print $1}' ~/dotfiles/pkg_minimal.lst | paru -S --needed -
+# Verify names first (`paru -Ss <name>`); entries marked (AUR?) may be in the
+# official repos or the AUR depending on the day.
+# Already installed by the runbook's pacstrap, so NOT repeated here:
+#   intel-ucode linux-firmware btrfs-progs grub grub-btrfs inotify-tools efibootmgr
+#   networkmanager zram-generator pacman-contrib zsh neovim git cronie reflector
+# NOT compatible with HyDE's own scripts (they expect pamixer, parallel,
+# hyprquery, imagemagick, dolphin, etc.). This list is for your own config.
+# Stage 5 installs everything uncommented. Everything under "LATER" is
+# commented out on purpose: uncomment it after your first launch works.
+# =====================================================================
+
+# --------------------------------------------------- // Base
+compsize                    # real disk usage under btrfs compression
+timeshift                   # snapshots
+power-profiles-daemon       # laptop power modes (then: sudo systemctl enable --now power-profiles-daemon)
+
+# --------------------------------------------------- // GPU (hybrid Intel + NVIDIA)
+mesa
+mesa-utils                  # glxinfo, used by the first-launch GPU test
+vulkan-icd-loader
+vulkan-intel
+intel-media-driver          # VA-API (iHD) decode on the iGPU
+nvidia-open                 # RTX 40-series is supported by the open modules
+nvidia-utils                # also gives you nvidia-smi
+nvidia-prime                # prime-run for offloading
+egl-wayland
+# libva-nvidia-driver       # only if you want NVIDIA video decode; Intel (iHD) is the default
+lib32-mesa                  # Steam / Proton
+lib32-vulkan-icd-loader
+lib32-vulkan-intel
+lib32-nvidia-utils
+
+# --------------------------------------------------- // Session
+uwsm                        # Wayland session manager (start from tty, no display manager)
+hyprland
+xorg-xwayland               # X11 apps, Steam and Proton need it
+lua                         # needed by the Lua config (as in HyDE's list)
+hyprpolkitagent             # auth agent
+xdg-desktop-portal-hyprland
+xdg-desktop-portal-gtk      # file picker
+xdg-user-dirs
+hypridle                    # idle daemon
+hyprlock                    # lock screen
+hyprsunset                  # night light
+
+# --------------------------------------------------- // Shell UI (the rice core)
+waybar                      # bar
+rofi                        # launcher + power menu + clipboard picker
+mako                        # notifications: Wayland-native, one small config file to template
+awww                        # animated wallpaper transitions (formerly swww; try swww if not found)
+libnotify                   # notify-send
+
+# --------------------------------------------------- // Audio / network / bluetooth
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber                 # also gives you wpctl, replaces pamixer
+pavucontrol                 # one GUI mixer
+playerctl
+bluez
+bluez-utils
+bluetui                     # TUI bluetooth manager (AUR?)
+brightnessctl
+
+# --------------------------------------------------- // Clipboard & capture
+wl-clipboard                # missing from HyDE's lists, essential
+cliphist
+wl-clip-persist
+grim
+slurp
+satty                       # screenshot annotation
+hyprpicker                  # color picker
+jq                          # glue for scripts
+
+# --------------------------------------------------- // Theming engine (replaces wallbash)
+matugen                     # Material You palette from wallpaper, template-based (AUR?)
+# wallust                   # alternative palette generator (pick ONE of matugen/wallust)
+adw-gtk-theme               # GTK3/4 base that recolors cleanly
+papirus-icon-theme
+bibata-cursor-theme-bin     # (AUR)
+dconf                       # gsettings backend
+qt6ct
+kvantum
+qt6-wayland
+# qt5ct kvantum-qt5 qt5-wayland   # only if you actually run Qt5 apps
+
+# --------------------------------------------------- // Fonts (HyDE ships these via its theme repo)
+ttf-jetbrains-mono-nerd
+inter-font
+noto-fonts                  # includes Arabic coverage
+noto-fonts-emoji
+
+# --------------------------------------------------- // Apps
+firefox                     # official repo, native Wayland, themeable (userChrome + Pywalfox)
+# brave-bin                 # (AUR) alternative; needs flags for Wayland, see notes
+kitty
+thunar                      # replaces dolphin + the KDE dependency chain
+thunar-archive-plugin
+thunar-volman
+gvfs                        # trash, automount (replaces udiskie)
+tumbler                     # thumbnails
+ffmpegthumbnailer
+file-roller
+unzip
+7zip
+fastfetch                   # the showcase screenshot tool
+
+# --------------------------------------------------- // Shell (zsh is installed already)
+zsh-autosuggestions         # fish-style suggestions, no framework needed
+zsh-syntax-highlighting
+zsh-completions
+starship
+fzf
+bat
+eza
+
+# =====================================================================
+# LATER: uncomment after your first launch works
+# =====================================================================
+
+# --------------------------------------------------- // Gaming
+# steam
+# gamemode
+# mangohud
+# gamescope
+
+# --------------------------------------------------- // Flair
+# cava                      # audio visualizer
+# wttrbar                   # weather module for waybar (AUR)
+# wf-recorder               # screen recording (software encode on NVIDIA)
+# spotify                   # (AUR)
+# spicetify-cli             # (AUR?)
+# swayosd                   # volume/brightness OSD (AUR?)
+# ddcutil                   # external monitor brightness via DDC
+# duf                       # prettier df
+
+# --------------------------------------------------- // Login screen: SDDM + Candy theme
+# Using SDDM replaces the tty + uwsm autostart: remove that line from ~/.zprofile first.
+# sddm
+# qt5-quickcontrols         # Candy theme UI elements (from HyDE's list)
+# qt5-quickcontrols2
+# qt5-graphicaleffects
+# Then, from your HyDE-ref clone:
+#   sudo tar -xzf Source/arcs/Sddm_Candy.tar.gz -C /usr/share/sddm/themes/
+#   sudo mkdir -p /etc/sddm.conf.d
+#   sudo cp /usr/share/sddm/themes/Candy/the_hyde_project.conf /etc/sddm.conf.d/
+#   sudo systemctl enable sddm
+# If the theme renders blank, check the Qt version it expects: current sddm is Qt6.
