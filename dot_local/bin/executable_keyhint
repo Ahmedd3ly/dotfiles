@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# █▄▀ █▀▀ █▄█ █▀
+# █░█ ██▄ ░█░ ▄█
+#
+# Why: searchable cheat sheet built live from `hyprctl binds`, so it can
+# never drift from the config. Only binds with a description are listed.
+set -euo pipefail
+
+hyprctl binds -j | jq -r '
+    def bit($n): ((.modmask / $n) | floor) % 2 == 1;
+    def mods: [ (if bit(64) then "SUPER" else empty end),
+                (if bit(4)  then "CTRL"  else empty end),
+                (if bit(8)  then "ALT"   else empty end),
+                (if bit(1)  then "SHIFT" else empty end) ] | join("+");
+    .[] | select(.description != null and .description != "")
+        | "\(mods | if . == "" then "" else . + "+" end)\(.key)\t\(.description)"' |
+    column -t -s $'\t' |
+    rofi -dmenu -i -p keys > /dev/null || true

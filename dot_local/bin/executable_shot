@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# █▀ █░█ █▀█ ▀█▀
+# ▄█ █▀█ █▄█ ░█░
+#
+# Why: screenshots with grim + slurp, no HyDE screenshot wrapper.
+# Usage: shot region | freeze | monitor | all
+#   region   select an area, annotate in satty (save / copy from there)
+#   freeze   same, but the screen is frozen while you select
+#   monitor  focused monitor -> file + clipboard
+#   all      every monitor   -> file + clipboard
+set -euo pipefail
+
+dir="$(xdg-user-dir PICTURES)/Screenshots"
+file="$dir/$(date +%Y-%m-%d_%H-%M-%S).png"
+mkdir -p "$dir"
+
+annotate() { satty --filename - --output-filename "$file" --copy-command wl-copy --early-exit; }
+done_msg() { wl-copy < "$file"; notify-send -i "$file" "Screenshot saved" "$file"; }
+
+case "${1:-}" in
+    region)
+        geom=$(slurp) || exit 0          # Esc cancels
+        grim -g "$geom" - | annotate ;;
+    freeze)
+        hyprpicker -r -z & picker=$!     # -r freezes the screen, -z zooms
+        sleep 0.2
+        geom=$(slurp) || { kill "$picker"; exit 0; }
+        frame=$(mktemp --suffix=.png)
+        grim -g "$geom" "$frame"         # capture while still frozen
+        kill "$picker"
+        annotate < "$frame"; rm -f "$frame" ;;
+    monitor)
+        grim -o "$(hyprctl activeworkspace -j | jq -r .monitor)" "$file" && done_msg ;;
+    all)
+        grim "$file" && done_msg ;;
+    *)
+        echo "usage: shot region|freeze|monitor|all" >&2; exit 2 ;;
+esac

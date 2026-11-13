@@ -8,5 +8,6 @@ return {
     terminal    = "kitty",
     fileManager = "thunar",
     browser     = "firefox",
-    menu        = "rofi -show run",
+    editor      = "kitty -e nvim",
+    launcher    = "rofi -show drun",
 }

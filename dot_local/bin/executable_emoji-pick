@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# █▀▀ █▀▄▀█ █▀█ ░░█ █
+# ██▄ █░▀░█ █▄█ █▄█ █
+#
+# Why: emoji picker without a rofi plugin package. Pick -> clipboard.
+# The list is built once from Unicode's emoji-test.txt and cached in
+# $XDG_DATA_HOME/emoji (not tracked: it regenerates itself on a new machine).
+# Delete the file to refresh it after a new Unicode release.
+set -euo pipefail
+
+list="${XDG_DATA_HOME:-$HOME/.local/share}/emoji/emoji.txt"
+
+if [ ! -s "$list" ]; then
+    mkdir -p "${list%/*}"
+    notify-send "emoji-pick" "Building emoji list (one-time download)"
+    curl -fsSL https://unicode.org/Public/emoji/latest/emoji-test.txt |
+        awk -F'# ' '
+            /^# group:/        { g = substr($2, 8); next }
+            /; fully-qualified/ { split($2, a, " "); n = $2
+                                 sub(/^[^ ]+ E[0-9.]+ /, "", n)
+                                 print a[1] "  " n "  · " g }' > "$list.tmp"
+    mv "$list.tmp" "$list"
+fi
+
+choice=$(rofi -dmenu -i -p emoji < "$list") || exit 0
+printf '%s' "${choice%% *}" | wl-copy
