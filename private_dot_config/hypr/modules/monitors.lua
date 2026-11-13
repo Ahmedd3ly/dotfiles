@@ -14,8 +14,11 @@ hl.monitor({
 })
 
 -- Odyssey G5 (NVIDIA dGPU). No 144 Hz mode exists; 164.84 is the top one.
--- supports_hdr/wide_color: -1 = force off, 0 = auto (EDID), 1 = force on.
--- -1 is required: at 0 (auto) the pink returns even with cm_enabled = false.
+-- Pink-screen fix: this output is wired to the NVIDIA GPU. With HDR and wide
+-- colour both on auto (0), the driver sent an HDR infoframe while Hyprland
+-- rendered SDR, atomic commits failed ("Invalid argument") and the picture
+-- went pink. Forcing both off (-1) fixes it. Tested Nov 2026: render.cm_enabled
+-- (true / false / unset) makes no difference. -1 off, 0 auto, 1 force on.
 -- vrr = 0: VRR blanked this output.
 hl.monitor({
     output = 'DP-4', mode = '2560x1440@164.84', position = '1536x0', scale = 1,

@@ -14,8 +14,8 @@
 -- Check after every edit: hyprctl reload && hyprctl configerrors
 
 -- Displays first: everything below assumes the outputs exist.
-require('modules.monitors')    -- outputs, modes, scale, workspace placement
-require('modules.hybrid-gpu')  -- Intel + NVIDIA workarounds
+-- GPU order (AQ_DRM_DEVICES) is set before Hyprland starts, in uwsm/env-hyprland.
+require('modules.monitors')    -- outputs, modes, scale, HDR fix, workspace placement
 
 require('modules.input')       -- keyboard, touchpad, gestures
 require('modules.look')        -- gaps, borders, rounding, blur, shadows, layout
