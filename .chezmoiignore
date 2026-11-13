@@ -4,3 +4,4 @@ first-launch.sh
 pkglist-native.txt
 pkglist-aur.txt
 .config/zsh/.zcompdump*
+**/*.bak

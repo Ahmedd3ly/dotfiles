@@ -1,0 +1,13 @@
+# Toolkits on Wayland
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME=qt6ct
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export GDK_BACKEND="wayland,x11,*"
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+
+# Cursor
+export XCURSOR_SIZE=24
+export HYPRCURSOR_SIZE=24
+
+# Video decode on the Intel iGPU (the NVIDIA card is opt-in via prime-run)
+export LIBVA_DRIVER_NAME=iHD
