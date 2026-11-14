@@ -3,14 +3,16 @@
 {
   "cpu": {
     "interval": 10,
-    "format": "󰻠 {usage}%",
+    "format": "󰍛 {usage}%",
     "format-alt": "{icon0}{icon1}{icon2}{icon3}",
     "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
   },
   "memory": {
     "interval": 30,
-    "format": "󰍛 {used:0.1f}G",
-    "format-alt": "󰍛 {percentage}%",
+    "states": { "critical": 90, "high": 60, "medium": 30, "low": 0 },
+    "format": "{icon} {used:0.2f}GB",
+    "format-alt": "{icon} {percentage}%",
+    "format-icons": { "critical": "\uf421", "high": "\udb81\udcc5", "medium": "\udb83\udf85", "low": "\udb83\udf86" },
     "tooltip-format": "Memory {percentage}%  ·  {used:0.2f} / {total:0.2f} GiB\nSwap {swapUsed:0.2f} / {swapTotal:0.2f} GiB"
   },
   // SEN4 (thermal_zone2): read 49 °C next to the CPU's 62 °C in the HyDE-era
@@ -19,22 +21,22 @@
   // once with nvidia-smi while the GPU is awake.
   "temperature#gpu": {
     "thermal-zone": 2,
-    "warning-threshold": 80,
-    "critical-threshold": 90,
-    "format": "󰢮 {temperatureC}°C",
-    "format-warning": "<span foreground='#fab387'>󰢮 {temperatureC}°C</span>",
-    "format-critical": "<span foreground='#f38ba8'>󰢮 {temperatureC}°C</span>",
+    "warning-threshold": 55,  // HyDE's GPU thresholds: orange from 55, red from 65
+    "critical-threshold": 65,
+    "format": " {temperatureC}°C",
+    "format-warning": "<span foreground='#fab387'> {temperatureC}°C</span>",
+    "format-critical": "<span foreground='#f38ba8'> {temperatureC}°C</span>",
     "tooltip-format": "GPU area (SEN4) {temperatureC}°C"
   },
   // coretemp's hwmon number changes between boots; this path does not.
   "temperature#cpu": {
     "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
     "input-filename": "temp1_input",
-    "warning-threshold": 80,
-    "critical-threshold": 95,
-    "format": " {temperatureC}°C",
-    "format-warning": "<span foreground='#fab387'> {temperatureC}°C</span>",
-    "format-critical": "<span foreground='#f38ba8'> {temperatureC}°C</span>",
+    "warning-threshold": 70,  // HyDE's CPU thresholds: orange from 70, red from 85
+    "critical-threshold": 85,
+    "format": " {temperatureC}°C",
+    "format-warning": "<span foreground='#fab387'> {temperatureC}°C</span>",
+    "format-critical": "<span foreground='#f38ba8'> {temperatureC}°C</span>",
     "tooltip-format": "CPU package {temperatureC}°C"
   }
 }
