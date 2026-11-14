@@ -26,7 +26,9 @@
     "tooltip-format-disconnected": "Disconnected",
     "interval": 5
   },
-  // Replaces HyDE-era custom/tlp: this machine runs power-profiles-daemon.
+  // TLP profiles through tlp-pd, which speaks power-profiles-daemon's D-Bus
+  // API, so waybar's built-in module drives TLP (performance / balanced /
+  // power-saver). Takes the slot of the HyDE-era custom/tlp.
   "power-profiles-daemon": {
     "format": "{icon}",
     "tooltip-format": "Power profile: {profile}  ·  click to cycle",
@@ -39,9 +41,9 @@
   },
   "battery": {
     "states": { "warning": 25, "critical": 10 },
-    "format": "{icon} {capacity}%",
-    "format-charging": " {capacity}%",
-    "format-plugged": " {capacity}%",
+    "format": "{icon}  {capacity}%",
+    "format-charging": "  {capacity}%",
+    "format-plugged": "  {capacity}%",
     "format-alt": "{icon} {time}",
     "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
   }

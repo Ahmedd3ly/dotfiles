@@ -17,9 +17,9 @@ age=$(( $(date +%s) - $(stat -c %Y "$cache" 2>/dev/null || echo 0) ))
 
 if [ "${1:-}" = "--refresh" ] || [ "$age" -ge "$TTL" ]; then
     # ?m = metric (Celsius, km/h). %c icon, %t temp, %C condition, %f feels like.
-    text=$(curl -fsS --max-time 10 "https://wttr.in/${CITY}?m&format=%c%t" | tr -d '+')
+    text="$(curl -fsS --max-time 10 "https://wttr.in/${CITY}?m&format=%c%t" | tr -d '+') | ${CITY}"
     tip=$(curl -fsS --max-time 10 "https://wttr.in/${CITY}?m&format=%l:+%C,+feels+like+%f%0AHumidity+%h,+wind+%w" | tr -d '+')
-    if [ -n "$text" ] && [[ "$text" != *Unknown* ]]; then
+    if [[ "$text" == *°C* ]]; then                     # only cache a real reading
         jq -cn --arg t "$text" --arg tip "$tip" '{text: $t, tooltip: $tip}' > "$cache"
     fi
 fi

@@ -11,8 +11,8 @@
     "modules": ["pulseaudio#output", "pulseaudio#input"]
   },
   "pulseaudio#output": {
-    "format": "{icon} {volume}",
-    "format-muted": "󰖁 {volume}",
+    "format": "{icon}  {volume}",
+    "format-muted": "󰖁  {volume}",
     "format-icons": { "headphone": "", "headset": "", "default": ["", "", ""] },
     "tooltip-format": "{desc}  ·  {volume}%",
     "scroll-step": 5,

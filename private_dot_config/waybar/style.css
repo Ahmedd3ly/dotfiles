@@ -46,14 +46,12 @@ window#waybar {
     border-radius: 0 0 10pt 10pt;
     border-width: 0;
 }
-/* No padding or side margin on the island itself: with no player running
- * mpris hides and the island collapses instead of leaving a dark stub. */
 #pill-in {
-    margin: 0 0 0.3em;
-    padding: 0;
+    margin: 0 1em 0.3em;
 }
-#mpris {
-    margin: 0 1em;
+
+#custom-media-idle {
+    color: alpha(@main-fg, 0.6);
 }
 
 /* Leaf: top-left + bottom-right rounded */
@@ -120,6 +118,22 @@ label.module, label.text-button {
 
 #privacy, #tray {
     margin: 0 0.3em;
+}
+
+/* Nerd Font glyphs draw wider than their advance width and crowd the next
+ * module. Icon-only modules get extra room on the right (HyDE did the same,
+ * its #2206); icon + text modules use a double space in their format. */
+#custom-tray-arrow,
+#language,
+#custom-keybindhint,
+#custom-gamemode,
+#custom-nightlight,
+#idle_inhibitor,
+#network,
+#power-profiles-daemon,
+#custom-notifications,
+#custom-menu {
+    padding-right: 0.5em;
 }
 
 button {

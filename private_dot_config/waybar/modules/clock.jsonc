@@ -6,8 +6,8 @@
     "modules": ["clock"]
   },
   "clock": {
-    "format": "󰥔 {:%I:%M %p}",
-    "format-alt": "󰥔 {:%I:%M %p  󰃭 %a %d %b}",
+    "format": "󰥔  {:%I:%M %p}",
+    "format-alt": "󰥔  {:%I:%M %p  󰃭 %a %d %b}",
     "interval": 30,
     "tooltip-format": "<span>{calendar}</span>",
     "calendar": {

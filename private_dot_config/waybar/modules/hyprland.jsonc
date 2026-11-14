@@ -1,23 +1,20 @@
-// Hyprland state: workspaces, focused window title, keyboard layout.
+// Hyprland state: workspaces (1-5 always shown), focused window title with
+// its app icon (from the icon theme), keyboard layout.
 {
   "hyprland/workspaces": {
     "all-outputs": true,
     "active-only": false,
     "tooltip": false,
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
-    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
+    "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'",
+    "persistent-workspaces": { "*": 5 }
   },
   "hyprland/window": {
     "format": "{title}",
+    "icon": true,
+    "icon-size": 14,
     "separate-outputs": true,
-    "max-length": 50,
-    "rewrite": {
-      "(.*) — Mozilla Firefox": "$1 󰈹",
-      "(.*)Mozilla Firefox": "$1Firefox 󰈹",
-      "(.*) - nvim": "$1 ",
-      "(.*)Steam": "$1Steam 󰓓",
-      "(.*) - Discord": "$1 "
-    }
+    "max-length": 50
   },
   "hyprland/language": {
     "format": "{short}",

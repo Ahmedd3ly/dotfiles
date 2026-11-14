@@ -1,5 +1,7 @@
 // Media: built-in mpris (replaces HyDE's mediaplayer.py) with a hover
-// drawer for previous / play-pause / next.
+// drawer for previous / play-pause / next. mpris hides itself with no
+// player, so custom/media-idle shows a placeholder and the island never
+// goes empty.
 {
   "group/mediaplayer": {
     "orientation": "inherit",
@@ -9,7 +11,7 @@
       "transition-left-to-right": true,
       "click-to-reveal": false
     },
-    "modules": ["mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
+    "modules": ["custom/media-idle", "mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
   },
   "mpris": {
     "format": "{status_icon} {dynamic}",
@@ -19,6 +21,12 @@
     "on-click": "playerctl play-pause",
     "on-scroll-up": "playerctl position 5+",
     "on-scroll-down": "playerctl position 5-"
+  },
+  "custom/media-idle": {
+    "exec": "media-idle",
+    "return-type": "json",
+    "restart-interval": 10,
+    "tooltip": false
   },
   "custom/media-prev": { "format": "󰙣", "tooltip-format": "previous", "on-click": "playerctl previous" },
   "custom/media-play": { "format": "󰐌", "tooltip-format": "play/pause", "on-click": "playerctl play-pause" },

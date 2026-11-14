@@ -16,7 +16,7 @@
 # --------------------------------------------------- // Base
 compsize                    # real disk usage under btrfs compression
 timeshift                   # snapshots
-power-profiles-daemon       # laptop power modes (then: sudo systemctl enable --now power-profiles-daemon)
+tlp                         # laptop power (+ tlp-pd profiles daemon; then: sudo systemctl enable --now tlp tlp-pd; mask systemd-rfkill.service/.socket)
 
 # --------------------------------------------------- // GPU (hybrid Intel + NVIDIA)
 mesa
