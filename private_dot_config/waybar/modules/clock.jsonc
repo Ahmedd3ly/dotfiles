@@ -1,7 +1,6 @@
-// Clock island: a hollow-icon 12-hour time. Hovering it slides out the date.
-// The date carries the calendar: hover = month tooltip, right-click = whole
-// year (again: back), scroll = page months, left-click = a real calendar
-// window (yad) with week numbers and month/year navigation.
+// Clock island: a hollow-icon 12-hour time. Hovering it slides out the date;
+// left-click the date for a calendar window (yad: week numbers, month/year
+// navigation) that closes when focus moves elsewhere. No tooltips.
 {
   "group/clock-cal": {
     "orientation": "inherit",
@@ -21,24 +20,7 @@
   "clock#date": {
     "format": "󰃭  {:%a %d %b}",
     "interval": 60,
-    "tooltip-format": "<span>{calendar}</span>",
-    "calendar": {
-      "mode": "month",
-      "mode-mon-col": 3,
-      "weeks-pos": "left",
-      "on-scroll": 1,
-      "format": {
-        "months": "<span color='#f5c2e7'><b>{}</b></span>",
-        "weeks": "<span color='#6c7086'>W{}</span>",
-        "weekdays": "<span color='#a6adc8'><b>{}</b></span>",
-        "today": "<span color='#cba6f7'><b><u>{}</u></b></span>"
-      }
-    },
-    "on-click": "pkill -x yad || yad --calendar --show-weeks --undecorated --close-on-unfocus --no-buttons --title=bar-calendar",
-    "actions": {
-      "on-click-right": "mode",
-      "on-scroll-up": "shift_up",
-      "on-scroll-down": "shift_down"
-    }
+    "tooltip": false,
+    "on-click": "$HOME/.local/bin/bar-calendar"
   }
 }

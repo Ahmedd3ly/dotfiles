@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# █▀▀ ▄▀█ █░░
+# █▄▄ █▀█ █▄▄
+#
+# Why: calendar window for the bar's date (left-click). yad's own
+# --close-on-unfocus does not fire under Hyprland, so this watches the
+# focused window while the calendar is open and closes it once focus moves
+# to another window. Runs only while the calendar is open: no daemon.
+# Clicking the date again also closes it.
+set -uo pipefail
+
+pkill -x yad && exit 0          # second click: close
+
+yad --calendar --show-weeks --undecorated --no-buttons --title=bar-calendar >/dev/null &
+pid=$!
+
+seen=0
+while kill -0 "$pid" 2>/dev/null; do
+    sleep 0.25
+    title=$(hyprctl activewindow -j 2>/dev/null | jq -r '.title // ""')
+    if [ "$title" = "bar-calendar" ]; then
+        seen=1
+    elif [ "$seen" = 1 ]; then
+        kill "$pid"             # focus left the calendar
+    fi
+done

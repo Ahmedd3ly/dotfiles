@@ -16,7 +16,6 @@
 -- Displays first: everything below assumes the outputs exist.
 -- GPU order (AQ_DRM_DEVICES) is set before Hyprland starts, in uwsm/env-hyprland.
 require('modules.monitors')    -- outputs, modes, scale, HDR fix, workspace placement
-require('modules.hybrid-gpu')  -- Intel + NVIDIA workarounds
 
 require('modules.input')       -- keyboard, touchpad, gestures
 require('modules.look')        -- gaps, borders, rounding, blur, shadows, layout
