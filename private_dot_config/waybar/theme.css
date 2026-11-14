@@ -2,7 +2,7 @@
  * Phase 8: matugen generates this file; until then it is static.
  * ACCENTS are the active/hover pair; everything else is a Mocha neutral. */
 
-@define-color bar-bg    rgba(0, 0, 0, 0.1);   /* alpha > 0 keeps the blur layer rule working */
+@define-color bar-bg    rgba(30, 30, 46, 0.85); /* Mocha base: the dark band behind the islands, as on HyDE (wallbash mode) */
 @define-color main-bg   #11111b;              /* crust: island fill */
 @define-color main-fg   #cdd6f4;              /* text */
 

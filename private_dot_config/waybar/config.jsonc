@@ -50,7 +50,7 @@
   },
   "group/leaf-inverse": {
     "orientation": "inherit",
-    "modules": ["temperature#cpu"]
+    "modules": ["temperature#gpu", "temperature#cpu"]
   },
   "group/pill#right1": {
     "orientation": "inherit",

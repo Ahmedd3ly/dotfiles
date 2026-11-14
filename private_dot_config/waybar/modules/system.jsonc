@@ -1,6 +1,5 @@
 // CPU, memory, CPU temperature. Reads sysfs directly: no scripts, no
-// nvidia-smi (that would wake the dGPU). GPU temperature: see temperature#gpu
-// note in the Phase 6 checklist.
+// nvidia-smi (that would wake the dGPU).
 {
   "cpu": {
     "interval": 10,
@@ -13,6 +12,19 @@
     "format": "󰍛 {used:0.1f}G",
     "format-alt": "󰍛 {percentage}%",
     "tooltip-format": "Memory {percentage}%  ·  {used:0.2f} / {total:0.2f} GiB\nSwap {swapUsed:0.2f} / {swapTotal:0.2f} GiB"
+  },
+  // SEN4 (thermal_zone2): read 49 °C next to the CPU's 62 °C in the HyDE-era
+  // bar, which is where its GPU reading came from. ACPI sensor, so reading
+  // it never wakes the NVIDIA GPU. Unverified as *the* GPU sensor: compare
+  // once with nvidia-smi while the GPU is awake.
+  "temperature#gpu": {
+    "thermal-zone": 2,
+    "warning-threshold": 80,
+    "critical-threshold": 90,
+    "format": "󰢮 {temperatureC}°C",
+    "format-warning": "<span foreground='#fab387'>󰢮 {temperatureC}°C</span>",
+    "format-critical": "<span foreground='#f38ba8'>󰢮 {temperatureC}°C</span>",
+    "tooltip-format": "GPU area (SEN4) {temperatureC}°C"
   },
   // coretemp's hwmon number changes between boots; this path does not.
   "temperature#cpu": {
