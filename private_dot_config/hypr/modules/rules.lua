@@ -50,3 +50,13 @@ hl.layer_rule({
     match        = { namespace = glass },
     ignore_alpha = 0,
 })
+
+-- Bar only: blur the wallpaper, not windows. Without xray the blur kernel
+-- also samples the window right under the bar, so a white browser tab strip
+-- bleeds up into it as a bright "reflection". Not for rofi/mako: those float
+-- over windows and should frost what is actually behind them.
+hl.layer_rule({
+    name  = "bar-xray",
+    match = { namespace = "^waybar$" },
+    xray  = true,
+})

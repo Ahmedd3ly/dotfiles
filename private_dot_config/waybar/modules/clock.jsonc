@@ -1,13 +1,24 @@
-// 12-hour clock. Hover: month calendar. Right-click: whole year (again: back).
-// Scroll over the clock to page months; click toggles the date.
+// 12-hour clock in a hover drawer that slides out the date. Hovering the
+// time shows the month calendar; right-click it for the whole year (again:
+// back); scroll over it to page months.
 {
   "group/clock-cal": {
     "orientation": "inherit",
-    "modules": ["clock"]
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "clock-drawer",
+      "transition-left-to-right": false,
+      "click-to-reveal": false
+    },
+    "modules": ["clock", "clock#date"]
+  },
+  "clock#date": {
+    "format": "󰃭 {:%a %d %b}",
+    "interval": 60,
+    "tooltip": false
   },
   "clock": {
     "format": "󰥔  {:%I:%M %p}",
-    "format-alt": "󰥔  {:%I:%M %p  󰃭 %a %d %b}",
     "interval": 30,
     "tooltip-format": "<span>{calendar}</span>",
     "calendar": {
