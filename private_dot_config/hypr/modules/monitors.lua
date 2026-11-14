@@ -9,7 +9,7 @@
 
 -- Laptop panel (Intel iGPU). vrr = 0: VRR made this panel flicker.
 hl.monitor({
-    output = 'eDP-1', mode = '2560x1600@165.04', position = '0x0', scale = 1.666667,
+    output = 'eDP-1', mode = '2560x1600@60.04', position = '0x0', scale = 1.666667,
     bitdepth = 8, cm = 'srgb', vrr = 0,
 })
 
