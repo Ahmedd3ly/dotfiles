@@ -67,8 +67,9 @@ hl.config({
     },
 
     misc = {
-        force_default_wallpaper = -1,    -- 0 once awww owns the wallpaper (Phase 5)
-        disable_hyprland_logo   = false,
+        force_default_wallpaper  = 0,    -- awww owns the wallpaper
+        disable_hyprland_logo    = true,
+        disable_splash_rendering = true,
     },
 
     layers = {

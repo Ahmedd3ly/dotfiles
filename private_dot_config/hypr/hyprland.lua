@@ -22,3 +22,4 @@ require('modules.look')        -- gaps, borders, rounding, blur, shadows, layout
 require('modules.animations')  -- curves and animation leaves
 require('modules.rules')       -- window rules
 require('modules.binds')       -- keybindings (reads modules/apps.lua)
+require('modules.autostart')   -- processes without a systemd unit
