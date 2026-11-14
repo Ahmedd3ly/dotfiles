@@ -69,8 +69,8 @@
       "privacy",
       "group/volumecontrol",
       "custom/updates",
-      "network",
       "power-profiles-daemon",
+      "network",
       "battery"
     ]
   },
