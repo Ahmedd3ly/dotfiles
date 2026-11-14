@@ -37,7 +37,7 @@ hl.animation(
     {leaf = "specialWorkspaceOut", enabled = true, speed = 2.3, bezier = "md3_decel", style = "slidefadevert 15%"}
 )
 hl.animation({leaf = "border", enabled = true, speed = 1.6, bezier = "liner"})
-hl.animation({leaf = "borderangle", enabled = true, speed = 82, bezier = "liner", style = "loop"})
+hl.animation({leaf = "borderangle", enabled = true, speed = 82, bezier = "liner", style = "once"})
 hl.animation({leaf = "windowsIn", enabled = true, speed = 3.2, bezier = "winIn", style = "slide"})
 hl.animation({leaf = "windowsOut", enabled = true, speed = 2.8, bezier = "easeOutCirc"})
 hl.animation({leaf = "windowsMove", enabled = true, speed = 3.0, bezier = "wind", style = "slide"})

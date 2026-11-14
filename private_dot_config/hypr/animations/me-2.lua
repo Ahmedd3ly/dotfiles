@@ -34,7 +34,7 @@ hl.animation({leaf = "workspacesOut", enabled = true, speed = 5, bezier = "wind"
 hl.animation({leaf = "specialWorkspaceIn", enabled = true, speed = 3, bezier = "md3_decel", style = "slidevert"})
 hl.animation({leaf = "specialWorkspaceOut", enabled = true, speed = 3, bezier = "md3_decel", style = "slidevert"})
 hl.animation({leaf = "border", enabled = true, speed = 1, bezier = "liner"})
-hl.animation({leaf = "borderangle", enabled = true, speed = 30, bezier = "liner", style = "loop"})
+hl.animation({leaf = "borderangle", enabled = true, speed = 30, bezier = "liner", style = "once"})
 hl.animation({leaf = "windowsIn", enabled = true, speed = 6, bezier = "winIn", style = "slide"})
 hl.animation({leaf = "windows", enabled = true, speed = 5, bezier = "easeInOutCirc"})
 hl.animation({leaf = "windowsOut", enabled = true, speed = 5, bezier = "OutBack"})
