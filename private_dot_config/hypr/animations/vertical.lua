@@ -1,0 +1,37 @@
+-- Vertical: Vertical animation profile for Hyprland
+-- Ported from HyDE (GPL-3.0), https://github.com/HyDE-Project/HyDE/tree/master/Configs/.local/share/hypr/lua/animations/vertical.lua
+-- Change: duration-scale multiplier removed (speeds are literal).
+
+hl.curve("fluent_decel", {type = "bezier", points = {{0, 0.2}, {0.4, 1}}})
+hl.curve("easeOutCirc", {type = "bezier", points = {{0, 0.55}, {0.45, 1}}})
+hl.curve("easeOutCubic", {type = "bezier", points = {{0.33, 1}, {0.68, 1}}})
+hl.curve("easeinoutsine", {type = "bezier", points = {{0.37, 0}, {0.63, 1}}})
+
+hl.animation({leaf = "layersIn", enabled = true, speed = 1.5, bezier = "easeinoutsine", style = "popin"})
+hl.animation({leaf = "layersOut", enabled = true, speed = 1.5, bezier = "easeinoutsine", style = "popin"})
+hl.animation({leaf = "fadeIn", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeOut", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeSwitch", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeShadow", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeDim", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeLayers", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadePopups", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeDpms", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "workspacesIn", enabled = true, speed = 3, bezier = "fluent_decel", style = "slidefadevert 30%"})
+hl.animation({leaf = "workspacesOut", enabled = true, speed = 3, bezier = "fluent_decel", style = "slidefadevert 30%"})
+hl.animation({leaf = "specialWorkspaceIn", enabled = true, speed = 2, bezier = "fluent_decel", style = "slidefade 10%"})
+hl.animation(
+    {leaf = "specialWorkspaceOut", enabled = true, speed = 2, bezier = "fluent_decel", style = "slidefade 10%"}
+)
+hl.animation({leaf = "windowsIn", enabled = true, speed = 1.5, bezier = "easeinoutsine", style = "popin 60%"})
+hl.animation({leaf = "windowsOut", enabled = true, speed = 1.5, bezier = "easeOutCubic", style = "popin 60%"})
+hl.animation({leaf = "windowsMove", enabled = true, speed = 1.5, bezier = "easeinoutsine", style = "slide"})
+hl.animation({leaf = "fade", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadeLayersIn", enabled = false})
+hl.animation({leaf = "border", enabled = false})
+hl.animation({leaf = "layers", enabled = true, speed = 1.5, bezier = "easeinoutsine", style = "popin"})
+hl.animation({leaf = "workspaces", enabled = true, speed = 3, bezier = "fluent_decel", style = "slidefadevert 30%"})
+hl.animation({leaf = "specialWorkspace", enabled = true, speed = 2, bezier = "fluent_decel", style = "slidefade 10%"})
+hl.animation({leaf = "fadeLayersOut", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadePopupsIn", enabled = true, speed = 2.5, bezier = "fluent_decel"})
+hl.animation({leaf = "fadePopupsOut", enabled = true, speed = 2.5, bezier = "fluent_decel"})

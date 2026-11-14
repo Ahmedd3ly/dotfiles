@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# ▄▀█ █▄░█ █ █▀▄▀█
+# █▀█ █░▀█ █ █░▀░█
+#
+# Why: try animation presets live. Pick one in rofi; it is written to
+# modules/animation-choice.lua (chezmoi-ignored) and Hyprland reloads.
+# A try-out tool: once you settle, freeze the preset (see modules/animations.lua).
+set -euo pipefail
+
+hypr="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
+choice_file="$hypr/modules/animation-choice.lua"
+current=$(sed -n 's/^return "\(.*\)"$/\1/p' "$choice_file" 2>/dev/null || true)
+
+pick=$(for f in "$hypr"/animations/*.lua; do
+           n=${f##*/}; n=${n%.lua}
+           desc=$(sed -n '1s/^-- //p' "$f")
+           printf '%s%s\t%s\n' "$n" "$([ "$n" = "${current:-stock}" ] && echo ' *')" "$desc"
+       done | column -t -s $'\t' | rofi -dmenu -i -p animation) || exit 0
+
+name=${pick%% *}
+printf 'return "%s"\n' "$name" > "$choice_file"
+hyprctl reload > /dev/null
+notify-send "Animations" "$name"

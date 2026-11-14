@@ -71,6 +71,7 @@ bind(M("V"),         menu("cliphist list | rofi -dmenu -i -p clip | cliphist dec
 ---- Utilities -------------------------------------------------------------
 bind(M("Space"),     exec("hyprctl switchxkblayout all next"), "[Utility] switch keyboard layout", { locked = true })
 bind(M("SHIFT + C"), exec("hyprpicker -an"),  "[Utility] colour picker to clipboard")
+bind(M("SHIFT + Y"), menu("anim-pick"),       "[Utility] try animation presets")
 bind(M("SHIFT + S"), exec("shot region"),     "[Screenshot] region")
 bind(M("CONTROL + S"), exec("shot freeze"),   "[Screenshot] frozen region")
 bind(M("P"),         exec("shot monitor"),    "[Screenshot] focused monitor")

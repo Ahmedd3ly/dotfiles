@@ -5,3 +5,6 @@ pkglist-native.txt
 pkglist-aur.txt
 .config/zsh/.zcompdump*
 **/*.bak
+
+# Runtime state written by scripts (not config)
+.config/hypr/modules/animation-choice.lua

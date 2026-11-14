@@ -1,0 +1,31 @@
+-- Minimal-2: Minimal-2 animation profile for Hyprland
+-- Ported from HyDE (GPL-3.0), https://github.com/HyDE-Project/HyDE/tree/master/Configs/.local/share/hypr/lua/animations/minimal-2.lua
+-- Change: duration-scale multiplier removed (speeds are literal).
+
+hl.curve("quart", {type = "bezier", points = {{0.25, 1}, {0.5, 1}}})
+
+hl.animation({leaf = "windowsIn", enabled = true, speed = 6, bezier = "quart", style = "slide"})
+hl.animation({leaf = "windowsOut", enabled = true, speed = 6, bezier = "quart", style = "slide"})
+hl.animation({leaf = "windowsMove", enabled = true, speed = 6, bezier = "quart", style = "slide"})
+hl.animation({leaf = "fadeIn", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeOut", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeSwitch", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeShadow", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeDim", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeLayers", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadePopups", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeDpms", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "workspacesIn", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "workspacesOut", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "specialWorkspace", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "windows", enabled = true, speed = 6, bezier = "quart", style = "slide"})
+hl.animation({leaf = "border", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "borderangle", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fade", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "workspaces", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeLayersIn", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadeLayersOut", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadePopupsIn", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "fadePopupsOut", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "specialWorkspaceIn", enabled = true, speed = 6, bezier = "quart"})
+hl.animation({leaf = "specialWorkspaceOut", enabled = true, speed = 6, bezier = "quart"})
