@@ -12,4 +12,5 @@ set -eu
 systemctl --user enable \
     hyprpolkitagent.service \
     cliphist.service \
-    mako.service
+    mako.service \
+    hypridle.service

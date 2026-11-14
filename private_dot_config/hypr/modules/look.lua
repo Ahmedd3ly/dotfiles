@@ -70,6 +70,7 @@ hl.config({
         force_default_wallpaper  = 0,    -- awww owns the wallpaper
         disable_hyprland_logo    = true,
         disable_splash_rendering = true,
+        allow_session_lock_restore = true, -- a crashed hyprlock can be relaunched (see hyprlock.conf)
     },
 
     layers = {
