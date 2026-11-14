@@ -1,7 +1,7 @@
 -- █░░ █▀█ █▀█ █▄▀
 -- █▄▄ █▄█ █▄█ █░█
 --
--- Why: the static look, ported from HyDE's "Catppuccin Latte" theme
+-- Why: the static look, ported from HyDE's "Catppuccin Mocha" theme
 -- (hypr.theme) plus the HyDE defaults it ran on (opacity, dim, snap).
 -- Pure look, no packages. The main battery cost is blur: size 6 x 3 passes
 -- on every translucent window. Drop passes to 2 if the iGPU runs hot.
@@ -9,14 +9,14 @@
 -- ACCENTS: the only colours in this file. Phase 8 replaces this table with
 -- the matugen-generated one (require('modules.colors')); nothing else changes.
 local accent = {
-    active   = { colors = { "rgba(dc8a78ff)", "rgba(8839efff)" }, angle = 45 }, -- Latte rosewater -> mauve
-    inactive = { colors = { "rgba(7287fdcc)", "rgba(179299cc)" }, angle = 45 }, -- Latte lavender -> teal
+    active   = { colors = { "rgba(ca9ee6ff)", "rgba(f2d5cfff)" }, angle = 45 }, -- mauve -> rosewater
+    inactive = { colors = { "rgba(b4befecc)", "rgba(6c7086cc)" }, angle = 45 }, -- lavender -> overlay0
 }
 
 hl.config({
     general = {
-        gaps_in     = 3,
-        gaps_out    = 8,
+        gaps_in     = 5,   -- theme uses 3/8; kept the roomier 5/20
+        gaps_out    = 20,
         border_size = 2,
 
         col = {
@@ -44,7 +44,7 @@ hl.config({
         dim_special        = 0.3,  -- dim the desktop behind a scratchpad
 
         shadow = {
-            enabled = false,       -- Latte theme: flat, no shadows
+            enabled = false,       -- theme: flat, no shadows
         },
 
         blur = {
