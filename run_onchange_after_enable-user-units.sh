@@ -13,4 +13,5 @@ systemctl --user enable \
     hyprpolkitagent.service \
     cliphist.service \
     mako.service \
-    hypridle.service
+    hypridle.service \
+    hyprsunset.service

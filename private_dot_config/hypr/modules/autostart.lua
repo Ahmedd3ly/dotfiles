@@ -2,7 +2,7 @@
 -- █▀█ █▄█ ░█░ █▄█ ▄█ ░█░ █▀█ █▀▄ ░█░
 --
 -- Why: only what has NO systemd user unit starts here. Everything that ships
--- a unit (mako, cliphist, hyprpolkitagent, hypridle, later hyprsunset,
+-- a unit (mako, cliphist, hyprpolkitagent, hypridle, hyprsunset, later
 -- waybar) is enabled by run_onchange_after_enable-user-units.sh in the repo
 -- root and started by uwsm via graphical-session.target: restarts on crash,
 -- logs in `journalctl --user -u <unit>`.
