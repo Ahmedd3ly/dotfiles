@@ -77,7 +77,7 @@ for i = 1, 10 do
     local key = tostring(i % 10) -- 10 maps to key 0
     bind(M(key),             hl.dsp.focus({ workspace = i }),       "[Workspace] go to " .. i)
     bind(M("SHIFT + " .. key), hl.dsp.window.move({ workspace = i }), "[Workspace] move window to " .. i)
-    bind(M("ALT + " .. key), hl.dsp.window.move({ workspace = i, silent = true }),
+    bind(M("ALT + " .. key), hl.dsp.window.move({ workspace = i, follow = false }),
         "[Workspace] move window to " .. i .. " silently")
 end
 
