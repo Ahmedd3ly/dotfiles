@@ -33,7 +33,11 @@ bind(M("S"),     hl.dsp.layout("togglesplit"),            "[Window] toggle split
 bind("ALT + Tab", hl.dsp.window.cycle_next(),             "[Window] cycle focus")
 
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
-    bind(M(dir),             hl.dsp.focus({ direction = dir }),       "[Window] focus " .. dir)
+    bind(M(dir), hl.dsp.focus({ direction = dir }), "[Window] focus " .. dir)
+end
+-- SUPER+Ctrl+down is taken by "first empty workspace" (see Workspaces):
+-- SUPER+Shift+Ctrl+down never reached Hyprland on this laptop.
+for _, dir in ipairs({ "left", "right", "up" }) do
     bind(M("CONTROL + " .. dir), hl.dsp.window.move({ direction = dir }), "[Window] move " .. dir, { repeating = true })
 end
 
@@ -83,7 +87,7 @@ end
 
 bind(M("SHIFT + CONTROL + Right"), hl.dsp.focus({ workspace = "r+1" }),   "[Workspace] next")
 bind(M("SHIFT + CONTROL + Left"),  hl.dsp.focus({ workspace = "r-1" }),   "[Workspace] previous")
-bind(M("SHIFT + CONTROL + Down"),  hl.dsp.focus({ workspace = "empty" }), "[Workspace] first empty")
+bind(M("CONTROL + Down"),          hl.dsp.focus({ workspace = "empty" }), "[Workspace] first empty")
 bind(M("CONTROL + ALT + Right"), hl.dsp.window.move({ workspace = "r+1" }), "[Workspace] move window to next")
 bind(M("CONTROL + ALT + Left"),  hl.dsp.window.move({ workspace = "r-1" }), "[Workspace] move window to previous")
 bind(M("mouse_down"), hl.dsp.focus({ workspace = "e+1" }), "[Workspace] next (scroll)")
