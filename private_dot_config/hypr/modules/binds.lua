@@ -62,7 +62,7 @@ bind(M("C"),      exec(apps.editor),      "[Apps] editor")
 local function menu(cmd) return exec("pkill -x rofi || " .. cmd) end
 bind(M("A"),         menu(apps.launcher),            "[Menu] app launcher")
 bind(M("Tab"),       menu("rofi -show window"),      "[Menu] window switcher")
-bind(M("SHIFT + F"), menu("rofi -show filebrowser"), "[Menu] file browser")
+bind(M("SHIFT + E"), menu("rofi -show filebrowser"), "[Menu] file browser")
 bind(M("grave"),     menu("keyhint"),                "[Menu] keybinding cheat sheet")
 bind(M("period"),    menu("emoji-pick"),             "[Menu] emoji to clipboard")
 bind(M("V"),         menu("cliphist list | rofi -dmenu -i -p clip | cliphist decode | wl-copy"),
