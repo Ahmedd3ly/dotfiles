@@ -1,3 +1,7 @@
-# primary=intel: the first entry renders the desktop.
-# Change it by re-running: first-launch.sh --primary intel|nvidia
-export AQ_DRM_DEVICES=/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu
+# Intel drives eDP-1 and stays primary. NVIDIA is added only when it's on the bus;
+# gpu-off.service removes it on battery boots.
+if [ -e /dev/dri/nvidia-dgpu ]; then
+    export AQ_DRM_DEVICES=/dev/dri/intel-igpu:/dev/dri/nvidia-dgpu
+else
+    export AQ_DRM_DEVICES=/dev/dri/intel-igpu
+fi
