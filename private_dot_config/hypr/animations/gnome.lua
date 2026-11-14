@@ -1,9 +1,9 @@
 -- GNOME Spring: Spring-based, GNOME-like behavior using the native gnomed style.
 -- Ported from HyDE (GPL-3.0), https://github.com/HyDE-Project/HyDE/tree/master/Configs/.local/share/hypr/lua/animations/gnome.lua
--- Change: duration-scale multiplier removed (speeds are literal).
+-- Changes: duration-scale multiplier removed; spring key `dampening` -> `damping` (hl.meta.lua).
 
-hl.curve("gnomeOpen", {type = "spring", mass = 1, stiffness = 100, dampening = 14})
-hl.curve("gnomeClose", {type = "spring", mass = 1, stiffness = 90, dampening = 16})
+hl.curve("gnomeOpen", {type = "spring", mass = 1, stiffness = 100, damping = 14})
+hl.curve("gnomeClose", {type = "spring", mass = 1, stiffness = 90, damping = 16})
 hl.curve("gnomeFade", {type = "bezier", points = {{0.25, 0.1}, {0.25, 1.0}}})
 
 hl.animation({leaf = "windowsIn", enabled = true, speed = 7, spring = "gnomeOpen", style = "gnomed"})
