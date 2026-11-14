@@ -1,0 +1,12 @@
+// Do-not-disturb toggle for mako (replaces HyDE's custom/swaync).
+// The "do-not-disturb" mode itself is defined in mako's config (Phase 7).
+{
+  "custom/notifications": {
+    "exec": "makoctl mode | grep -qx do-not-disturb && echo '󰂛' || echo '󰂚'",
+    "interval": "once",
+    "signal": 11,
+    "tooltip-format": "Notifications: click toggles do-not-disturb, right-click dismisses all",
+    "on-click": "makoctl mode -t do-not-disturb && pkill -RTMIN+11 waybar",
+    "on-click-right": "makoctl dismiss -a"
+  }
+}

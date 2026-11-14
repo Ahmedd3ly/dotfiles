@@ -14,4 +14,5 @@ systemctl --user enable \
     cliphist.service \
     mako.service \
     hypridle.service \
-    hyprsunset.service
+    hyprsunset.service \
+    waybar.service

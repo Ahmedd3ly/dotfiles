@@ -1,0 +1,48 @@
+// Privacy, updates, network, power profile, battery.
+{
+  "privacy": {
+    "icon-spacing": 5,
+    "transition-duration": 250,
+    "modules": [
+      { "type": "screenshare", "tooltip": true },
+      { "type": "audio-in", "tooltip": true }
+    ]
+  },
+  // bar-updates checks every 6 h; click opens kitty to upgrade.
+  "custom/updates": {
+    "exec": "bar-updates",
+    "return-type": "json",
+    "interval": 21600,
+    "signal": 20,
+    "on-click": "kitty --title upgrade sh -c 'sudo pacman -Syu; paru -Sua; read -p \"Done. Enter to close\" _'; pkill -RTMIN+20 waybar"
+  },
+  "network": {
+    "format-wifi": "",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀 {ifname} (no IP)",
+    "format-disconnected": "󰖪",
+    "format-alt": " {bandwidthDownBytes}  {bandwidthUpBytes}",
+    "tooltip-format": "{essid}  ·  {signalStrength}%\n{ifname}  ·  {ipaddr}/{cidr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 5
+  },
+  // Replaces HyDE-era custom/tlp: this machine runs power-profiles-daemon.
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile}  ·  click to cycle",
+    "format-icons": {
+      "performance": "",
+      "balanced": "",
+      "power-saver": "",
+      "default": ""
+    }
+  },
+  "battery": {
+    "states": { "warning": 25, "critical": 10 },
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-alt": "{icon} {time}",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  }
+}

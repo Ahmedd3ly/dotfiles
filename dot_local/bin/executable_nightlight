@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# █▄░█ █ █▀▀ █░█ ▀█▀
+# █░▀█ █ █▄█ █▀█ ░█░
+#
+# Why: manual night-light toggle for the bar (replaces HyDE's hyprsunset
+# wrapper). Talks to the running hyprsunset over hyprctl; the 23:30/07:30
+# profiles in hyprsunset.conf still switch on schedule.
+# Usage: nightlight toggle | status
+set -euo pipefail
+
+TEMP=4500
+state="${XDG_CACHE_HOME:-$HOME/.cache}/nightlight.on"
+
+case "${1:-status}" in
+    toggle)
+        if [ -e "$state" ]; then
+            hyprctl hyprsunset identity > /dev/null && rm -f "$state"
+        else
+            hyprctl hyprsunset temperature "$TEMP" > /dev/null && touch "$state"
+        fi ;;
+    status)
+        if [ -e "$state" ]; then
+            echo '{"text": "󰖔", "tooltip": "Night light on (click: off)", "class": "on"}'
+        else
+            echo '{"text": "󰖨", "tooltip": "Night light off (click: on)", "class": "off"}'
+        fi ;;
+esac

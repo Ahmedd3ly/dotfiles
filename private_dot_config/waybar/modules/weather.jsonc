@@ -1,0 +1,11 @@
+// Weather for a fixed city. bar-weather serves a cache and only touches the
+// network when the cache is older than its TTL, so this poll is cheap.
+{
+  "custom/weather": {
+    "exec": "bar-weather",
+    "return-type": "json",
+    "interval": 600,
+    "signal": 10,
+    "on-click": "bar-weather --refresh >/dev/null; pkill -RTMIN+10 waybar"
+  }
+}

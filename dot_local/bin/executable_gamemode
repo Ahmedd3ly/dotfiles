@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# █▀▀ ▄▀█ █▀▄▀█ █▀▀
+# █▄█ █▀█ █░▀░█ ██▄
+#
+# Why: one click to strip the compositor down for games (no animations,
+# blur, gaps or rounding). Writes modules/gamemode-state.lua (chezmoi-ignored)
+# and reloads; modules/gamemode.lua applies the overrides.
+# Usage: gamemode toggle | status
+set -euo pipefail
+
+state="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/modules/gamemode-state.lua"
+
+case "${1:-status}" in
+    toggle)
+        if [ -e "$state" ]; then rm -f "$state"; else echo 'return true' > "$state"; fi
+        hyprctl reload > /dev/null ;;
+    status)
+        if [ -e "$state" ]; then
+            echo '{"text": "󰊴", "tooltip": "Game mode on (click: off)", "class": "on"}'
+        else
+            echo '{"text": "󰊴", "tooltip": "Game mode off (click: on)", "class": "off"}'
+        fi ;;
+esac

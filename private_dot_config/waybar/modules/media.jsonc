@@ -1,0 +1,26 @@
+// Media: built-in mpris (replaces HyDE's mediaplayer.py) with a hover
+// drawer for previous / play-pause / next.
+{
+  "group/mediaplayer": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "mediaplayer-drawer",
+      "transition-left-to-right": true,
+      "click-to-reveal": false
+    },
+    "modules": ["mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
+  },
+  "mpris": {
+    "format": "{status_icon} {dynamic}",
+    "dynamic-order": ["title", "artist"],
+    "dynamic-len": 40,
+    "status-icons": { "playing": "󰐊", "paused": "󰏤", "stopped": "󰓛" },
+    "on-click": "playerctl play-pause",
+    "on-scroll-up": "playerctl position 5+",
+    "on-scroll-down": "playerctl position 5-"
+  },
+  "custom/media-prev": { "format": "󰙣", "tooltip-format": "previous", "on-click": "playerctl previous" },
+  "custom/media-play": { "format": "󰐌", "tooltip-format": "play/pause", "on-click": "playerctl play-pause" },
+  "custom/media-next": { "format": "󰙡", "tooltip-format": "next", "on-click": "playerctl next" }
+}

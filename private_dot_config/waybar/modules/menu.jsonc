@@ -1,0 +1,10 @@
+// Launcher button (replaces HyDE's custom/hyde-menu).
+{
+  "custom/menu": {
+    "format": " ",
+    "tooltip": true,
+    "tooltip-format": "Apps (left)  ·  Power (right)",
+    "on-click": "pkill -x rofi || rofi -show drun",
+    "on-click-right": "pkill -x rofi || powermenu"
+  }
+}

@@ -1,0 +1,168 @@
+/* █░█░█ ▄▀█ █▄█ █▄▄ ▄▀█ █▀█
+ * ▀▄▀▄▀ █▀█ ░█░ █▄█ █▀█ █▀▄
+ *
+ * Why: HyDE's island look, rebuilt by hand from its defaults.css and
+ * groups/{pill,pill-in,leaf,leaf-inverse}.css, top bar only. Pure look.
+ * Colours come from theme.css. Radius 10pt matches Hyprland's rounding.
+ */
+
+@import "theme.css";
+
+* {
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 10px;
+}
+
+window#waybar {
+    background: @bar-bg;
+}
+
+.module {
+    color: @main-fg;
+}
+
+/* ---- Islands: shared fill ------------------------------------------- */
+
+#pill, #pill-in, #leaf, #leaf-inverse {
+    background-color: @main-bg;
+    border-style: solid;
+    border-color: @main-bg;
+    padding: 0 1em;
+}
+
+/* ---- Shapes ----------------------------------------------------------- */
+
+/* Full pill */
+#pill, #pill button {
+    border-radius: 10pt;
+}
+#pill {
+    margin: 0.3em 1em;
+}
+
+/* Half pill, curve facing inwards: hangs from the top edge */
+#pill-in, #pill-in button {
+    border-radius: 0 0 10pt 10pt;
+    border-width: 0;
+}
+#pill-in {
+    margin: 0 1em 0.3em;
+}
+
+/* Leaf: top-left + bottom-right rounded */
+#leaf, #leaf button {
+    border-radius: 10pt 0 10pt 0;
+    border-width: 0;
+}
+#leaf {
+    margin: 0.3em 1em 0.3em 0;
+}
+
+/* Inverse leaf: top-right + bottom-left rounded */
+#leaf-inverse, #leaf-inverse button {
+    border-radius: 0 10pt 0 10pt;
+    border-width: 0;
+}
+#leaf-inverse {
+    margin: 0.3em 1em 0.3em 0;
+}
+
+/* ---- Workspaces: active one stretches, bouncy transitions -------------- */
+
+#workspaces {
+    padding: 0;
+}
+
+#workspaces button {
+    box-shadow: none;
+    text-shadow: none;
+    padding: 0 0.3em;
+    margin: 0.3em 0;
+    color: @main-fg;
+}
+
+#workspaces button.active {
+    background: @wb-act-bg;
+    color: @wb-act-fg;
+    margin: 0.3em 0.3em;
+    padding: 0 1.2em;
+    transition: all 0.4s cubic-bezier(.55, -0.68, .48, 1.682);
+}
+
+#workspaces button:hover {
+    background: @wb-hvr-bg;
+    color: @wb-hvr-fg;
+    transition: all 0.3s cubic-bezier(.55, -0.68, .48, 1.682);
+}
+
+/* ---- Spacing ----------------------------------------------------------- */
+
+.modules-left, .modules-center, .modules-right {
+    padding: 0 0.3em;
+    margin: 0 0.3em;
+}
+
+label.module, label.text-button {
+    padding: 0 0.2em;
+    margin: 0 0.2em;
+}
+
+#window {
+    margin: 0 0.5em;
+}
+
+#privacy, #tray {
+    margin: 0 0.3em;
+}
+
+button {
+    margin: 0.41em 0.11em;
+    border: 0;
+}
+
+/* ---- States ------------------------------------------------------------ */
+
+#custom-gamemode.on,
+#custom-nightlight.on,
+#idle_inhibitor.activated {
+    color: @wb-hvr-bg;
+}
+
+#battery.warning:not(.charging) { color: #fab387; }
+#battery.critical:not(.charging) { color: #f38ba8; }
+
+#temperature, #temperature.warning, #temperature.critical {
+    background-color: transparent;
+}
+
+/* ---- Tooltips and menus ------------------------------------------------- */
+
+tooltip * {
+    background: transparent;
+    border: none;
+}
+
+tooltip {
+    background: @main-bg;
+    color: @main-fg;
+    border: 0.1em solid @main-fg;
+}
+
+menu {
+    background-color: @main-bg;
+}
+
+menu menuitem:hover {
+    background-color: @wb-act-bg;
+    color: @wb-act-fg;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+tooltip, menu {
+    animation: fadeIn 0.25s ease-out 1;
+}

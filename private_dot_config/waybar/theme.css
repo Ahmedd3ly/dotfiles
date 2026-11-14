@@ -1,0 +1,13 @@
+/* Colours, from HyDE's "Catppuccin Mocha" waybar.theme.
+ * Phase 8: matugen generates this file; until then it is static.
+ * ACCENTS are the active/hover pair; everything else is a Mocha neutral. */
+
+@define-color bar-bg    rgba(0, 0, 0, 0.1);   /* alpha > 0 keeps the blur layer rule working */
+@define-color main-bg   #11111b;              /* crust: island fill */
+@define-color main-fg   #cdd6f4;              /* text */
+
+/* ACCENTS */
+@define-color wb-act-bg #a6adc8;              /* active workspace */
+@define-color wb-act-fg #313244;
+@define-color wb-hvr-bg #f5c2e7;              /* hover */
+@define-color wb-hvr-fg #313244;

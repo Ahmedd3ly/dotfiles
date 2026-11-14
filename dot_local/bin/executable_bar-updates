@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# █░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀ █▀
+# █▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄ ▄█
+#
+# Why: pending update count for the bar (replaces HyDE's system.update).
+# checkupdates (pacman-contrib) syncs a private copy of the package DB, so it
+# never touches pacman's own lock. AUR count via paru. Hidden when up to date.
+set -uo pipefail
+
+repo=$(checkupdates 2>/dev/null | wc -l)
+aur=$(paru -Qua 2>/dev/null | wc -l)
+total=$((repo + aur))
+
+if [ "$total" -eq 0 ]; then
+    echo '{"text": "", "tooltip": "Up to date"}'
+else
+    jq -cn --arg t "󰮯 $total" --arg tip "Official: $repo  ·  AUR: $aur" \
+        '{text: $t, tooltip: ($tip + "\nClick to upgrade"), class: "pending"}'
+fi

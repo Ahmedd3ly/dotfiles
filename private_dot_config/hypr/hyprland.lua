@@ -23,3 +23,4 @@ require('modules.animations')  -- curves and animation leaves
 require('modules.rules')       -- window rules
 require('modules.binds')       -- keybindings (reads modules/apps.lua)
 require('modules.autostart')   -- processes without a systemd unit
+require('modules.gamemode')    -- last: game-mode overrides (bar button)

@@ -1,0 +1,30 @@
+// Small toggles: cheat sheet, game mode, night light, caffeine.
+{
+  "custom/keybindhint": {
+    "format": "",
+    "tooltip-format": "Keybindings (SUPER+grave)",
+    "on-click": "pkill -x rofi || keyhint"
+  },
+  // gamemode: no animations, blur, gaps or rounding (state in modules/gamemode-state.lua)
+  "custom/gamemode": {
+    "exec": "gamemode status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 12,
+    "on-click": "gamemode toggle && pkill -RTMIN+12 waybar"
+  },
+  // nightlight: manual override of hyprsunset; the 23:30/07:30 schedule still applies
+  "custom/nightlight": {
+    "exec": "nightlight status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 13,
+    "on-click": "nightlight toggle && pkill -RTMIN+13 waybar"
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": { "activated": "󰅶", "deactivated": "󰛊" },
+    "tooltip-format-activated": "Caffeine on: screen stays awake",
+    "tooltip-format-deactivated": "Caffeine off: normal idle"
+  }
+}

@@ -8,3 +8,4 @@ pkglist-aur.txt
 
 # Runtime state written by scripts (not config)
 .config/hypr/modules/animation-choice.lua
+.config/hypr/modules/gamemode-state.lua

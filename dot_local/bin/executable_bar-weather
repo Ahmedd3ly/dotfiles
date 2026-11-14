@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# █░█░█ █▀▀ ▄▀█ ▀█▀ █░█ █▀▀ █▀█
+# ▀▄▀▄▀ ██▄ █▀█ ░█░ █▀█ ██▄ █▀▄
+#
+# Why: weather for one fixed city in the bar, without polling the network.
+# Waybar calls this every 10 min; it prints the cached JSON and only asks
+# wttr.in again when the cache is older than TTL. Offline: last value stays.
+# Usage: bar-weather [--refresh]
+set -uo pipefail
+
+CITY="Cairo"
+TTL=$((3 * 3600))                       # seconds between real fetches
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/waybar/weather.json"
+mkdir -p "${cache%/*}"
+
+age=$(( $(date +%s) - $(stat -c %Y "$cache" 2>/dev/null || echo 0) ))
+
+if [ "${1:-}" = "--refresh" ] || [ "$age" -ge "$TTL" ]; then
+    # ?m = metric (Celsius, km/h). %c icon, %t temp, %C condition, %f feels like.
+    text=$(curl -fsS --max-time 10 "https://wttr.in/${CITY}?m&format=%c%t" | tr -d '+')
+    tip=$(curl -fsS --max-time 10 "https://wttr.in/${CITY}?m&format=%l:+%C,+feels+like+%f%0AHumidity+%h,+wind+%w" | tr -d '+')
+    if [ -n "$text" ] && [[ "$text" != *Unknown* ]]; then
+        jq -cn --arg t "$text" --arg tip "$tip" '{text: $t, tooltip: $tip}' > "$cache"
+    fi
+fi
+
+cat "$cache" 2>/dev/null || echo '{"text": "", "tooltip": "weather: no data yet"}'

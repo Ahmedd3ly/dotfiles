@@ -1,0 +1,28 @@
+// CPU, memory, CPU temperature. Reads sysfs directly: no scripts, no
+// nvidia-smi (that would wake the dGPU). GPU temperature: see temperature#gpu
+// note in the Phase 6 checklist.
+{
+  "cpu": {
+    "interval": 10,
+    "format": "󰻠 {usage}%",
+    "format-alt": "{icon0}{icon1}{icon2}{icon3}",
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"]
+  },
+  "memory": {
+    "interval": 30,
+    "format": "󰍛 {used:0.1f}G",
+    "format-alt": "󰍛 {percentage}%",
+    "tooltip-format": "Memory {percentage}%  ·  {used:0.2f} / {total:0.2f} GiB\nSwap {swapUsed:0.2f} / {swapTotal:0.2f} GiB"
+  },
+  // coretemp's hwmon number changes between boots; this path does not.
+  "temperature#cpu": {
+    "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+    "input-filename": "temp1_input",
+    "warning-threshold": 80,
+    "critical-threshold": 95,
+    "format": " {temperatureC}°C",
+    "format-warning": "<span foreground='#fab387'> {temperatureC}°C</span>",
+    "format-critical": "<span foreground='#f38ba8'> {temperatureC}°C</span>",
+    "tooltip-format": "CPU package {temperatureC}°C"
+  }
+}
