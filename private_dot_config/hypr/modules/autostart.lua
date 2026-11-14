@@ -11,4 +11,5 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("uwsm app -- awww-daemon")                       -- wallpaper; restores the last image
     hl.exec_cmd("uwsm app -- wl-clip-persist --clipboard regular") -- keep copies after the source app closes
+    hl.exec_cmd("uwsm app -- playerctld daemon")                 -- one "current player" for the bar and media keys
 end)

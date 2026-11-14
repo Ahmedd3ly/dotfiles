@@ -1,11 +1,12 @@
 // Weather for a fixed city. bar-weather serves a cache and only touches the
-// network when the cache is older than its TTL, so this poll is cheap.
+// network when the cache is older than its TTL (3 h) or a fetch failed, so
+// this 60 s poll is cheap and a boot without network recovers within a minute.
 {
   "custom/weather": {
-    "exec": "bar-weather",
+    "exec": "$HOME/.local/bin/bar-weather",
     "return-type": "json",
-    "interval": 600,
+    "interval": 60,
     "signal": 10,
-    "on-click": "bar-weather --refresh >/dev/null; pkill -RTMIN+10 waybar"
+    "on-click": "$HOME/.local/bin/bar-weather --refresh >/dev/null; pkill -RTMIN+10 waybar"
   }
 }

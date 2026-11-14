@@ -3,8 +3,9 @@
 # ▀▄▀▄▀ ██▄ █▀█ ░█░ █▀█ ██▄ █▀▄
 #
 # Why: weather for one fixed city in the bar, without polling the network.
-# Waybar calls this every 10 min; it prints the cached JSON and only asks
-# wttr.in again when the cache is older than TTL. Offline: last value stays.
+# Waybar calls this every minute; it prints the cached JSON and only asks
+# wttr.in again when the cache is older than TTL. A failed fetch leaves the
+# cache untouched, so the next poll retries. Offline: last value stays.
 # Usage: bar-weather [--refresh]
 set -uo pipefail
 
@@ -24,4 +25,6 @@ if [ "${1:-}" = "--refresh" ] || [ "$age" -ge "$TTL" ]; then
     fi
 fi
 
-cat "$cache" 2>/dev/null || echo '{"text": "", "tooltip": "weather: no data yet"}'
+# Never print an empty text: waybar would hide the module until the next poll.
+cat "$cache" 2>/dev/null ||
+    echo "{\"text\": \"󰖪 --°C | ${CITY}\", \"tooltip\": \"No weather yet (offline?). Retrying every minute.\"}"

@@ -5,6 +5,6 @@
     "tooltip": true,
     "tooltip-format": "Apps (left)  ·  Power (right)",
     "on-click": "pkill -x rofi || rofi -show drun",
-    "on-click-right": "pkill -x rofi || powermenu"
+    "on-click-right": "pkill -x rofi || $HOME/.local/bin/powermenu"
   }
 }

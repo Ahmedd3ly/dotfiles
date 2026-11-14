@@ -23,7 +23,7 @@
     "on-scroll-down": "playerctl position 5-"
   },
   "custom/media-idle": {
-    "exec": "media-idle",
+    "exec": "$HOME/.local/bin/media-idle",
     "return-type": "json",
     "restart-interval": 10,
     "tooltip": false

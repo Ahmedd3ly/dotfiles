@@ -10,7 +10,7 @@
   },
   // bar-updates checks every 6 h; click opens kitty to upgrade.
   "custom/updates": {
-    "exec": "bar-updates",
+    "exec": "$HOME/.local/bin/bar-updates",
     "return-type": "json",
     "interval": 21600,
     "signal": 20,
