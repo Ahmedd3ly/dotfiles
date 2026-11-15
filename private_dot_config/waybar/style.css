@@ -50,7 +50,11 @@ window#waybar {
     margin: 0 1em 0.3em;
 }
 
-#custom-media-idle {
+#custom-media {
+    margin: 0 0.5em;
+}
+
+#custom-media.idle {
     color: alpha(@main-fg, 0.6);
 }
 

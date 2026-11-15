@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# █▀▄▀█ █▀▀ █▀▄ █ ▄▀█
+# █░▀░█ ██▄ █▄▀ █ █▀█
+#
+# Why: the centre media island from one source. waybar's built-in mpris
+# module stayed blank while playerctl itself saw the player, so this script
+# prints both states through playerctl: "<icon> title - artist" while
+# something plays or is paused, a placeholder otherwise. Event-driven
+# (playerctl --follow blocks; it prints an empty line when the player goes
+# away), no polling. With playerctld running, it follows the player you
+# used last.
+set -uo pipefail
+
+fmt='{{status}}'$'\t''{{title}}'$'\t''{{artist}}'
+max=45
+
+emit() {
+    local status="$1" title="$2" artist="$3" icon text
+    case "$status" in
+        Playing) icon="󰐊" ;;
+        Paused)  icon="󰏤" ;;
+        *) jq -cn '{text: "󰎆  nothing playing", tooltip: "No media player", class: "idle"}'
+           return ;;
+    esac
+    text="$title${artist:+ - $artist}"
+    [ "${#text}" -gt "$max" ] && text="${text:0:max}…"
+    jq -cn --arg t "$icon  $text" --arg ti "$title" --arg ar "$artist" --arg c "${status,,}" \
+        '{text: $t, tooltip: ($ti + (if $ar == "" then "" else "\n" + $ar end)), class: $c}'
+}
+
+IFS=$'\t' read -r s t a <<< "$(playerctl metadata --format "$fmt" 2>/dev/null)"
+emit "${s:-}" "${t:-}" "${a:-}"
+
+playerctl --follow metadata --format "$fmt" 2>/dev/null |
+    while IFS=$'\t' read -r s t a; do
+        emit "${s:-}" "${t:-}" "${a:-}"
+    done

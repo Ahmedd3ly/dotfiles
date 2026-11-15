@@ -1,7 +1,8 @@
-// Media: built-in mpris (replaces HyDE's mediaplayer.py) with a hover
-// drawer for previous / play-pause / next. mpris hides itself with no
-// player, so custom/media-idle shows a placeholder and the island never
-// goes empty.
+// Media: one custom module fed by bar-media (playerctl), "title - artist"
+// while playing or paused, "nothing playing" otherwise, so the island is
+// never empty. Hover slides out previous / play-pause / next. Replaces
+// waybar's mpris module, which stayed blank here while playerctl saw the
+// player.
 {
   "group/mediaplayer": {
     "orientation": "inherit",
@@ -11,22 +12,16 @@
       "transition-left-to-right": true,
       "click-to-reveal": false
     },
-    "modules": ["custom/media-idle", "mpris", "custom/media-prev", "custom/media-play", "custom/media-next"]
+    "modules": ["custom/media", "custom/media-prev", "custom/media-play", "custom/media-next"]
   },
-  "mpris": {
-    "format": "{status_icon} {dynamic}",
-    "dynamic-order": ["title", "artist"],
-    "dynamic-len": 40,
-    "status-icons": { "playing": "󰐊", "paused": "󰏤", "stopped": "󰓛" },
+  "custom/media": {
+    "exec": "$HOME/.local/bin/bar-media",
+    "return-type": "json",
+    "restart-interval": 5,
+    "escape": true,
     "on-click": "playerctl play-pause",
     "on-scroll-up": "playerctl position 5+",
     "on-scroll-down": "playerctl position 5-"
-  },
-  "custom/media-idle": {
-    "exec": "$HOME/.local/bin/media-idle",
-    "return-type": "json",
-    "restart-interval": 10,
-    "tooltip": false
   },
   "custom/media-prev": { "format": "󰙣", "tooltip-format": "previous", "on-click": "playerctl previous" },
   "custom/media-play": { "format": "󰐌", "tooltip-format": "play/pause", "on-click": "playerctl play-pause" },
