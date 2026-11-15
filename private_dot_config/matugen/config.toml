@@ -30,3 +30,8 @@ post_hook = "pkill -USR2 -x waybar || true"
 input_path = "./templates/mako-accents"
 output_path = "../mako/accents"
 post_hook = "makoctl reload || true"
+
+[templates.rofi]
+input_path = "./templates/rofi-accents.rasi"
+output_path = "../rofi/accents.rasi"
+# no hook: rofi reads its theme every time it opens
