@@ -1,6 +1,7 @@
 // Ported from HyDE (GPL-3.0): https://github.com/HyDE-Project/HyDE/tree/master/Configs/.local/share/hyde/rofi/themes/style_11.rasi
-// Changes: wallpaper images -> ~/.cache/wall/current; font and icon theme
-// come from config.rasi; border/rounding from theme.rasi.
+// Changes: wallpaper crops from ~/.cache/wall (made by wall-cache, Pillow
+// instead of ImageMagick); font and icon theme from config.rasi;
+// border/rounding from theme.rasi.
 /**
  * ROFI Layout 
  *
@@ -58,7 +59,7 @@ inputbar {
     children:                    [ "entry" ];
     expand:                      false;
     background-color:            @main-bg;
-    background-image:            url("~/.cache/wall/current", width);
+    background-image:            url("~/.cache/wall/quad.png", width);
     border-radius:               1em 0em 0em 1em;
 }
 entry {

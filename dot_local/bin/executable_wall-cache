@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# █░█░█ ▄▀█ █░░ █░░
+# ▀▄▀▄▀ █▀█ █▄▄ █▄▄
+#
+# Why: the wallpaper crops HyDE's rofi layouts expect, made with Pillow
+# instead of ImageMagick. Each crop is taken from the CENTRE of the
+# wallpaper, so the subject (e.g. the boat) stays in frame.
+#   thmb.png  1000x1000 centre crop   (large panels)
+#   sqre.png   500x500  centre crop   (square panels, launcher style_9)
+#   quad.png   sqre with HyDE's slanted right edge (style_11, menus)
+#   blur.png   10% size, blurred      (backgrounds; rofi scales it up)
+# Source: $XDG_CACHE_HOME/wall/current (a link to the wallpaper), or argv[1].
+# Called by rofi-launch only when the wallpaper changed; Phase 8's wall-set
+# will call it too. Package: python-pillow.
+import os
+import sys
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
+
+cache = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wall"
+src = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else (cache / "current").resolve()
+if not src.is_file():
+    sys.exit(f"wall-cache: no wallpaper at {src}")
+
+img = Image.open(src)
+img.seek(0)                                   # first frame of animated files
+img = img.convert("RGB")
+
+
+def save(im: Image.Image, name: str) -> None:
+    tmp = cache / f".{name}.tmp.png"
+    im.save(tmp, optimize=True)
+    tmp.replace(cache / name)                 # atomic: rofi never reads half a file
+
+
+cache.mkdir(parents=True, exist_ok=True)
+
+thmb = ImageOps.fit(img, (1000, 1000), Image.LANCZOS, centering=(0.5, 0.5))
+sqre = ImageOps.fit(img, (500, 500), Image.LANCZOS, centering=(0.5, 0.5))
+blur = img.resize((max(1, img.width // 10), max(1, img.height // 10)), Image.LANCZOS)
+blur = blur.filter(ImageFilter.GaussianBlur(3))
+
+# HyDE's quad mask: opaque, then a 70% fade band, then a transparent slant.
+mask = Image.new("L", (500, 500), 255)
+draw = ImageDraw.Draw(mask)
+draw.polygon([(400, 500), (500, 500), (500, 0), (450, 0)], fill=int(255 * 0.3))
+draw.polygon([(500, 500), (500, 0), (450, 500)], fill=0)
+quad = sqre.copy()
+quad.putalpha(mask)
+
+save(thmb, "thmb.png")
+save(sqre, "sqre.png")
+save(blur, "blur.png")
+save(quad, "quad.png")
+(cache / ".source").write_text(str(src))

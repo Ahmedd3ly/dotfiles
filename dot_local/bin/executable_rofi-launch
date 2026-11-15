@@ -20,12 +20,16 @@ esac
 
 pkill -x rofi && exit 0
 
-# Wallpaper panel: ~/.cache/wall/current (kept by wall-set from Phase 8).
-# If it is missing or broken, point it at what awww is showing right now.
-wall="${XDG_CACHE_HOME:-$HOME/.cache}/wall/current"
-if [ ! -e "$wall" ]; then
-    img=$(awww query 2>/dev/null | sed -n 's/.*image: //p' | head -n1)
-    [ -f "$img" ] && mkdir -p "${wall%/*}" && ln -sf "$img" "$wall"
+# Wallpaper panels read crops in ~/.cache/wall (made by wall-cache).
+# Keep the "current" link pointing at what awww shows, and rebuild the crops
+# only when that wallpaper changed (cheap check here; Python runs only then).
+wall="${XDG_CACHE_HOME:-$HOME/.cache}/wall"
+img=$(awww query 2>/dev/null | sed -n 's/.*image: //p' | head -n1)
+if [ -f "$img" ] && [ "$(readlink -f "$wall/current" 2>/dev/null)" != "$img" ]; then
+    mkdir -p "$wall" && ln -sf "$img" "$wall/current"
+fi
+if [ -e "$wall/current" ] && [ "$(cat "$wall/.source" 2>/dev/null)" != "$(readlink -f "$wall/current")" ]; then
+    wall-cache || true
 fi
 
 n=$(cat "$state/$role" 2>/dev/null || echo "$def")
