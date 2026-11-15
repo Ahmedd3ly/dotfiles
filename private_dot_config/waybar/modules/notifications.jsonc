@@ -1,12 +1,13 @@
-// Do-not-disturb toggle for mako (replaces HyDE's custom/swaync).
+// Notification bell (replaces HyDE's custom/swaync): do-not-disturb toggle,
+// red dot while mako holds notifications (bar-bell).
 // The "do-not-disturb" mode is defined in ~/.config/mako/config.
 {
   "custom/notifications": {
-    "exec": "makoctl mode | grep -qx do-not-disturb && echo '󰂛' || echo '󰂚'",
-    "interval": "once",
+    "exec": "$HOME/.local/bin/bar-bell",
+    "return-type": "json",
+    "interval": 3,
     "signal": 11,
-    "tooltip-format": "Notifications: click toggles do-not-disturb, right-click dismisses all",
-    "on-click": "makoctl mode -t do-not-disturb && pkill -RTMIN+11 waybar",
-    "on-click-right": "makoctl dismiss -a"
+    "on-click": "makoctl mode -t do-not-disturb; pkill -RTMIN+11 waybar",
+    "on-click-right": "makoctl dismiss -a; pkill -RTMIN+11 waybar"
   }
 }

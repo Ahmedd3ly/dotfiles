@@ -32,6 +32,9 @@ group-by=app-name
 
 format=<b>%s</b>\n%b
 
+# Light the red dot on the bar's bell right away (bar-bell, signal 11).
+on-notify=exec pkill -RTMIN+11 waybar
+
 [urgency=low]
 border-color=#6c7086
 default-timeout=3000

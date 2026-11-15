@@ -2,36 +2,79 @@
 # █▀▄▀█ █▀▀ █▀▄ █ ▄▀█
 # █░▀░█ ██▄ █▄▀ █ █▀█
 #
-# Why: the centre media island from one source. waybar's built-in mpris
-# module stayed blank while playerctl itself saw the player, so this script
-# prints both states through playerctl: "<icon> title - artist" while
-# something plays or is paused, a placeholder otherwise. Event-driven
-# (playerctl --follow blocks; it prints an empty line when the player goes
-# away), no polling. With playerctld running, it follows the player you
-# used last.
+# Why: the centre media island from one source (playerctl), replacing
+# waybar's mpris module, which stayed blank here. "<icon> title - artist"
+# while playing or paused, "nothing playing" otherwise.
+# Long titles scroll (marquee) while playing; paused or short titles sit
+# still. Player changes arrive through playerctl --follow (no polling);
+# the only timer is the scroll tick, and it runs only while a long title is
+# playing. Every tick repaints the bar, so STEP_S is the battery knob.
 set -uo pipefail
+export LC_CTYPE=C.UTF-8   # count and cut characters, not bytes (Arabic titles)
+
+WIDTH=40          # visible characters
+STEP_S=0.4        # seconds per one-character scroll step
+GAP="   •   "     # separator between repeats
 
 fmt='{{status}}'$'\t''{{title}}'$'\t''{{artist}}'
-max=45
+status="" title="" artist="" full="" offset=0 last=""
 
-emit() {
-    local status="$1" title="$2" artist="$3" icon text
+print() {   # $1 text, $2 class
+    local out
+    out=$(jq -cn --arg t "$1" --arg ti "$title" --arg ar "$artist" --arg c "$2" \
+        '{text: $t, class: $c,
+          tooltip: (if $ti == "" then "No media player"
+                    else $ti + (if $ar == "" then "" else "\n" + $ar end) end)}')
+    [ "$out" = "$last" ] && return     # unchanged: no repaint
+    last=$out
+    echo "$out"
+}
+
+render() {
+    local icon
     case "$status" in
         Playing) icon="󰐊" ;;
         Paused)  icon="󰏤" ;;
-        *) jq -cn '{text: "󰎆  nothing playing", tooltip: "No media player", class: "idle"}'
-           return ;;
+        *) print "󰎆  nothing playing" idle; return ;;
     esac
-    text="$title${artist:+ - $artist}"
-    [ "${#text}" -gt "$max" ] && text="${text:0:max}…"
-    jq -cn --arg t "$icon  $text" --arg ti "$title" --arg ar "$artist" --arg c "${status,,}" \
-        '{text: $t, tooltip: ($ti + (if $ar == "" then "" else "\n" + $ar end)), class: $c}'
+    if [ "${#full}" -le "$WIDTH" ]; then
+        print "$icon  $full" "${status,,}"
+    elif [ "$status" = Paused ]; then
+        print "$icon  ${full:0:WIDTH-1}…" paused
+    else
+        local loop="$full$GAP"
+        local twice="$loop$loop"
+        print "$icon  ${twice:offset:WIDTH}" playing
+        offset=$(( (offset + 1) % ${#loop} ))
+    fi
 }
 
-IFS=$'\t' read -r s t a <<< "$(playerctl metadata --format "$fmt" 2>/dev/null)"
-emit "${s:-}" "${t:-}" "${a:-}"
+update() {  # one "status<TAB>title<TAB>artist" line
+    IFS=$'\t' read -r status title artist <<< "$1"
+    status=${status:-} title=${title:-} artist=${artist:-}
+    full="$title${artist:+ - $artist}"
+    offset=0
+}
 
-playerctl --follow metadata --format "$fmt" 2>/dev/null |
-    while IFS=$'\t' read -r s t a; do
-        emit "${s:-}" "${t:-}" "${a:-}"
-    done
+update "$(playerctl metadata --format "$fmt" 2>/dev/null)"
+render
+
+exec 3< <(playerctl --follow metadata --format "$fmt" 2>/dev/null)
+
+while :; do
+    scrolling=0
+    [ "$status" = Playing ] && [ "${#full}" -gt "$WIDTH" ] && scrolling=1
+
+    if [ "$scrolling" = 1 ]; then
+        IFS= read -r -t "$STEP_S" line <&3; rc=$?
+    else
+        IFS= read -r line <&3; rc=$?
+    fi
+
+    if [ "$rc" -eq 0 ]; then
+        update "$line"
+    elif [ "$rc" -le 128 ]; then
+        exit 0          # playerctl ended: waybar's restart-interval restarts us
+    fi                  # rc > 128: tick timeout, just advance the scroll
+    render
+done
