@@ -3,6 +3,8 @@
 //
 // Why: HyDE's two-box layout, trimmed, without its fastfetch.sh logo picker.
 // Built-in Arch ASCII logo: no image, no cache, works in a tty too.
+// Layout: splash quote, system box, user line, hardware box, palette.
+// Display order desc sorts by name, so eDP-1 (built-in) comes before DP-4.
 // Top line is Hyprland's own splash quote (hyprctl splash), the same source
 // HyDE uses; it changes once per Hyprland session.
 // Key colours are terminal colour names, so they come from kitty's Mocha
@@ -24,15 +26,14 @@
   "modules": [
     { "type": "command", "key": "  󰁘", "keyColor": "blue", "text": "hyprctl splash 2>/dev/null" },
     { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
-    { "type": "title",    "key": "  󰀄 User    ", "keyColor": "blue",    "format": "{user-name}@{host-name}" },
     { "type": "os",       "key": "  󰣇 OS      ", "keyColor": "red",     "format": "{pretty-name}" },
     { "type": "kernel",   "key": "  󰌽 Kernel  ", "keyColor": "red",     "format": "{release}" },
     { "type": "packages", "key": "  󰏗 Packages", "keyColor": "green" },
     { "type": "wm",       "key": "  󱗃 WM      ", "keyColor": "yellow",  "format": "{pretty-name} {version}" },
     { "type": "terminal", "key": "  󰆍 Terminal", "keyColor": "yellow" },
-    { "type": "shell",    "key": "  󱆃 Shell   ", "keyColor": "yellow",  "format": "{pretty-name} {version}" },
-    { "type": "display",  "key": "  󰍹 Display ", "keyColor": "green",   "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
+    { "type": "display",  "key": "  󰍹 Display ", "keyColor": "green",   "order": "desc", "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
     { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
+    { "type": "title",    "key": "  󰀄 User    ", "keyColor": "blue",    "format": "{user-name} @ {host-name}" },
     { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
     { "type": "cpu",      "key": "  󰻠 CPU     ", "keyColor": "blue",    "format": "{name}" },
     { "type": "gpu",      "key": "  󰢮 GPU     ", "keyColor": "blue",    "format": "{name}", "detectionMethod": "pci" },
