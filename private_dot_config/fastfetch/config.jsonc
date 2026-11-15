@@ -2,45 +2,45 @@
 // █▀░ █▀█ ▄█ ░█░ █▀░ ██▄ ░█░ █▄▄ █▀█
 //
 // Why: HyDE's two-box layout, trimmed, without its fastfetch.sh logo picker.
-// The logo is wall-cache's quad crop of the current wallpaper, so it follows
-// the wallpaper with no extra script. Outside kitty (a tty) the image can't
-// render and fastfetch falls back to the built-in Arch logo.
+// Built-in Arch ASCII logo: no image, no cache, works in a tty too.
+// Top line is Hyprland's own splash quote (hyprctl splash), the same source
+// HyDE uses; it changes once per Hyprland session.
 // Key colours are terminal colour names, so they come from kitty's Mocha
 // palette; nothing here needs a matugen template.
-// GPU uses PCI detection: reads sysfs only, so it never wakes the RTX 4070.
-// Run: ff (alias in zsh/conf.d/30-aliases.zsh). Check: fastfetch --show-errors
+// Icons are Nerd Font Material Design glyphs (U+F0xxx) only, so every key has
+// one; key width 13 lines up the colons.
+// Runs on every new zsh (zsh/conf.d/95-fastfetch.zsh); ff re-runs it.
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
-    "type": "kitty",
-    "source": "$HOME/.cache/wall/quad.png",
-    "height": 18,
-    "padding": { "top": 1, "left": 2, "right": 3 }
+    "type": "builtin",
+    "source": "arch",
+    "padding": { "top": 1, "left": 2, "right": 4 }
   },
   "display": {
-    "separator": " : "
+    "separator": " : ",
+    "key": { "width": 13 }
   },
   "modules": [
-    "break",
-    { "type": "title", "key": "  ", "format": "{user-name-colored}{at-symbol-colored}{host-name-colored}" },
-    { "type": "custom", "format": "┌──────────────────────────────────────────┐" },
-    { "type": "os",        "key": "  󰣇 OS",       "keyColor": "red",     "format": "{pretty-name}" },
-    { "type": "kernel",    "key": "   Kernel",   "keyColor": "red",     "format": "{release}" },
-    { "type": "packages",  "key": "  󰏗 Packages", "keyColor": "green" },
-    { "type": "wm",        "key": "  󱗃 WM",       "keyColor": "yellow",  "format": "{pretty-name} {version}" },
-    { "type": "terminal",  "key": "   Terminal", "keyColor": "yellow" },
-    { "type": "shell",     "key": "   Shell",    "keyColor": "yellow",  "format": "{pretty-name} {version}" },
-    { "type": "display",   "key": "  󰍹 Display",  "keyColor": "green",   "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
-    { "type": "custom", "format": "└──────────────────────────────────────────┘" },
-    "break",
-    { "type": "custom", "format": "┌──────────────────────────────────────────┐" },
-    { "type": "cpu",       "key": "   CPU",      "keyColor": "blue",    "format": "{name}" },
-    { "type": "gpu",       "key": "  󰊴 GPU",      "keyColor": "blue",    "format": "{name}", "detectionMethod": "pci" },
-    { "type": "memory",    "key": "  󰍛 Memory",   "keyColor": "magenta" },
-    { "type": "battery",   "key": "  󰁹 Battery",  "keyColor": "magenta" },
-    { "type": "disk",      "key": "  󱦟 OS Age",   "keyColor": "cyan",    "folders": "/", "format": "{days} days" },
-    { "type": "uptime",    "key": "  󱫐 Uptime",   "keyColor": "cyan" },
-    { "type": "custom", "format": "└──────────────────────────────────────────┘" },
+    { "type": "command", "key": "  󰁘", "keyColor": "blue", "keyWidth": 4, "text": "hyprctl splash 2>/dev/null" },
+    { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
+    { "type": "title",    "key": "  󰀄 User",     "keyColor": "blue",    "format": "{user-name}@{host-name}" },
+    { "type": "os",       "key": "  󰣇 OS",       "keyColor": "red",     "format": "{pretty-name}" },
+    { "type": "kernel",   "key": "  󰌽 Kernel",   "keyColor": "red",     "format": "{release}" },
+    { "type": "packages", "key": "  󰏗 Packages", "keyColor": "green" },
+    { "type": "wm",       "key": "  󱗃 WM",       "keyColor": "yellow",  "format": "{pretty-name} {version}" },
+    { "type": "terminal", "key": "  󰆍 Terminal", "keyColor": "yellow" },
+    { "type": "shell",    "key": "  󱆃 Shell",    "keyColor": "yellow",  "format": "{pretty-name} {version}" },
+    { "type": "display",  "key": "  󰍹 Display",  "keyColor": "green",   "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
+    { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
+    { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
+    { "type": "cpu",      "key": "  󰻠 CPU",      "keyColor": "blue",    "format": "{name}" },
+    { "type": "gpu",      "key": "  󰢮 GPU",      "keyColor": "blue",    "format": "{name}", "detectionMethod": "pci" },
+    { "type": "memory",   "key": "  󰍛 Memory",   "keyColor": "magenta" },
+    { "type": "battery",  "key": "  󰁹 Battery",  "keyColor": "magenta" },
+    { "type": "disk",     "key": "  󱦟 OS Age",   "keyColor": "cyan",    "folders": "/", "format": "{days} days" },
+    { "type": "uptime",   "key": "  󱫐 Uptime",   "keyColor": "cyan" },
+    { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
     { "type": "colors", "paddingLeft": 2, "symbol": "circle" }
   ]
 }
