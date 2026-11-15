@@ -35,3 +35,8 @@ post_hook = "makoctl reload || true"
 input_path = "./templates/rofi-accents.rasi"
 output_path = "../rofi/accents.rasi"
 # no hook: rofi reads its theme every time it opens
+
+[templates.gtk]
+input_path = "./templates/gtk-accents.css"
+output_path = "../gtk-3.0/accents.css"
+# no hook: GTK reads it when an app starts (Thunar: thunar -q, then reopen)

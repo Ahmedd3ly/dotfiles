@@ -4,12 +4,10 @@
  * Why: Catppuccin Mocha on top of adw-gtk3 / libadwaita through their named
  * colours (the documented way to recolour both), shared by GTK 3 and 4
  * (gtk-4.0/gtk.css imports this file). Neutrals are static Mocha.
- * ACCENTS: the first block. Phase 8 generates them from the wallpaper.
+ * ACCENTS: accent_color and accent_bg_color live in accents.css (matugen,
+ * imported after this file by gtk.css). Text on the accent stays static.
  */
 
-/* ACCENTS */
-@define-color accent_color          #cba6f7;
-@define-color accent_bg_color       #cba6f7;
 @define-color accent_fg_color       #11111b;
 
 /* Neutrals: Catppuccin Mocha */
