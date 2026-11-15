@@ -1,4 +1,14 @@
-/* Seed: stock Mocha accents, written by chezmoi only if the file is missing.
- * matugen overwrites it from templates/waybar-accents.css on every wall-set. */
+/*
+ * ██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ███████╗██████╗░██╗████████╗
+ * ██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ██╔════╝██╔══██╗██║╚══██╔══╝
+ * ██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  █████╗░░██║░░██║██║░░░██║░░░
+ * ██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ██╔══╝░░██║░░██║██║░░░██║░░░
+ * ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ███████╗██████╔╝██║░░░██║░░░
+ * ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ╚══════╝╚═════╝░╚═╝░░░╚═╝░░░
+ *
+ * Seed: stock Mocha accents, written by chezmoi only if this file is missing.
+ * matugen overwrites it from ~/.config/matugen/templates/waybar-accents.css
+ * on every wall-set; edits here are overwritten.
+ */
 @define-color wb-act-bg #a6adc8;
 @define-color wb-hvr-bg #f5c2e7;
