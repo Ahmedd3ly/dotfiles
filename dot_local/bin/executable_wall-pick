@@ -17,20 +17,25 @@ cur=$(readlink -f "${XDG_CACHE_HOME:-$HOME/.cache}/wall/current" 2>/dev/null || 
 mon_w=$(hyprctl monitors 2>/dev/null | awk '
     / at / && /@/ { split($1, r, "x"); w = r[1] }
     /scale:/      { s = $2 }
-    /focused: yes/ { printf "%d", w / s }')
+    /focused: yes/ { printf "%d", w / s }' || true)
 mon_w=${mon_w:-1920}
+
+# Rows go through a temp file: they hold NUL separators (name\0icon\x1fthumb),
+# and bash drops NULs from $(...) output.
+rows=$(mktemp -p "${XDG_RUNTIME_DIR:-/tmp}" wall-pick.XXXXXX)
+trap 'rm -f "$rows"' EXIT
 
 # $1 folder, $2 entry to preselect, $3 prompt. Prints the chosen name.
 pick() {
-    local rows n cols
-    rows=$(wall-cache --menu "$1")
-    [ -n "$rows" ] || { echo "wall-pick: nothing in $1" >&2; return 1; }
-    n=$(grep -c . <<<"$rows")
+    local n cols
+    wall-cache --menu "$1" > "$rows"
+    [ -s "$rows" ] || { echo "wall-pick: nothing in $1" >&2; return 1; }
+    n=$(wc -l < "$rows")
     cols=$(( (mon_w - 100) / 236 ))          # 200px icon + padding + spacing
     (( cols > n )) && cols=$n
     (( cols < 1 )) && cols=1
-    printf '%s\n' "$rows" | rofi -dmenu -i -p "$3" -theme "$theme" -select "$2" \
-        -theme-str "window { width: $(( cols * 236 + 40 ))px; } listview { columns: $cols; }"
+    rofi -dmenu -i -p "$3" -theme "$theme" -select "$2" \
+        -theme-str "window { width: $(( cols * 236 + 40 ))px; } listview { columns: $cols; }" < "$rows"
 }
 
 dir=$root
@@ -44,4 +49,5 @@ fi
 
 name=$(pick "$dir" "$(basename "${cur%.*}")" wallpaper) || exit 0
 img=$(find "$dir" -maxdepth 1 -type f -name "$name.*" -print -quit)
-[ -n "$img" ] && exec wall-set "$img"
+[ -n "$img" ] || { echo "wall-pick: no file for $name in $dir" >&2; exit 1; }
+wall-set "$img"
