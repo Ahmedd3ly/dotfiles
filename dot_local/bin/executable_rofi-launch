@@ -20,6 +20,14 @@ esac
 
 pkill -x rofi && exit 0
 
+# Wallpaper panel: ~/.cache/wall/current (kept by wall-set from Phase 8).
+# If it is missing or broken, point it at what awww is showing right now.
+wall="${XDG_CACHE_HOME:-$HOME/.cache}/wall/current"
+if [ ! -e "$wall" ]; then
+    img=$(awww query 2>/dev/null | sed -n 's/.*image: //p' | head -n1)
+    [ -f "$img" ] && mkdir -p "${wall%/*}" && ln -sf "$img" "$wall"
+fi
+
 n=$(cat "$state/$role" 2>/dev/null || echo "$def")
 theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/styles/style_${n}.rasi"
 [ -f "$theme" ] || theme="${theme%/*}/style_${def}.rasi"

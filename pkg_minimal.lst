@@ -85,6 +85,7 @@ matugen                     # Material You palette from wallpaper, template-base
 adw-gtk-theme               # GTK3/4 base that recolors cleanly
 papirus-icon-theme
 bibata-cursor-theme-bin     # (AUR)
+tela-circle-icon-theme-dracula # (AUR) icon theme for rofi + GTK, as on HyDE (icons only, no code)
 dconf                       # gsettings backend
 qt6ct
 kvantum

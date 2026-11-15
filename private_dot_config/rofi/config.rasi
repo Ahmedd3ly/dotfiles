@@ -10,7 +10,7 @@ configuration {
     font:                 "JetBrainsMono Nerd Font 10";
     show-icons:           true;
     drun-display-format:  "{name}";
-    // icon-theme: set in Phase 9 (HyDE used Tela-circle-dracula)
+    icon-theme:           "Tela-circle-dracula";   // AUR: tela-circle-icon-theme-dracula (as on HyDE)
 }
 
 @theme "~/.config/rofi/menu.rasi"
