@@ -1,0 +1,49 @@
+# █▀▄▀█ ▄▀█ █▄▀ █▀█
+# █░▀░█ █▀█ █░█ █▄█
+#
+# Why: notifications in the same language as the bar islands: Mocha base
+# at 90% (the "notifications" layer rule blurs behind it), 10 px rounding
+# like the windows, accent border. Do-not-disturb is the bell in the bar.
+# Reload after edits: makoctl reload
+# ACCENTS: the border-color lines below. Phase 8 swaps the default one for
+# matugen's primary; urgency colours stay fixed.
+
+font=JetBrainsMono Nerd Font 10
+background-color=#1e1e2ee6
+text-color=#cdd6f4
+border-color=#ca9ee6
+progress-color=over #313244
+
+border-size=2
+border-radius=10
+padding=12,14
+margin=10
+outer-margin=6
+width=360
+height=160
+icon-location=left
+max-icon-size=48
+
+anchor=top-right
+layer=overlay
+default-timeout=5000
+max-visible=5
+group-by=app-name
+
+format=<b>%s</b>\n%b
+
+[urgency=low]
+border-color=#6c7086
+default-timeout=3000
+
+[urgency=critical]
+border-color=#f38ba8
+default-timeout=0
+
+# Bell in the bar: makoctl mode -t do-not-disturb. Hides everything except
+# critical notifications (low battery, etc.).
+[mode=do-not-disturb]
+invisible=1
+
+[mode=do-not-disturb urgency=critical]
+invisible=0
