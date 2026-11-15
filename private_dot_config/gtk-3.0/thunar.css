@@ -1,0 +1,50 @@
+/* ▀█▀ █░█ █░█ █▄░█ ▄▀█ █▀█
+ * ░█░ █▀█ █▄█ █░▀█ █▀█ █▀▄
+ *
+ * Why: Thunar in the same language as the bar islands and rofi: darker
+ * sidebar, no divider lines, rounded accent selection. Colours come from
+ * colors.css (named colours), so Phase 8 recolours this file for free.
+ * Thunar windows carry the "thunar" style class; inspect live with
+ * GTK_DEBUG=interactive thunar.
+ */
+
+/* Sidebar: one shade darker than the file grid, no border */
+.thunar .sidebar,
+.thunar .sidebar .view {
+    background-color: @sidebar_bg_color;
+    border: none;
+}
+
+/* No dividers between sidebar, path bar and grid */
+.thunar paned > separator {
+    background: none;
+    min-width: 1px;
+    min-height: 1px;
+}
+.thunar .view,
+.thunar scrolledwindow {
+    border: none;
+}
+
+/* Rounded accent selection: sidebar rows and grid items */
+.thunar .sidebar .view:selected,
+.thunar .view:selected,
+.thunar .view.cell:selected,
+.thunar iconview:selected {
+    background-color: alpha(@accent_bg_color, 0.85);
+    color: @accent_fg_color;
+    border-radius: 10px;
+}
+
+/* Hover hint in the grid */
+.thunar .view:hover:not(:selected),
+.thunar iconview:hover:not(:selected) {
+    background-color: alpha(@accent_bg_color, 0.15);
+    border-radius: 10px;
+}
+
+/* Location bar: pill like the bar islands */
+.thunar .path-bar button,
+.thunar toolbar entry {
+    border-radius: 10px;
+}

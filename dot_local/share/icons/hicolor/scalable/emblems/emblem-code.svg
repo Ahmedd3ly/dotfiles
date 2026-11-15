@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- emblem-code: "</>" badge for ~/Projects, drawn to match Tela-circle's
+       flat round emblems. Mauve = Catppuccin Mocha accent. Static (icons are
+       not recoloured by matugen). -->
+  <circle cx="24" cy="24" r="22" fill="#cba6f7"/>
+  <g fill="none" stroke="#1e1e2e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="17,15 8,24 17,33"/>
+    <polyline points="31,15 40,24 31,33"/>
+    <line x1="27" y1="12" x2="21" y2="36"/>
+  </g>
+</svg>
