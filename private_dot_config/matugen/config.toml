@@ -45,3 +45,8 @@ output_path = "../gtk-3.0/accents.css"
 input_path = "./templates/hypr-accents.lua"
 output_path = "../hypr/modules/accents.lua"
 post_hook = "hyprctl reload >/dev/null || true"
+
+[templates.hyprlock]
+input_path = "./templates/hyprlock-accents.conf"
+output_path = "../hypr/hyprlock-accents.conf"
+# no hook: hyprlock reads its config each time it locks
