@@ -3,10 +3,11 @@
  *
  * Why: HyDE's island look, rebuilt by hand from its defaults.css and
  * groups/{pill,pill-in,leaf,leaf-inverse}.css, top bar only. Pure look.
- * Colours come from theme.css. Radius 10pt matches Hyprland's rounding.
+ * Colours: theme.css (static Mocha) + accents.css (matugen). Radius 10pt matches Hyprland's rounding.
  */
 
 @import "theme.css";
+@import "accents.css";
 
 * {
     border-radius: 0;

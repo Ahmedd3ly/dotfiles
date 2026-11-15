@@ -1,0 +1,4 @@
+/* Seed: stock Mocha accents, written by chezmoi only if the file is missing.
+ * matugen overwrites it from templates/waybar-accents.css on every wall-set. */
+@define-color wb-act-bg #a6adc8;
+@define-color wb-hvr-bg #f5c2e7;

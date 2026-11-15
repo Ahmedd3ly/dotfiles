@@ -20,3 +20,8 @@ source_color_index = 0
 input_path = "./templates/kitty-accents.conf"
 output_path = "../kitty/accents.conf"
 post_hook = "pkill -USR1 -x kitty || true"
+
+[templates.waybar]
+input_path = "./templates/waybar-accents.css"
+output_path = "../waybar/accents.css"
+post_hook = "pkill -USR2 -x waybar || true"
