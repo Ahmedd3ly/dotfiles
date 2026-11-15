@@ -9,7 +9,8 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 export GDK_BACKEND="wayland,x11,*"
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 
-# Cursor
+# Cursor (same theme as GTK; see run_onchange_after_gtk-settings.sh)
+export XCURSOR_THEME=Bibata-Modern-Ice
 export XCURSOR_SIZE=24
 export HYPRCURSOR_SIZE=24
 
