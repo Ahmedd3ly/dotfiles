@@ -30,7 +30,7 @@ img = img.convert("RGB")
 
 def save(im: Image.Image, name: str) -> None:
     tmp = cache / f".{name}.tmp.png"
-    im.save(tmp, optimize=True)
+    im.save(tmp, compress_level=1)             # fast; optimize=True cost ~4 s per wallpaper
     tmp.replace(cache / name)                 # atomic: rofi never reads half a file
 
 
