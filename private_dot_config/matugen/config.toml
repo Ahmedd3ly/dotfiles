@@ -1,0 +1,22 @@
+# █▀▄▀█ ▄▀█ ▀█▀ █░█ █▀▀ █▀▀ █▄░█
+# █░▀░█ █▀█ ░█░ █▄█ █▄█ ██▄ █░▀█
+#
+# Why: wallpaper -> accent colours. matugen fills the templates in ./templates
+# and writes small accent files that each app includes on top of its static
+# Catppuccin Mocha neutrals. Outputs are generated, chezmoi-ignored, never
+# hand-edited. wall-set (Phase 8) runs this and sets the wallpaper with awww;
+# matugen itself never touches the wallpaper.
+# Scheme: tonal-spot (default), dark. Every accent lands at ~9.6:1 on #1e1e2e,
+# so no contrast clamp is needed (tested on boat, forest, rain_world).
+# Relative paths resolve from this file's folder.
+# Run by hand: matugen image <wallpaper>
+
+[config]
+# 0 = most dominant colour. Also stops v4's interactive picker, which fails
+# without a terminal (rofi, scripts).
+source_color_index = 0
+
+[templates.kitty]
+input_path = "./templates/kitty-accents.conf"
+output_path = "../kitty/accents.conf"
+post_hook = "pkill -USR1 -x kitty || true"

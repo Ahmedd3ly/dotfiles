@@ -14,3 +14,6 @@ pkglist-aur.txt
 **/__pycache__
 **/*.pyc
 **/node_modules
+
+# matugen outputs (generated from ~/.config/matugen/templates)
+.config/kitty/accents.conf

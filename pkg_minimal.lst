@@ -81,8 +81,7 @@ hyprpicker                  # color picker
 jq                          # glue for scripts
 
 # --------------------------------------------------- // Theming engine (replaces wallbash)
-matugen                     # Material You palette from wallpaper, template-based (AUR?)
-# wallust                   # alternative palette generator (pick ONE of matugen/wallust)
+matugen                     # extra repo; wallpaper -> accent colours via templates (v4: source_color_index in config)
 adw-gtk-theme               # GTK3/4 base that recolors cleanly
 papirus-icon-theme
 bibata-cursor-theme-bin     # (AUR)
