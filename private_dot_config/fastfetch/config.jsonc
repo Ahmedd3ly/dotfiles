@@ -4,7 +4,7 @@
 // Why: HyDE's two-box layout, trimmed, without its fastfetch.sh logo picker.
 // Built-in Arch ASCII logo: no image, no cache, works in a tty too.
 // Layout: splash quote, system box, user line, hardware box, palette.
-// Display order desc sorts by name, so eDP-1 (built-in) comes before DP-4.
+// Display order asc sorts by display name (built-in first on this machine).
 // Top line is Hyprland's own splash quote (hyprctl splash), the same source
 // HyDE uses; it changes once per Hyprland session.
 // Key colours are terminal colour names, so they come from kitty's Mocha
@@ -31,7 +31,7 @@
     { "type": "packages", "key": "  󰏗 Packages", "keyColor": "green" },
     { "type": "wm",       "key": "  󱗃 WM      ", "keyColor": "yellow",  "format": "{pretty-name} {version}" },
     { "type": "terminal", "key": "  󰆍 Terminal", "keyColor": "yellow" },
-    { "type": "display",  "key": "  󰍹 Display ", "keyColor": "green",   "order": "desc", "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
+    { "type": "display",  "key": "  󰍹 Display ", "keyColor": "green",   "order": "asc", "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
     { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
     { "type": "title",    "key": "  󰀄 User    ", "keyColor": "blue",    "format": "{user-name} @ {host-name}" },
     { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
@@ -42,6 +42,7 @@
     { "type": "disk",     "key": "  󱦟 OS Age  ", "keyColor": "cyan",    "folders": "/", "format": "{days} days" },
     { "type": "uptime",   "key": "  󱫐 Uptime  ", "keyColor": "cyan" },
     { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
-    { "type": "colors", "paddingLeft": 2, "symbol": "circle" }
+    { "type": "colors", "paddingLeft": 2, "symbol": "circle" },
+    "break"
   ]
 }
