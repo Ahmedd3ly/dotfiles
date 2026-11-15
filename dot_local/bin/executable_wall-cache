@@ -10,8 +10,8 @@
 #   quad.png   sqre with HyDE's slanted right edge (style_11, menus)
 #   blur.png   10% size, blurred      (backgrounds; rofi scales it up)
 # Source: $XDG_CACHE_HOME/wall/current (a link to the wallpaper), or argv[1].
-# Called by rofi-launch only when the wallpaper changed; Phase 8's wall-set
-# will call it too. Package: python-pillow.
+# Called by rofi-launch only when the wallpaper changed; wall-set
+# calls it on every change. Package: python-pillow.
 import os
 import sys
 from pathlib import Path

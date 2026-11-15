@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# █░█░█ ▄▀█ █░░ █░░ ▄▄ █▀ █▀▀ ▀█▀
+# ▀▄▀▄▀ █▀█ █▄▄ █▄▄ ░░ ▄█ ██▄ ░█░
+#
+# Why: the one entry point for changing the wallpaper. Sets it with awww
+# (all outputs), recolours the accents with matugen (its post_hooks reload
+# the apps), and rebuilds the rofi crops. No daemon, no watcher.
+# Usage: wall-set <image>
+# awww remembers the image across reboots; matugen's outputs are files, so
+# the colours persist too. Nothing here needs to run at login.
+set -euo pipefail
+
+img=$(readlink -f -- "${1:?usage: wall-set <image>}")
+[ -f "$img" ] || { echo "wall-set: no such file: $1" >&2; exit 1; }
+wall="${XDG_CACHE_HOME:-$HOME/.cache}/wall"
+
+# 1. Wallpaper: grow from the centre; 60 fps keeps the transition cheap.
+awww img "$img" --transition-type grow --transition-pos 0.5,0.5 \
+    --transition-duration 1 --transition-fps 60
+
+# 2. Accents: templates in ~/.config/matugen; hooks reload what changed.
+matugen -q image "$img"
+
+# 3. Rofi crops, and the link rofi-launch checks.
+mkdir -p "$wall" && ln -sfn "$img" "$wall/current"
+wall-cache "$img"
