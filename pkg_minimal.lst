@@ -93,6 +93,7 @@ qt6-wayland
 
 # --------------------------------------------------- // Fonts (HyDE ships these via its theme repo)
 ttf-jetbrains-mono-nerd
+ttf-cascadia-code-nerd      # kitty font (CaskaydiaCove, as on HyDE)
 inter-font
 noto-fonts                  # includes Arabic coverage
 noto-fonts-emoji
