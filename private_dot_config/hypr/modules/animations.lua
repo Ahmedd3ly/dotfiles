@@ -14,3 +14,7 @@ local preset = (ok and type(choice) == 'string') and choice or DEFAULT
 if not pcall(require, 'animations.' .. preset) then
     require('animations.stock') -- unknown or broken preset: fall back, never break the config
 end
+-- Why: several presets spin borderangle with style="loop", which forces a redraw
+-- every frame (~20-35 % Hyprland CPU at idle, and it defeats panel self-refresh).
+-- Sweep once per focus change instead, whatever preset is active.
+hl.animation({leaf = "borderangle", enabled = true, speed = 30, bezier = "default", style = "once"})

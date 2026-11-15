@@ -68,8 +68,8 @@
     "modules": [
       "privacy",
       "group/volumecontrol",
-      "custom/updates",
       "power-profiles-daemon",
+      "custom/updates",
       "network",
       "battery"
     ]
