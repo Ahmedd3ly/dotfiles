@@ -1,16 +1,13 @@
 #!/usr/bin/env zsh
 
-#! ██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ███████╗██████╗░██╗████████╗
-#! ██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ██╔════╝██╔══██╗██║╚══██╔══╝
-#! ██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  █████╗░░██║░░██║██║░░░██║░░░
-#! ██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ██╔══╝░░██║░░██║██║░░░██║░░░
-#! ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ███████╗██████╔╝██║░░░██║░░░
-#! ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ╚══════╝╚═════╝░╚═╝░░░╚═╝░░░
+#! ██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ███████╗██████╗░██╗████████╗
+#! ██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ██╔════╝██╔══██╗██║╚══██╔══╝
+#! ██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  █████╗░░██║░░██║██║░░░██║░░░
+#! ██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ██╔══╝░░██║░░██║██║░░░██║░░░
+#! ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ███████╗██████╔╝██║░░░██║░░░
+#! ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ╚══════╝╚═════╝░╚═╝░░░╚═╝░░░
 
-# Load all custom module files // Directories are ignored
-# As Directories are ignored, we can store a bunch of boilerplate script in a ``./conf.d/custom-directory``
-# then we can make an entry point script: `./conf.d/custom-directory.zsh`managing all the files in that directory
-
-for file in "${ZDOTDIR:-$HOME/.config/zsh}/conf.d/"*.zsh; do
-  [ -r "$file" ] && source "$file"
-done
+# .zshenv runs for EVERY zsh (scripts, zsh -c, login, interactive), so it only
+# sets environment. The interactive modules in conf.d/ are loaded once, by
+# .zshrc. Loading conf.d here as well ran everything twice per shell.
+[[ -r "$ZDOTDIR/conf.d/10-env.zsh" ]] && source "$ZDOTDIR/conf.d/10-env.zsh"

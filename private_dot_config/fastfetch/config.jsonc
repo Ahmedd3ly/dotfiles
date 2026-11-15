@@ -8,7 +8,8 @@
 // Key colours are terminal colour names, so they come from kitty's Mocha
 // palette; nothing here needs a matugen template.
 // Icons are Nerd Font Material Design glyphs (U+F0xxx) only, so every key has
-// one; key width 13 lines up the colons.
+// one. Names are padded to 8 by hand (not display.key.width, which eats the
+// separator), so colons and values line up across both boxes.
 // Runs on every new zsh (zsh/conf.d/95-fastfetch.zsh); ff re-runs it.
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
@@ -18,28 +19,27 @@
     "padding": { "top": 1, "left": 2, "right": 4 }
   },
   "display": {
-    "separator": " : ",
-    "key": { "width": 13 }
+    "separator": " : "
   },
   "modules": [
-    { "type": "command", "key": "  󰁘", "keyColor": "blue", "keyWidth": 4, "text": "hyprctl splash 2>/dev/null" },
+    { "type": "command", "key": "  󰁘", "keyColor": "blue", "text": "hyprctl splash 2>/dev/null" },
     { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
-    { "type": "title",    "key": "  󰀄 User",     "keyColor": "blue",    "format": "{user-name}@{host-name}" },
-    { "type": "os",       "key": "  󰣇 OS",       "keyColor": "red",     "format": "{pretty-name}" },
-    { "type": "kernel",   "key": "  󰌽 Kernel",   "keyColor": "red",     "format": "{release}" },
+    { "type": "title",    "key": "  󰀄 User    ", "keyColor": "blue",    "format": "{user-name}@{host-name}" },
+    { "type": "os",       "key": "  󰣇 OS      ", "keyColor": "red",     "format": "{pretty-name}" },
+    { "type": "kernel",   "key": "  󰌽 Kernel  ", "keyColor": "red",     "format": "{release}" },
     { "type": "packages", "key": "  󰏗 Packages", "keyColor": "green" },
-    { "type": "wm",       "key": "  󱗃 WM",       "keyColor": "yellow",  "format": "{pretty-name} {version}" },
+    { "type": "wm",       "key": "  󱗃 WM      ", "keyColor": "yellow",  "format": "{pretty-name} {version}" },
     { "type": "terminal", "key": "  󰆍 Terminal", "keyColor": "yellow" },
-    { "type": "shell",    "key": "  󱆃 Shell",    "keyColor": "yellow",  "format": "{pretty-name} {version}" },
-    { "type": "display",  "key": "  󰍹 Display",  "keyColor": "green",   "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
+    { "type": "shell",    "key": "  󱆃 Shell   ", "keyColor": "yellow",  "format": "{pretty-name} {version}" },
+    { "type": "display",  "key": "  󰍹 Display ", "keyColor": "green",   "format": "{width}x{height} @ {refresh-rate}Hz [{type}]" },
     { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
     { "type": "custom", "format": "┌──────────────────────────────────────────────────────┐" },
-    { "type": "cpu",      "key": "  󰻠 CPU",      "keyColor": "blue",    "format": "{name}" },
-    { "type": "gpu",      "key": "  󰢮 GPU",      "keyColor": "blue",    "format": "{name}", "detectionMethod": "pci" },
-    { "type": "memory",   "key": "  󰍛 Memory",   "keyColor": "magenta" },
-    { "type": "battery",  "key": "  󰁹 Battery",  "keyColor": "magenta" },
-    { "type": "disk",     "key": "  󱦟 OS Age",   "keyColor": "cyan",    "folders": "/", "format": "{days} days" },
-    { "type": "uptime",   "key": "  󱫐 Uptime",   "keyColor": "cyan" },
+    { "type": "cpu",      "key": "  󰻠 CPU     ", "keyColor": "blue",    "format": "{name}" },
+    { "type": "gpu",      "key": "  󰢮 GPU     ", "keyColor": "blue",    "format": "{name}", "detectionMethod": "pci" },
+    { "type": "memory",   "key": "  󰍛 Memory  ", "keyColor": "magenta" },
+    { "type": "battery",  "key": "  󰁹 Battery ", "keyColor": "magenta" },
+    { "type": "disk",     "key": "  󱦟 OS Age  ", "keyColor": "cyan",    "folders": "/", "format": "{days} days" },
+    { "type": "uptime",   "key": "  󱫐 Uptime  ", "keyColor": "cyan" },
     { "type": "custom", "format": "└──────────────────────────────────────────────────────┘" },
     { "type": "colors", "paddingLeft": 2, "symbol": "circle" }
   ]
