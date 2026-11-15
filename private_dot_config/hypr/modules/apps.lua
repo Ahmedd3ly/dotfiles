@@ -9,5 +9,5 @@ return {
     fileManager = "thunar",
     browser     = "firefox",
     editor      = "kitty -e nvim",
-    launcher    = "rofi -show drun",
+    launcher    = "rofi-launch launcher",
 }

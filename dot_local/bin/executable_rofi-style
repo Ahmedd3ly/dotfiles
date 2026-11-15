@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# █▀ ▀█▀ █▄█ █░░ █▀▀
+# ▄█ ░█░ ░█░ █▄▄ ██▄
+#
+# Why: switch the rofi layout per role at any time (HyDE's rofiselect,
+# minus its theme plumbing). Pick a role, then a layout from its preview;
+# the choice goes to $XDG_STATE_HOME/rofi-style/<role> (state, not config)
+# and the role opens right away so you see it. Colours stay global
+# (theme.rasi).
+set -uo pipefail
+
+state="${XDG_STATE_HOME:-$HOME/.local/state}/rofi-style"
+previews="${XDG_DATA_HOME:-$HOME/.local/share}/rofi-styles"
+styles="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/styles"
+mkdir -p "$state"
+
+pkill -x rofi
+
+role=$(printf '%s\n' launcher window files all |
+       rofi -dmenu -i -p "layout for") || exit 0
+
+pick=$(for f in "$styles"/style_*.rasi; do
+           n=$(basename "$f" .rasi)
+           printf '%s\0icon\x1f%s\n' "$n" "$previews/$n.png"
+       done | sort -V |
+       rofi -dmenu -i -p "$role" -show-icons \
+            -theme-str 'element-icon { size: 6em; } listview { lines: 4; }') || exit 0
+
+n=${pick#style_}
+case "$role" in
+    all) for r in launcher window files; do echo "$n" > "$state/$r"; done; role=launcher ;;
+    *)   echo "$n" > "$state/$role" ;;
+esac
+
+exec rofi-launch "$role"

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# █░░ ▄▀█ █░█ █▄░█ █▀▀ █░█
+# █▄▄ █▀█ █▄█ █░▀█ █▄▄ █▀█
+#
+# Why: open the launcher, window switcher or file browser in the HyDE
+# layout chosen for that role (rofi-style writes the choice). A second
+# press closes rofi. Layouts: ~/.config/rofi/styles/style_N.rasi.
+# Usage: rofi-launch launcher | window | files
+set -uo pipefail
+
+role="${1:-launcher}"
+state="${XDG_STATE_HOME:-$HOME/.local/state}/rofi-style"
+
+case "$role" in                       # mode   default layout (HyDE days)
+    launcher) mode=drun;        def=9  ;;
+    window)   mode=window;      def=2  ;;
+    files)    mode=filebrowser; def=11 ;;
+    *) echo "usage: rofi-launch launcher|window|files" >&2; exit 2 ;;
+esac
+
+pkill -x rofi && exit 0
+
+n=$(cat "$state/$role" 2>/dev/null || echo "$def")
+theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/styles/style_${n}.rasi"
+[ -f "$theme" ] || theme="${theme%/*}/style_${def}.rasi"
+
+exec rofi -show "$mode" -theme "$theme"

@@ -1,0 +1,33 @@
+// █▀█ █▀█ █▀▀ █
+// █▀▄ █▄█ █▀░ █
+//
+// Why: the global look every rofi layout imports (styles/*.rasi, menu.rasi):
+// colours from HyDE's "Catppuccin Mocha" rofi.theme, plus the window border
+// and rounding HyDE injected at launch (border = Hyprland border_size,
+// window radius = rounding x 3, row radius = rounding x 2). A layout that
+// sets its own radius still wins, because it is read after this file.
+// ACCENTS: main-br, main-ex, select-bg. Phase 8 generates them from the
+// wallpaper; the rest stays static Mocha.
+
+* {
+    /* ACCENTS */
+    main-br:            #cba6f7ff;
+    main-ex:            #f5e0dcff;
+    select-bg:          #b4befeff;
+
+    /* Neutrals */
+    main-bg:            #11111be6;   /* 90%: the rofi layer rule blurs behind it */
+    main-fg:            #cdd6f4ff;
+    select-fg:          #11111bff;
+    separatorcolor:     transparent;
+    border-color:       transparent;
+}
+
+window {
+    border:             2px;
+    border-radius:      30px;
+}
+
+element {
+    border-radius:      20px;
+}

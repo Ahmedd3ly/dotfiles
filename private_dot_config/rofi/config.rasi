@@ -1,0 +1,16 @@
+// █▀█ █▀█ █▀▀ █
+// █▀▄ █▄█ █▀░ █
+//
+// Why: global rofi settings. Plain `rofi -dmenu` calls (clipboard, emoji,
+// power, keyhint, anim-pick) get menu.rasi; the launcher, window switcher
+// and file browser are started by rofi-launch with the layout chosen in
+// rofi-style (SUPER+Shift+A).
+
+configuration {
+    font:                 "JetBrainsMono Nerd Font 10";
+    show-icons:           true;
+    drun-display-format:  "{name}";
+    // icon-theme: set in Phase 9 (HyDE used Tela-circle-dracula)
+}
+
+@theme "~/.config/rofi/menu.rasi"

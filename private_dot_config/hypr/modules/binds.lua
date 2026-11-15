@@ -60,9 +60,10 @@ bind(M("C"),      exec(apps.editor),      "[Apps] editor")
 
 ---- Menus (rofi; a second press closes the open menu) ----------------------
 local function menu(cmd) return exec("pkill -x rofi || " .. cmd) end
-bind(M("A"),         menu(apps.launcher),            "[Menu] app launcher")
-bind(M("Tab"),       menu("rofi -show window"),      "[Menu] window switcher")
-bind(M("SHIFT + E"), menu("rofi -show filebrowser"), "[Menu] file browser")
+bind(M("A"),         exec("rofi-launch launcher"),   "[Menu] app launcher")
+bind(M("Tab"),       exec("rofi-launch window"),     "[Menu] window switcher")
+bind(M("SHIFT + E"), exec("rofi-launch files"),      "[Menu] file browser")
+bind(M("SHIFT + A"), exec("rofi-style"),             "[Menu] rofi layout per menu")
 bind(M("grave"),     menu("keyhint"),                "[Menu] keybinding cheat sheet")
 bind(M("period"),    menu("emoji-pick"),             "[Menu] emoji to clipboard")
 bind(M("V"),         menu("cliphist list | rofi -dmenu -i -p clip | cliphist decode | wl-copy"),
