@@ -1,0 +1,7 @@
+# Build/runtime artefacts that must never be committed
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+bin/Debug/
+obj/
