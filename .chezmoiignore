@@ -17,3 +17,4 @@ pkglist-aur.txt
 
 # matugen outputs (generated from ~/.config/matugen/templates)
 .config/kitty/accents.conf
+.config/hypr/modules/accents.lua

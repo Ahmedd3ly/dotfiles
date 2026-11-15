@@ -40,3 +40,8 @@ output_path = "../rofi/accents.rasi"
 input_path = "./templates/gtk-accents.css"
 output_path = "../gtk-3.0/accents.css"
 # no hook: GTK reads it when an app starts (Thunar: thunar -q, then reopen)
+
+[templates.hyprland]
+input_path = "./templates/hypr-accents.lua"
+output_path = "../hypr/modules/accents.lua"
+post_hook = "hyprctl reload >/dev/null || true"
