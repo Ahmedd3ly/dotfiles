@@ -1,0 +1,59 @@
+// █░█░█ ▄▀█ █░░ █░░ █▀█ █ █▀▀ █▄▀
+// ▀▄▀▄▀ █▀█ █▄▄ █▄▄ █▀▀ █ █▄▄ █░█
+//
+// Why: HyDE's wallpaper selector look (selector.rasi): one row of square
+// thumbnails with the name underneath. wall-pick sets the column count and
+// window width for the focused monitor with -theme-str; colours come from
+// theme.rasi, so the highlight follows the wallpaper once Phase 8 templates it.
+// Thumbnails: ~/.cache/wall/thumbs (wall-cache --menu).
+
+configuration {
+    show-icons:                  true;
+}
+
+@theme "~/.config/rofi/theme.rasi"
+
+window {
+    enabled:                     true;
+    fullscreen:                  false;
+    transparency:                "real";
+    padding:                     20px;
+    background-color:            @main-bg;
+    border-color:                @main-br;
+}
+mainbox {
+    children:                    [ "listview" ];
+    background-color:            transparent;
+}
+listview {
+    lines:                       1;
+    spacing:                     20px;
+    dynamic:                     false;
+    fixed-columns:               true;
+    scrollbar:                   false;
+    cursor:                      "default";
+    background-color:            transparent;
+}
+element {
+    orientation:                 vertical;
+    spacing:                     8px;
+    padding:                     8px;
+    cursor:                      pointer;
+    background-color:            transparent;
+    text-color:                  @main-fg;
+}
+element selected.normal {
+    background-color:            @select-bg;
+    text-color:                  @select-fg;
+}
+element-icon {
+    size:                        200px;
+    cursor:                      inherit;
+    background-color:            transparent;
+}
+element-text {
+    horizontal-align:            0.5;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}

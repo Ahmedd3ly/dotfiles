@@ -64,6 +64,7 @@ bind(M("A"),         exec("rofi-launch launcher"),   "[Menu] app launcher")
 bind(M("Tab"),       exec("rofi-launch window"),     "[Menu] window switcher")
 bind(M("SHIFT + E"), exec("rofi-launch files"),      "[Menu] file browser")
 bind(M("SHIFT + A"), exec("rofi-style"),             "[Menu] rofi layout per menu")
+bind(M("SHIFT + W"), menu("wall-pick"),              "[Menu] wallpaper (recolours the desktop)")
 bind(M("grave"),     menu("keyhint"),                "[Menu] keybinding cheat sheet")
 bind(M("period"),    menu("emoji-pick"),             "[Menu] emoji to clipboard")
 bind(M("V"),         menu("cliphist list | rofi -dmenu -i -p clip | cliphist decode | wl-copy"),

@@ -10,8 +10,12 @@
 #   quad.png   sqre with HyDE's slanted right edge (style_11, menus)
 #   blur.png   10% size, blurred      (backgrounds; rofi scales it up)
 # Source: $XDG_CACHE_HOME/wall/current (a link to the wallpaper), or argv[1].
+# --menu DIR: print rofi dmenu rows for wall-pick instead: one row per theme
+# folder or image in DIR, each with a 400x400 centre-crop thumbnail from
+# $XDG_CACHE_HOME/wall/thumbs (made only when missing or older than the image).
 # Called by rofi-launch only when the wallpaper changed; wall-set
 # calls it on every change. Package: python-pillow.
+import hashlib
 import os
 import sys
 from pathlib import Path
@@ -19,6 +23,38 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 cache = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wall"
+EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}
+
+
+def thumb(path: Path) -> Path:
+    """Square thumbnail for the picker, keyed by the image's full path."""
+    out = cache / "thumbs" / (hashlib.sha1(str(path).encode()).hexdigest() + ".png")
+    if not out.exists() or out.stat().st_mtime < path.stat().st_mtime:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        im = Image.open(path)
+        im.seek(0)
+        im = ImageOps.fit(im.convert("RGB"), (400, 400), Image.LANCZOS)
+        tmp = out.with_suffix(".tmp.png")
+        im.save(tmp, compress_level=1)
+        tmp.replace(out)
+    return out
+
+
+def menu(root: Path) -> None:
+    """rofi rows: 'name\\0icon\\x1fthumb'. Folders first (icon = first image)."""
+    images = lambda d: sorted(f for f in d.iterdir() if f.suffix.lower() in EXTS)
+    for d in sorted(x for x in root.iterdir() if x.is_dir()):
+        first = images(d)
+        if first:
+            print(f"{d.name}\0icon\x1f{thumb(first[0])}")
+    for f in images(root):
+        print(f"{f.stem}\0icon\x1f{thumb(f)}")
+
+
+if len(sys.argv) == 3 and sys.argv[1] == "--menu":
+    menu(Path(sys.argv[2]).expanduser())
+    sys.exit(0)
+
 src = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else (cache / "current").resolve()
 if not src.is_file():
     sys.exit(f"wall-cache: no wallpaper at {src}")
