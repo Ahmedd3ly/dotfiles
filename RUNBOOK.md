@@ -13,10 +13,11 @@ Not tracked by pacman: the theme files are copied into /usr/share by hand, so
 a reinstall needs these steps again. Source: https://github.com/catppuccin/grub
 
 1. Find a resolution the firmware offers. Reboot, press `c` at the GRUB menu,
-   run `videoinfo`, note the modes, `Esc` back. On this machine:
-   **(fill in after checking)**. Prefer a 16:10 mode below native (e.g.
-   1920x1200): the theme's Unifont 16 is tiny at 2560x1600 and the full
-   panel resolution can be slow or missing in GOP.
+   run `videoinfo`, note the modes, `Esc` back. On this machine (MSI Z16,
+   EFI GOP): 2560x1600 (native, preferred, active), 640x480, 800x600,
+   1024x768, 1280x1024, 1600x1200, 1920x1080, 1920x1440. The only 16:10 mode
+   is native, so use 2560x1600: correct aspect, no mode switch at boot. The
+   others would stretch. Trade-off: the theme's Unifont 16 is small there.
 
 2. Install the Mocha flavour only (clone to /tmp, nothing in $HOME):
 
@@ -32,10 +33,13 @@ a reinstall needs these steps again. Source: https://github.com/catppuccin/grub
 
    ```
    GRUB_THEME="/usr/share/grub/themes/catppuccin-mocha-grub-theme/theme.txt"
-   GRUB_GFXMODE=1920x1200,auto
+   GRUB_GFXMODE=2560x1600,auto
+   GRUB_TIMEOUT=2
    ```
 
    `,auto` falls back to the firmware's choice if the first mode is missing.
+   GRUB_TIMEOUT 5 -> 2 saves 3 s per boot (the loader was 9.1 s of a 21.7 s
+   boot) and still leaves time to reach the grub-btrfs snapshot submenu.
 
 4. Regenerate and record:
 
