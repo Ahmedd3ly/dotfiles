@@ -3,14 +3,15 @@
 # █▀▀ █▄█ ▀▄▀▄▀ ██▄ █▀▄
 #
 # Why: session menu in rofi, replacing wlogout. Five actions, no daemon.
+# Logout / Reboot / Shutdown fade the screens to black first (session-fade).
 set -euo pipefail
 
 choice=$(printf '%s\n' Lock Logout Suspend Reboot Shutdown | rofi -dmenu -i -p power) || exit 0
 
 case "$choice" in
     Lock)     pidof hyprlock || hyprlock ;;
-    Logout)   uwsm stop ;;
+    Logout)   session-fade uwsm stop ;;
     Suspend)  systemctl suspend ;;
-    Reboot)   systemctl reboot ;;
-    Shutdown) systemctl poweroff ;;
+    Reboot)   session-fade systemctl reboot ;;
+    Shutdown) session-fade systemctl poweroff ;;
 esac

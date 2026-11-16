@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# █▀▀ ▄▀█ █▀▄ █▀▀
+# █▀░ █▀█ █▄▀ ██▄
+#
+# Why: fade both monitors to black before ending the session, matching the
+# fade hyprlock plays on unlock. Uses hyprsunset's gamma (already running;
+# applies by day and by night), so no extra package or overlay.
+# Usage: session-fade <command...>   e.g. session-fade systemctl reboot
+# Used by powermenu (Logout, Reboot, Shutdown) and SUPER+End. Not for
+# suspend: the screen would come back from sleep black.
+set -uo pipefail
+
+g0=$(hyprctl hyprsunset gamma 2>/dev/null | cut -d. -f1)   # e.g. "100.000000" -> 100
+for g in 85 70 55 40 25 12 0; do
+    hyprctl hyprsunset gamma "$g" > /dev/null 2>&1 || break  # no hyprsunset: skip the fade
+    sleep 0.05
+done
+
+"$@"
+rc=$?
+# reboot/poweroff/logout succeed and the session ends black. Only if the
+# action failed (or was refused) does the screen need to come back.
+[ "$rc" -ne 0 ] && hyprctl hyprsunset gamma "${g0:-100}" > /dev/null 2>&1
+exit "$rc"

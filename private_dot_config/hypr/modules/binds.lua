@@ -20,7 +20,7 @@ local function M(keys) return mainMod .. " + " .. keys end
 
 ---- Session ---------------------------------------------------------------
 bind(M("L"),                 exec("pidof hyprlock || hyprlock"), "[Session] lock screen")
-bind(M("End"),               exec("uwsm stop"),                  "[Session] log out")
+bind(M("End"),               exec("session-fade uwsm stop"),     "[Session] log out (fades out)")
 bind("CONTROL + ALT + Delete", exec("powermenu"),                "[Session] power menu")
 bind(M("SHIFT + R"),         exec("hyprctl reload"),             "[Session] reload config")
 
