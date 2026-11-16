@@ -13,11 +13,13 @@
     "signal": 12,
     "on-click": "$HOME/.local/bin/gamemode toggle && pkill -RTMIN+12 waybar"
   },
-  // nightlight: manual override of hyprsunset; the 23:30/07:30 schedule still applies
+  // nightlight: shows hyprsunset's real state, so the 23:30/07:30 schedule
+  // appears too. Click toggles at once (signal); the 60 s poll (one hyprctl
+  // query) catches the scheduled switches, within a minute.
   "custom/nightlight": {
     "exec": "$HOME/.local/bin/nightlight status",
     "return-type": "json",
-    "interval": "once",
+    "interval": 60,
     "signal": 13,
     "on-click": "$HOME/.local/bin/nightlight toggle && pkill -RTMIN+13 waybar"
   },

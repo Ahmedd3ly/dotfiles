@@ -2,25 +2,29 @@
 # █▄░█ █ █▀▀ █░█ ▀█▀
 # █░▀█ █ █▄█ █▀█ ░█░
 #
-# Why: manual night-light toggle for the bar (replaces HyDE's hyprsunset
-# wrapper). Talks to the running hyprsunset over hyprctl; the 23:30/07:30
-# profiles in hyprsunset.conf still switch on schedule.
+# Why: night-light toggle and status for the bar (replaces HyDE's hyprsunset
+# wrapper). Asks the running hyprsunset for its real state, so the 23:30/07:30
+# profiles in hyprsunset.conf show up in the bar too; no state file.
 # Usage: nightlight toggle | status
-set -euo pipefail
+set -uo pipefail
 
 TEMP=4500
-state="${XDG_CACHE_HOME:-$HOME/.cache}/nightlight.on"
+
+# hyprsunset replies "true" when the screen is neutral (identity), "false"
+# when a temperature is applied. Anything else (not running): treat as off.
+on() { [ "$(hyprctl hyprsunset identity get 2>/dev/null)" = "false" ]; }
 
 case "${1:-status}" in
     toggle)
-        if [ -e "$state" ]; then
-            hyprctl hyprsunset identity > /dev/null && rm -f "$state"
+        if on; then
+            hyprctl hyprsunset identity > /dev/null
         else
-            hyprctl hyprsunset temperature "$TEMP" > /dev/null && touch "$state"
+            hyprctl hyprsunset temperature "$TEMP" > /dev/null
         fi ;;
     status)
-        if [ -e "$state" ]; then
-            echo '{"text": "󰖔", "tooltip": "Night light on (click: off)", "class": "on"}'
+        if on; then
+            k=$(hyprctl hyprsunset temperature 2>/dev/null)
+            echo "{\"text\": \"󰖔\", \"tooltip\": \"Night light on, ${k:-$TEMP} K (click: off)\", \"class\": \"on\"}"
         else
             echo '{"text": "󰖨", "tooltip": "Night light off (click: on)", "class": "off"}'
         fi ;;
