@@ -48,6 +48,36 @@ a reinstall needs these steps again. Source: https://github.com/catppuccin/grub
    sudo etckeeper commit "grub: catppuccin mocha theme"
    ```
 
+5. Larger menu font (Unifont 16 is small at 2560x1600). No new package:
+   grub-mkfont ships with grub, and the source is the JetBrains Mono Nerd
+   Font already installed. Only the glyphs a menu needs are converted
+   (Latin, punctuation, box drawing), so the file stays small; the theme's
+   stock font.pf2 (full Unifont, 2.4 MB read every boot) is then removed.
+   GRUB's own fallback, /boot/grub/fonts/unicode.pf2, is untouched. Layout is
+   scaled 1.5x to fit the bigger text; the 32 px icons are left sharp.
+
+   ```bash
+   T=/usr/share/grub/themes/catppuccin-mocha-grub-theme
+   src=$(fc-match -f '%{file}' 'JetBrainsMono Nerd Font:style=Regular')
+   sudo grub-mkfont -s 24 -r 0x20-0x7e,0xa0-0x17f,0x2500-0x259f -o "$T/jbmono-24.pf2" "$src"
+   name=$(grep -a -o 'JetBrains[^[:cntrl:]]*24' "$T/jbmono-24.pf2" | head -n1); echo "font name: $name"
+   # Everything below runs only if a name was found (an empty name would
+   # blank the theme's fonts).
+   [ -n "$name" ] && sudo sed -i \
+     -e "s/Unifont Regular 16/$name/g" \
+     -e 's/left = 50%-240/left = 50%-360/; s/width = 480/width = 720/' \
+     -e 's/item_height = 36/item_height = 54/; s/item_padding = 5/item_padding = 8/' \
+     -e 's/item_spacing = 10/item_spacing = 15/; s/item_icon_space = 20/item_icon_space = 24/' \
+     -e "s/  align = \"center\"/  align = \"center\"\n  font = \"$name\"/" \
+     "$T/theme.txt" \
+   && sudo rm "$T/font.pf2" \
+   && sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```
+
+   Check: `grep loadfont /boot/grub/grub.cfg` lists jbmono-24.pf2 and no
+   font.pf2; on reboot the menu text is ~1.5x larger. Undo: re-copy the theme
+   folder from step 2 and run grub-mkconfig.
+
 Check: `grep -E "theme|gfxmode" /boot/grub/grub.cfg` shows the theme path and
 mode; on reboot the menu is Mocha (dark background, mauve selection), and the
 grub-btrfs snapshot submenu is themed too.
