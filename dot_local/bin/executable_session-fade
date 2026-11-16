@@ -11,7 +11,7 @@
 set -uo pipefail
 
 g0=$(hyprctl hyprsunset gamma 2>/dev/null | cut -d. -f1)   # e.g. "100.000000" -> 100
-for g in 85 70 55 40 25 12 0; do
+for g in 80 70 60 50 40 30 20 10 0; do
     hyprctl hyprsunset gamma "$g" > /dev/null 2>&1 || break  # no hyprsunset: skip the fade
     sleep 0.05
 done
