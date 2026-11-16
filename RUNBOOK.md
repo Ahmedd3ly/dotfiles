@@ -84,3 +84,37 @@ grub-btrfs snapshot submenu is themed too.
 
 Undo: comment out GRUB_THEME, `sudo grub-mkconfig -o /boot/grub/grub.cfg`,
 `sudo rm -r /usr/share/grub/themes/catppuccin-mocha-grub-theme`.
+
+## Login: tty1 autologin, hyprlock as the login screen
+
+Why: no username to type and no display manager package; the first screen
+after boot is hyprlock (autostart.lua starts it before anything else).
+Trade-off, accepted: for the moment between Hyprland starting and hyprlock
+drawing, the session is unlocked, and if hyprlock ever failed to start the
+desktop would be open. Other ttys still require a normal login. Single-owner
+machine, no disk encryption, so physical access already meant file access.
+
+1. Autologin on tty1 only (the username is machine-specific, so this lives
+   in /etc, not chezmoi):
+
+   ```bash
+   sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+   printf '%s\n' '[Service]' 'ExecStart=' \
+     "ExecStart=-/sbin/agetty -o '-p -f -- \\\\u' --noclear --autologin $USER %I \$TERM" \
+     | sudo tee /etc/systemd/system/getty@tty1.service.d/autologin.conf
+   sudo systemctl daemon-reload
+   sudo etckeeper commit "getty: autologin on tty1"
+   ```
+
+   ~/.config/zsh/.zprofile (`uwsm check may-start` → `uwsm start`) then
+   starts Hyprland on tty1 as before.
+
+2. hyprlock at session start: already in
+   ~/.config/hypr/modules/autostart.lua (chezmoi), first line of
+   `hyprland.start`.
+
+Check: `systemctl cat getty@tty1 | grep autologin`; on reboot the boot ends on
+the lock screen with no username prompt.
+
+Undo: `sudo rm -r /etc/systemd/system/getty@tty1.service.d && sudo systemctl
+daemon-reload`, and remove the hyprlock line from autostart.lua.
