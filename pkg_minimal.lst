@@ -51,7 +51,6 @@ hyprsunset                  # night light
 # --------------------------------------------------- // Shell UI (the rice core)
 waybar                      # bar
 rofi                        # launcher + power menu + clipboard picker
-yad                         # bar calendar window (left-click the date)
 python-pillow               # wall-cache: wallpaper crops for rofi (instead of ImageMagick)
 mako                        # notifications: Wayland-native, one small config file to template
 awww                        # animated wallpaper transitions (formerly swww; try swww if not found)

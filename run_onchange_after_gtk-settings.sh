@@ -13,7 +13,7 @@ command -v gsettings >/dev/null || exit 0
 g="gsettings set org.gnome.desktop.interface"
 
 $g color-scheme  'prefer-dark'           # libadwaita / GTK 4 dark
-$g gtk-theme     'adw-gtk3-dark'         # GTK 3 (Thunar, yad)
+$g gtk-theme     'adw-gtk3-dark'         # GTK 3 (Thunar)
 $g icon-theme    'Tela-circle-dracula'
 $g cursor-theme  'Bibata-Modern-Ice'
 $g cursor-size   24

@@ -1,6 +1,8 @@
 // Clock island: a hollow-icon 12-hour time. Hovering it slides out the date;
-// left-click the date for a calendar window (yad: week numbers, month/year
-// navigation) that closes when focus moves elsewhere. No tooltips.
+// hovering the date shows waybar's built-in calendar tooltip (no extra
+// package or script). On the date: right-click toggles month/year view,
+// scroll moves a month (or a year), left-click jumps back to today.
+// Colours: static Mocha via markup (text colours never follow the wallpaper).
 {
   "group/clock-cal": {
     "orientation": "inherit",
@@ -20,7 +22,25 @@
   "clock#date": {
     "format": "󰃭  {:%a %d %b}",
     "interval": 60,
-    "tooltip": false,
-    "on-click": "$HOME/.local/bin/bar-calendar"
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months":   "<span color='#cdd6f4'><b>{}</b></span>",
+        "days":     "<span color='#bac2de'>{}</span>",
+        "weeks":    "<span color='#6c7086'>W{}</span>",
+        "weekdays": "<span color='#f9e2af'><b>{}</b></span>",
+        "today":    "<span color='#f38ba8'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click": "shift_reset",
+      "on-click-right": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
   }
 }

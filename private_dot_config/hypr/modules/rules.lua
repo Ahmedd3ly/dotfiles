@@ -60,11 +60,3 @@ hl.layer_rule({
     match = { namespace = "^waybar$" },
     xray  = true,
 })
-
--- Bar calendar (yad, left-click on the date): float it under the clock.
-hl.window_rule({
-    name  = "bar-calendar",
-    match = { title = "^bar-calendar$" },
-    float = true,
-    move  = "monitor_w-window_w-20 50",
-})
