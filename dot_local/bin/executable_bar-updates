@@ -5,15 +5,32 @@
 # Why: pending update count for the bar (replaces HyDE's system.update).
 # checkupdates (pacman-contrib) syncs a private copy of the package DB, so it
 # never touches pacman's own lock. AUR count via paru. Hidden when up to date.
+# One bar runs per monitor and they all start together; two checkupdates at
+# once fight over that private DB and the loser reports nothing. So: one
+# check at a time (flock), and a result younger than 2 minutes is reused.
 set -uo pipefail
+
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/waybar"
+out="$cache/updates.json"
+mkdir -p "$cache"
+
+exec 9> "$cache/updates.lock"
+flock 9    # the other monitors' bars wait here, then reuse the result
+
+if [ -s "$out" ] && [ $(( $(date +%s) - $(stat -c %Y "$out") )) -lt 120 ]; then
+    cat "$out"
+    exit 0
+fi
 
 repo=$(checkupdates 2>/dev/null | wc -l)
 aur=$(paru -Qua 2>/dev/null | wc -l)
 total=$((repo + aur))
 
 if [ "$total" -eq 0 ]; then
-    echo '{"text": "", "tooltip": "Up to date"}'
+    json='{"text": "", "tooltip": "Up to date"}'
 else
-    jq -cn --arg t "󰮯 $total" --arg tip "Official: $repo  ·  AUR: $aur" \
-        '{text: $t, tooltip: ($tip + "\nClick to upgrade"), class: "pending"}'
+    json=$(jq -cn --arg t "󰮯 $total" --arg tip "Official: $repo  ·  AUR: $aur" \
+        '{text: $t, tooltip: ($tip + "\nClick to upgrade"), class: "pending"}')
 fi
+printf '%s\n' "$json" > "$out.tmp" && mv "$out.tmp" "$out"
+printf '%s\n' "$json"

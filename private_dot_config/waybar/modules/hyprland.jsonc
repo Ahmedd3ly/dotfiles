@@ -19,8 +19,12 @@
       "(.*) - Discord": "$1 \uf1ff"
     }
   },
+  // min-length 3 ("ara"): waybar lets GTK ellipsize labels when the bar runs
+  // out of room, and on the narrow laptop bar (1536 px logical) this one
+  // shrank to "…". A minimum width makes a longer label give way instead.
   "hyprland/language": {
     "format": "{short}",
+    "min-length": 3,
     "tooltip-format": "{long}  ·  click to switch",
     "on-click": "hyprctl switchxkblayout all next"
   }
