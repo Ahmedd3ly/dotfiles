@@ -14,5 +14,9 @@ export XCURSOR_THEME=Bibata-Modern-Ice
 export XCURSOR_SIZE=24
 export HYPRCURSOR_SIZE=24
 
+# SSH agent (openssh's ssh-agent.service). Also in zsh's 10-env for ttys;
+# here so apps started outside a shell (kitty -e nvim, Thunar) see it too.
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 # Video decode on the Intel iGPU (the NVIDIA card is opt-in via prime-run)
 export LIBVA_DRIVER_NAME=iHD

@@ -1,0 +1,11 @@
+# █▀ █▀ █░█
+# ▄█ ▄█ █▀█
+#
+# Why: the key stays passphrase-protected on disk; on its first use after
+# login ssh adds it to ssh-agent (ssh-agent.service, SSH_AUTH_SOCK in uwsm env
+# and zsh 10-env), so the passphrase is asked once per login, not per push.
+# No secrets here: the key itself is never tracked (.chezmoiignore).
+
+Host *
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519

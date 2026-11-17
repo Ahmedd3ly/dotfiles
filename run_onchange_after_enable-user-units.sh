@@ -7,6 +7,9 @@
 # graphical-session.target, which uwsm starts with Hyprland.
 # chezmoi re-runs this script whenever its content changes; `enable` is
 # idempotent. Add a unit here when its config lands in the repo.
+# ssh-agent.service ships with openssh (WantedBy=default.target, so it starts
+# at login, before the graphical session): holds the unlocked SSH key, so the
+# passphrase is asked once per login (see ~/.ssh/config AddKeysToAgent).
 set -eu
 
 systemctl --user enable \
@@ -15,4 +18,5 @@ systemctl --user enable \
     mako.service \
     hypridle.service \
     hyprsunset.service \
-    waybar.service
+    waybar.service \
+    ssh-agent.service

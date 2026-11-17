@@ -19,3 +19,8 @@ pkglist-aur.txt
 # matugen outputs (generated from ~/.config/matugen/templates)
 .config/kitty/accents.conf
 .config/hypr/modules/accents.lua
+
+# SSH keys and machine state: never in the repo (only ~/.ssh/config is tracked)
+.ssh/id_*
+.ssh/known_hosts*
+.ssh/authorized_keys
