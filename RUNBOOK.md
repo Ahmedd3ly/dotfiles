@@ -118,3 +118,28 @@ the lock screen with no username prompt.
 
 Undo: `sudo rm -r /etc/systemd/system/getty@tty1.service.d && sudo systemctl
 daemon-reload`, and remove the hyprlock line from autostart.lua.
+
+## Package audit
+
+Why: pkg_minimal.lst should match what is installed on purpose, so a rebuild
+installs exactly this system. Run after adding or removing software.
+
+```bash
+L=~/.local/share/chezmoi/pkg_minimal.lst
+awk '!/^[[:space:]]*#/ && NF {print $1}' "$L" | sort -u > /tmp/listed
+pacman -Qqe | sort -u > /tmp/inst
+echo "listed, not installed:"; comm -23 /tmp/listed /tmp/inst
+echo "installed, not listed:"; comm -13 /tmp/listed /tmp/inst
+echo "orphans:"; pacman -Qqdt
+```
+
+"installed, not listed" also shows the pacstrap set named in the list's
+header; anything else either gets a line in the list or gets removed.
+
+Housekeeping (pacman-contrib):
+
+```bash
+sudo paccache -rk2              # keep the last 2 versions of each package
+sudo paccache -ruk0             # drop cached packages that are no longer installed
+sudo systemctl enable --now paccache.timer   # weekly, keeps 3 (default)
+```

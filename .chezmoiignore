@@ -2,8 +2,6 @@ README.md
 RUNBOOK.md
 pkg_minimal.lst
 first-launch.sh
-pkglist-native.txt
-pkglist-aur.txt
 .config/zsh/.zcompdump*
 **/*.bak
 

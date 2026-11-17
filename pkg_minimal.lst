@@ -1,16 +1,15 @@
 # =====================================================================
-# pkg_minimal.lst: trimmed from HyDE's pkg_core.lst + pkg_extra.lst
+# pkg_minimal.lst: every package installed on purpose, one line each with why.
+# Single source of truth for a rebuild (the old pkglist-*.txt dumps are gone).
 # Install (paru handles repo + AUR):
-#   awk '!/^[[:space:]]*#/ && NF {print $1}' ~/dotfiles/pkg_minimal.lst | paru -S --needed -
-# Verify names first (`paru -Ss <name>`); entries marked (AUR?) may be in the
-# official repos or the AUR depending on the day.
-# Already installed by the runbook's pacstrap, so NOT repeated here:
-#   intel-ucode linux-firmware btrfs-progs grub grub-btrfs inotify-tools efibootmgr
-#   networkmanager zram-generator pacman-contrib zsh neovim git cronie reflector
-# NOT compatible with HyDE's own scripts (they expect pamixer, parallel,
-# hyprquery, imagemagick, dolphin, etc.). This list is for your own config.
-# Stage 5 installs everything uncommented. Everything under "LATER" is
-# commented out on purpose: uncomment it after your first launch works.
+#   awk '!/^[[:space:]]*#/ && NF {print $1}' ~/.local/share/chezmoi/pkg_minimal.lst | paru -S --needed -
+# Already installed by pacstrap during the Arch install, so NOT repeated here:
+#   base base-devel linux linux-firmware intel-ucode sudo btrfs-progs grub
+#   grub-btrfs inotify-tools efibootmgr networkmanager zram-generator
+#   pacman-contrib zsh neovim git cronie reflector
+# AUR (4, each justified inline): paru-bin, bibata-cursor-theme-bin,
+#   tela-circle-icon-theme-dracula, wkhtmltopdf-bin.
+# Audit: compare with `pacman -Qqe` (see RUNBOOK.md, "Package audit").
 # =====================================================================
 
 # --------------------------------------------------- // Base
@@ -18,6 +17,12 @@ compsize                    # real disk usage under btrfs compression
 timeshift                   # snapshots
 tlp                         # laptop power (then: sudo systemctl enable --now tlp; mask systemd-rfkill.service/.socket)
 tlp-pd                      # TLP profiles over the power-profiles-daemon D-Bus API (bar switcher; sudo systemctl enable --now tlp-pd)
+sof-firmware                # Intel audio DSP firmware: no speakers/mic on this laptop without it
+chezmoi                     # this repo
+etckeeper                   # /etc under git (local only)
+man-db
+man-pages
+paru-bin                    # (AUR) AUR helper; -bin = prebuilt, no Rust toolchain to build it
 
 # --------------------------------------------------- // GPU (hybrid Intel + NVIDIA)
 mesa
@@ -39,7 +44,7 @@ lib32-nvidia-utils
 uwsm                        # Wayland session manager (start from tty, no display manager)
 hyprland
 xorg-xwayland               # X11 apps, Steam and Proton need it
-lua                         # needed by the Lua config (as in HyDE's list)
+lua                         # Hyprland's Lua config
 hyprpolkitagent             # auth agent
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk      # file picker
@@ -53,20 +58,19 @@ waybar                      # bar
 rofi                        # launcher + power menu + clipboard picker
 python-pillow               # wall-cache: wallpaper crops for rofi (instead of ImageMagick)
 mako                        # notifications: Wayland-native, one small config file to template
-awww                        # animated wallpaper transitions (formerly swww; try swww if not found)
+awww                        # wallpaper daemon with transitions (formerly swww)
 libnotify                   # notify-send
 
 # --------------------------------------------------- // Audio / network / bluetooth
 pipewire
 pipewire-alsa
 pipewire-pulse
-pipewire-jack
 wireplumber                 # also gives you wpctl, replaces pamixer
 pavucontrol                 # one GUI mixer
 playerctl
 bluez
 bluez-utils
-bluetui                     # TUI bluetooth manager (AUR?)
+bluetui                     # TUI bluetooth manager
 brightnessctl
 
 # --------------------------------------------------- // Clipboard & capture
@@ -82,16 +86,13 @@ jq                          # glue for scripts
 # --------------------------------------------------- // Theming engine (replaces wallbash)
 matugen                     # extra repo; wallpaper -> accent colours via templates (v4: source_color_index in config)
 adw-gtk-theme               # GTK3/4 base that recolors cleanly
-papirus-icon-theme
 bibata-cursor-theme-bin     # (AUR)
 tela-circle-icon-theme-dracula # (AUR) icon theme for rofi + GTK, as on HyDE (icons only, no code)
 dconf                       # gsettings backend
-qt6ct
-kvantum
-qt6-wayland
-# qt5ct kvantum-qt5 qt5-wayland   # only if you actually run Qt5 apps
+qt6ct                       # Qt platform theme (QT_QPA_PLATFORMTHEME in uwsm env); hyprpolkitagent is Qt
+qt6-wayland                 # hyprpolkitagent (Qt 6) on Wayland
 
-# --------------------------------------------------- // Fonts (HyDE ships these via its theme repo)
+# --------------------------------------------------- // Fonts
 ttf-jetbrains-mono-nerd
 ttf-cascadia-code-nerd      # kitty font (CaskaydiaCove, as on HyDE)
 inter-font
@@ -99,8 +100,7 @@ noto-fonts                  # includes Arabic coverage
 noto-fonts-emoji
 
 # --------------------------------------------------- // Apps
-firefox                     # official repo, native Wayland, themeable (userChrome + Pywalfox)
-# brave-bin                 # (AUR) alternative; needs flags for Wayland, see notes
+firefox                     # official repo, native Wayland
 kitty
 thunar                      # replaces dolphin + the KDE dependency chain
 thunar-archive-plugin
@@ -111,7 +111,8 @@ ffmpegthumbnailer
 file-roller
 unzip
 7zip
-fastfetch                   # the showcase screenshot tool
+fastfetch                   # runs on every new shell
+mpv                         # video player
 
 # --------------------------------------------------- // Shell (zsh is installed already)
 zsh-autosuggestions         # fish-style suggestions, no framework needed
@@ -122,35 +123,26 @@ fzf
 bat
 eza
 
+# --------------------------------------------------- // Development (Neovim / LazyVim, Python)
+ripgrep                     # LazyVim grep / picker
+fd                          # LazyVim file finder
+lazygit                     # git UI inside Neovim
+tree-sitter-cli             # LazyVim builds parsers with it
+nodejs                      # Mason: several language servers run on Node
+npm
+uv                          # Python tools and venvs
+
+# --------------------------------------------------- // Work: Odoo
+postgresql                  # Odoo database
+openldap                    # headers/libs for Odoo's python-ldap
+wkhtmltopdf-bin             # (AUR) Odoo PDF reports need the patched-Qt build; not in the official repos
+
 # =====================================================================
-# LATER: uncomment after your first launch works
+# LATER: uncomment when needed
 # =====================================================================
 
-# --------------------------------------------------- // Gaming
+# --------------------------------------------------- // Gaming (lib32 drivers above are already in place)
 # steam
 # gamemode
 # mangohud
 # gamescope
-
-# --------------------------------------------------- // Flair
-# cava                      # audio visualizer
-# wttrbar                   # weather module for waybar (AUR)
-# wf-recorder               # screen recording (software encode on NVIDIA)
-# spotify                   # (AUR)
-# spicetify-cli             # (AUR?)
-# swayosd                   # volume/brightness OSD (AUR?)
-# ddcutil                   # external monitor brightness via DDC
-# duf                       # prettier df
-
-# --------------------------------------------------- // Login screen: SDDM + Candy theme
-# Using SDDM replaces the tty + uwsm autostart: remove that line from ~/.zprofile first.
-# sddm
-# qt5-quickcontrols         # Candy theme UI elements (from HyDE's list)
-# qt5-quickcontrols2
-# qt5-graphicaleffects
-# Then, from your HyDE-ref clone:
-#   sudo tar -xzf Source/arcs/Sddm_Candy.tar.gz -C /usr/share/sddm/themes/
-#   sudo mkdir -p /etc/sddm.conf.d
-#   sudo cp /usr/share/sddm/themes/Candy/the_hyde_project.conf /etc/sddm.conf.d/
-#   sudo systemctl enable sddm
-# If the theme renders blank, check the Qt version it expects: current sddm is Qt6.
