@@ -17,7 +17,14 @@
     // 1-5 always shown, the same five on both bars ([] = every output). Each
     // also needs persistent = true in Hyprland (monitors.lua). Avoid "*": 5,
     // which makes five per monitor and gave the two bars different lists.
-    "persistent-workspaces": { "1": [], "2": [], "3": [], "4": [], "5": [] },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": []
+    },
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
   },

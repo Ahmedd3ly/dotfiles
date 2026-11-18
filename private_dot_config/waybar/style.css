@@ -123,8 +123,9 @@ window#waybar {
 
 #accent {
     background-color: @wb-act-bg;
-    border-radius: 10pt;
-    padding: 0 1.4em 0 0.8em;
+    border-radius: 16pt;
+    margin: 2px 0 0px 2px;
+    padding: 0 0.8em 0 0.8em;
 }
 
 #accent #custom-menu,
@@ -139,7 +140,7 @@ window#waybar {
     background: transparent;
     padding: 0 0.25em;
     margin: 0.3em 0;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #accent #workspaces button.visible:not(.active) {
