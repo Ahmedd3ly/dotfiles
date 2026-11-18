@@ -7,13 +7,12 @@
 #   base base-devel linux linux-firmware intel-ucode sudo btrfs-progs grub
 #   grub-btrfs inotify-tools efibootmgr networkmanager zram-generator
 #   pacman-contrib zsh neovim git cronie reflector
-# AUR (6, each justified inline): paru-bin, bibata-cursor-theme-bin,
-#   tela-circle-icon-theme-dracula, wkhtmltopdf-bin, vesktop-bin, spicetify-cli.
+# AUR (5, each justified inline): paru-bin, bibata-cursor-theme-bin,
+#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli.
 # Audit: compare with `pacman -Qqe` (see RUNBOOK.md, "Package audit").
 # =====================================================================
 
 # --------------------------------------------------- // Base
-compsize                    # real disk usage under btrfs compression
 timeshift                   # snapshots
 tlp                         # laptop power (then: sudo systemctl enable --now tlp; mask systemd-rfkill.service/.socket)
 tlp-pd                      # TLP profiles over the power-profiles-daemon D-Bus API (bar switcher; sudo systemctl enable --now tlp-pd)
@@ -26,7 +25,6 @@ paru-bin                    # (AUR) AUR helper; -bin = prebuilt, no Rust toolcha
 
 # --------------------------------------------------- // GPU (hybrid Intel + NVIDIA)
 mesa
-mesa-utils                  # glxinfo, used by the first-launch GPU test
 vulkan-icd-loader
 vulkan-intel
 intel-media-driver          # VA-API (iHD) decode on the iGPU
@@ -35,10 +33,6 @@ nvidia-utils                # also gives you nvidia-smi
 nvidia-prime                # prime-run for offloading
 egl-wayland
 # libva-nvidia-driver       # only if you want NVIDIA video decode; Intel (iHD) is the default
-lib32-mesa                  # Steam / Proton
-lib32-vulkan-icd-loader
-lib32-vulkan-intel
-lib32-nvidia-utils
 
 # --------------------------------------------------- // Session
 uwsm                        # Wayland session manager (start from tty, no display manager)
@@ -69,8 +63,7 @@ wireplumber                 # also gives you wpctl, replaces pamixer
 pavucontrol                 # one GUI mixer
 playerctl
 bluez
-bluez-utils
-bluetui                     # TUI bluetooth manager
+bluetui                     # TUI bluetooth manager (talks to bluez directly; no bluez-utils needed)
 brightnessctl
 
 # --------------------------------------------------- // Clipboard & capture
@@ -87,7 +80,7 @@ jq                          # glue for scripts
 matugen                     # extra repo; wallpaper -> accent colours via templates (v4: source_color_index in config)
 adw-gtk-theme               # GTK3/4 base that recolors cleanly
 bibata-cursor-theme-bin     # (AUR)
-tela-circle-icon-theme-dracula # (AUR) icon theme for rofi + GTK, as on HyDE (icons only, no code)
+tela-circle-icon-theme-dracula # icon theme for rofi + GTK, as on HyDE (official repo)
 dconf                       # gsettings backend
 qt6ct                       # Qt platform theme (QT_QPA_PLATFORMTHEME in uwsm env); hyprpolkitagent is Qt
 qt6-wayland                 # hyprpolkitagent (Qt 6) on Wayland
@@ -95,7 +88,6 @@ qt6-wayland                 # hyprpolkitagent (Qt 6) on Wayland
 # --------------------------------------------------- // Fonts
 ttf-jetbrains-mono-nerd
 ttf-cascadia-code-nerd      # kitty font (CaskaydiaCove, as on HyDE)
-inter-font
 noto-fonts                  # includes Arabic coverage
 noto-fonts-emoji
 
@@ -144,8 +136,12 @@ wkhtmltopdf-bin             # (AUR) Odoo PDF reports need the patched-Qt build; 
 # LATER: uncomment when needed
 # =====================================================================
 
-# --------------------------------------------------- // Gaming (lib32 drivers above are already in place)
-# steam
+# --------------------------------------------------- // Gaming (needs [multilib] enabled in pacman.conf)
+# steam                     # pulls the lib32 drivers below as dependencies if absent
+# lib32-mesa
+# lib32-vulkan-icd-loader
+# lib32-vulkan-intel
+# lib32-nvidia-utils
 # gamemode
 # mangohud
 # gamescope
