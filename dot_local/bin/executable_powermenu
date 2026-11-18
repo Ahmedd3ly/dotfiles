@@ -2,16 +2,24 @@
 # █▀█ █▀█ █░█░█ █▀▀ █▀█
 # █▀▀ █▄█ ▀▄▀▄▀ ██▄ █▀▄
 #
-# Why: session menu in rofi, replacing wlogout. Five actions, no daemon.
+# Why: session menu as a row of five tiles in rofi (layout: rofi/powermenu.rasi),
+# the wlogout look with no extra package. Rows are markup with a newline, so
+# they are '|'-separated (-sep) and two lines tall (-eh 2); -format i returns
+# the index, so the markup never has to be parsed back.
 # Logout / Reboot / Shutdown fade the screens to black first (session-fade).
+# Second press (bar right-click) closes it.
 set -euo pipefail
 
-choice=$(printf '%s\n' Lock Logout Suspend Reboot Shutdown | rofi -dmenu -i -p power) || exit 0
+pkill -x rofi && exit 0
 
-case "$choice" in
-    Lock)     pidof hyprlock || hyprlock ;;
-    Logout)   session-fade uwsm stop ;;
-    Suspend)  systemctl suspend ;;
-    Reboot)   session-fade systemctl reboot ;;
-    Shutdown) session-fade systemctl poweroff ;;
+rows=$'<span size="280%">󰌾</span>\nLock|<span size="280%">󰍃</span>\nLogout|<span size="280%">󰒲</span>\nSuspend|<span size="280%">󰜉</span>\nReboot|<span size="280%">󰐥</span>\nShutdown'
+i=$(printf '%s' "$rows" | rofi -dmenu -i -sep '|' -eh 2 -markup-rows -format i \
+    -no-custom -theme ~/.config/rofi/powermenu.rasi -p power) || exit 0
+
+case "$i" in
+    0) pidof hyprlock || hyprlock ;;
+    1) session-fade uwsm stop ;;
+    2) systemctl suspend ;;
+    3) session-fade systemctl reboot ;;
+    4) session-fade systemctl poweroff ;;
 esac

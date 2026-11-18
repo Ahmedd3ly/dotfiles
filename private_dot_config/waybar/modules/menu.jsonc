@@ -5,6 +5,6 @@
     "tooltip": true,
     "tooltip-format": "Apps (left)  ·  Power (right)",
     "on-click": "$HOME/.local/bin/rofi-launch launcher",
-    "on-click-right": "pkill -x rofi || $HOME/.local/bin/powermenu"
+    "on-click-right": "$HOME/.local/bin/powermenu"
   }
 }
