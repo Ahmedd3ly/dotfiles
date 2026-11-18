@@ -82,8 +82,8 @@ adw-gtk-theme               # GTK3/4 base that recolors cleanly
 bibata-cursor-theme-bin     # (AUR)
 tela-circle-icon-theme-dracula # icon theme for rofi + GTK, as on HyDE (official repo)
 dconf                       # gsettings backend
-qt6ct                       # Qt platform theme (QT_QPA_PLATFORMTHEME in uwsm env); hyprpolkitagent is Qt
-qt6-wayland                 # hyprpolkitagent (Qt 6) on Wayland
+qt6ct                       # Qt platform theme (QT_QPA_PLATFORMTHEME in uwsm env) for the Qt bits below
+qt6-wayland                 # screen-share picker (xdg-desktop-portal-hyprland, Qt) native on Wayland; polkit dialog itself is hyprtoolkit
 
 # --------------------------------------------------- // Fonts
 ttf-jetbrains-mono-nerd
