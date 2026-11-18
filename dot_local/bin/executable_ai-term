@@ -5,8 +5,13 @@
 # Why: open a command in the floating AI terminal (kitty class "ai", see
 # rules.lua). If the command fails, the window stays open showing the error
 # instead of vanishing. Used by SUPER+Shift+Return and crash notifications.
-# Usage: ai-term [command...]   (default: ai)
+# Usage: ai-term [command...]   (default: ai, started in the dotfiles source,
+#        so the agent works where rice changes are made and trusts one folder,
+#        not all of $HOME)
 set -euo pipefail
-(( $# )) || set -- ai
+if (( ! $# )); then
+    cd "$(chezmoi source-path 2>/dev/null || echo "$HOME")"
+    set -- ai
+fi
 # shellcheck disable=SC2016  # expanded by the inner sh, not here
 exec kitty --class ai sh -c '"$@" || { s=$?; printf "\n[%s exited with status %s; Enter closes]" "$1" "$s"; read -r _; }' sh "$@"
