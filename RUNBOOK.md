@@ -233,8 +233,11 @@ history go to ~/.config/claude because CLAUDE_CONFIG_DIR is set (zsh 10-env and
 `ai`); set it before the first run or it creates ~/.claude and ~/.claude.json.
 None of that state is in the dotfiles (.chezmoiignore).
 
+Open a new terminal first (so zsh reads 10-env), then run these one at a
+time; don't paste the block (an `exec zsh` or a login prompt swallows the rest):
+
 ```bash
-exec zsh; echo "$CLAUDE_CONFIG_DIR"      # /home/<you>/.config/claude
+echo "$CLAUDE_CONFIG_DIR"                # /home/<you>/.config/claude
 curl -fsSL https://claude.ai/install.sh | bash
 claude --version                         # "<version> (Claude Code)"
 ai                                       # first run: log in through the browser

@@ -31,6 +31,8 @@ case "$agent" in
         # Settings, login and history in ~/.config/claude instead of ~/.claude
         # and ~/.claude.json (also set in zsh's 10-env for a bare `claude`).
         export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/claude}"
+        command -v claude >/dev/null ||
+            { echo "ai: 'claude' is not installed (RUNBOOK.md: AI agent CLI)" >&2; exit 127; }
         case "$mode" in
             chat)  exec claude "$@" ;;
             plan)  exec claude --permission-mode plan "$@" ;;

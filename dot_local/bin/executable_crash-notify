@@ -19,7 +19,7 @@ if [[ ${1:-} == --prompt ]]; then              # crash-notify --prompt PID EXE S
     pid=$2 name=${3##*/} sig=$4
     act=$(notify-send -a crash -i dialog-error -t 20000 -A default=Diagnose \
         "$name crashed ($sig)" "Click to diagnose, or later: diag crash $pid") || exit 0
-    [[ $act == default ]] && exec kitty --class ai -e diag crash "$pid"
+    [[ $act == default ]] && exec ai-term diag crash "$pid"
     exit 0
 fi
 

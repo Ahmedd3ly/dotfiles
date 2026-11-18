@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# ▄▀█ █ ▄▄ ▀█▀ █▀▀ █▀█ █▀▄▀█
+# █▀█ █ ░░ ░█░ ██▄ █▀▄ █░▀░█
+#
+# Why: open a command in the floating AI terminal (kitty class "ai", see
+# rules.lua). If the command fails, the window stays open showing the error
+# instead of vanishing. Used by SUPER+Shift+Return and crash notifications.
+# Usage: ai-term [command...]   (default: ai)
+set -euo pipefail
+(( $# )) || set -- ai
+# shellcheck disable=SC2016  # expanded by the inner sh, not here
+exec kitty --class ai sh -c '"$@" || { s=$?; printf "\n[%s exited with status %s; Enter closes]" "$1" "$s"; read -r _; }' sh "$@"
