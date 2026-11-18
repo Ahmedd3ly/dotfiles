@@ -3,7 +3,7 @@
 //
 // Why: wlogout's look (a row of big tiles) without wlogout: one row of five
 // tiles, Nerd Font glyph over the label. Rows come from powermenu as Pango
-// markup with a newline in each, hence -sep '|' and -eh 2 there.
+// markup with a newline in each, hence -sep '|' and -eh 4 there.
 // Colours, border and rounding come from theme.rasi; the accent fill of the
 // selected tile follows the wallpaper (accents.rasi).
 
@@ -36,7 +36,7 @@ listview {
     background-color:            transparent;
 }
 element {
-    padding:                     30px 0px 24px 0px;
+    padding:                     16px 0px;
     cursor:                      pointer;
     background-color:            #31324466;   /* surface0, faint tile */
     text-color:                  @main-fg;

@@ -4,7 +4,7 @@
 #
 # Why: session menu as a row of five tiles in rofi (layout: rofi/powermenu.rasi),
 # the wlogout look with no extra package. Rows are markup with a newline, so
-# they are '|'-separated (-sep) and two lines tall (-eh 2); -format i returns
+# they are '|'-separated (-sep) and four text lines tall (-eh 4: 280% glyph + label; less clips the glyph top); -format i returns
 # the index, so the markup never has to be parsed back.
 # Logout / Reboot / Shutdown fade the screens to black first (session-fade).
 # Second press (bar right-click) closes it.
@@ -13,7 +13,7 @@ set -euo pipefail
 pkill -x rofi && exit 0
 
 rows=$'<span size="280%">󰌾</span>\nLock|<span size="280%">󰍃</span>\nLogout|<span size="280%">󰒲</span>\nSuspend|<span size="280%">󰜉</span>\nReboot|<span size="280%">󰐥</span>\nShutdown'
-i=$(printf '%s' "$rows" | rofi -dmenu -i -sep '|' -eh 2 -markup-rows -format i \
+i=$(printf '%s' "$rows" | rofi -dmenu -i -sep '|' -eh 4 -markup-rows -format i \
     -no-custom -theme ~/.config/rofi/powermenu.rasi -p power) || exit 0
 
 case "$i" in
