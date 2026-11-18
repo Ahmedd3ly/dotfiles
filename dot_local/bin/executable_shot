@@ -4,7 +4,8 @@
 #
 # Why: screenshots with grim + slurp, no HyDE screenshot wrapper.
 # Usage: shot region | freeze | monitor | all
-#   region   select an area, annotate in satty (save / copy from there)
+#   region   select an area -> clipboard at once, then annotate in satty
+#            (Enter: annotated copy to clipboard + file; Esc: keep the raw one)
 #   freeze   same, but the screen is frozen while you select
 #   monitor  focused monitor -> file + clipboard
 #   all      every monitor   -> file + clipboard
@@ -14,8 +15,18 @@ dir="$(xdg-user-dir PICTURES)/Screenshots"
 file="$dir/$(date +%Y-%m-%d_%H-%M-%S).png"
 mkdir -p "$dir"
 
-annotate() { satty --filename - --output-filename "$file" --copy-command wl-copy --early-exit; }
-done_msg() { wl-copy < "$file"; notify-send -i "$file" "Screenshot saved" "$file"; }
+# The raw capture goes to the clipboard first, so a shot is always pasteable
+# even if satty is closed without saving. Enter replaces it with the
+# annotated version and saves the file.
+annotate() {
+    local frame; frame=$(mktemp --suffix=.png)
+    cat > "$frame"
+    wl-copy --type image/png < "$frame"
+    satty --filename "$frame" --output-filename "$file" --copy-command wl-copy \
+        --actions-on-enter save-to-clipboard,save-to-file,exit
+    rm -f "$frame"
+}
+done_msg() { wl-copy --type image/png < "$file"; notify-send -i "$file" "Screenshot copied and saved" "$file"; }
 
 case "${1:-}" in
     region)
