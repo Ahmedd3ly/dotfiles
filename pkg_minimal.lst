@@ -100,9 +100,8 @@ thunar-volman
 gvfs                        # trash, automount (replaces udiskie)
 tumbler                     # thumbnails
 ffmpegthumbnailer
-file-roller
-unzip
-7zip
+file-roller                 # engine behind Thunar's Extract here / Create archive (thunar-archive-plugin)
+unzip                       # Mason needs it to unpack language servers
 fastfetch                   # runs on every new shell
 mpv                         # video player
 spotify-launcher            # official Spotify client, per-user install in ~/.local/share (self-updates; Spicetify can write to it)
