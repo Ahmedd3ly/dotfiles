@@ -115,7 +115,6 @@ zsh-syntax-highlighting
 zsh-completions
 starship
 fzf
-bat
 eza
 
 # --------------------------------------------------- // Development (Neovim / LazyVim, Python)
