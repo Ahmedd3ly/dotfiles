@@ -118,13 +118,13 @@ window#waybar {
 /* Title spacing lives on the title, so an empty title (empty workspace)
  * leaves no dark stub after the accent block. */
 #pill.left1 #window {
-    margin: 0 0.9em 0 0.6em;
+    margin: 0 0.9em 0 1.6em;
 }
 
 #accent {
     background-color: @wb-act-bg;
     border-radius: 10pt;
-    padding: 0 0.4em 0 0.8em;
+    padding: 0 1.4em 0 0.8em;
 }
 
 #accent #custom-menu,
@@ -139,7 +139,7 @@ window#waybar {
     background: transparent;
     padding: 0 0.25em;
     margin: 0.3em 0;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 #accent #workspaces button.visible:not(.active) {
