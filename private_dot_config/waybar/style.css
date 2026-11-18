@@ -107,8 +107,8 @@ window#waybar {
 
 /* ---- Accent block: menu + workspaces, colours inverted ------------------
  * The wallpaper accent becomes the fill and the island's dark crust becomes
- * the ink. The active workspace flips back (crust pill, accent dot), so it
- * still stands out. Flush with the island's left edge: left1 has no left
+ * the ink. Workspaces are dots: solid = current, ringed = has windows,
+ * ring = empty. Flush with the island's left edge: left1 has no left
  * padding, and the block shares the 10pt radius. */
 
 #pill.left1 {
@@ -132,13 +132,22 @@ window#waybar {
     color: @main-bg;
 }
 
+/* Dots, evenly spaced: no stretched pill, the glyph alone marks the state
+ * (solid / ringed / ring, see modules/hyprland.jsonc). */
+#accent #workspaces button,
 #accent #workspaces button.active {
-    background: @main-bg;
-    color: @wb-act-bg;
+    background: transparent;
+    padding: 0 0.25em;
+    margin: 0.3em 0;
+    font-size: 12px;
+}
+
+#accent #workspaces button.visible:not(.active) {
+    color: alpha(@main-bg, 0.55);
 }
 
 #accent #workspaces button:hover {
-    background: alpha(@main-bg, 0.25);
+    background: alpha(@main-bg, 0.18);
     color: @main-bg;
 }
 

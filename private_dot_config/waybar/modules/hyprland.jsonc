@@ -4,9 +4,20 @@
     "all-outputs": true,
     "active-only": false,
     "tooltip": false,
-    // Dots, not numbers: a big dot for the active workspace, small for the rest.
+    // Dots like a radio set: solid = current, ringed = has windows, ring = empty.
+    // "visible" = shown on the other monitor (dimmed in style.css).
     "format": "{icon}",
-    "format-icons": { "active": "󰝥", "default": "󰧟" },
+    "format-icons": {
+      "active": "󰄯",
+      "visible": "󰄯",
+      "persistent": "󰐾",
+      "default": "󰐾",
+      "empty": "󰐽"
+    },
+    // 1-5 always shown, the same five on both bars ([] = every output). Each
+    // also needs persistent = true in Hyprland (monitors.lua). Avoid "*": 5,
+    // which makes five per monitor and gave the two bars different lists.
+    "persistent-workspaces": { "1": [], "2": [], "3": [], "4": [], "5": [] },
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
   },

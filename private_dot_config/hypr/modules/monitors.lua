@@ -53,4 +53,11 @@ hl.monitor({
 -- ── Workspace placement ───────────────────────────────────────────────────
 -- Keep workspace 1 on the laptop panel even when the external monitor
 -- initialises first (it does when NVIDIA is the primary GPU).
-hl.workspace_rule({ workspace = '1', monitor = 'eDP-1', default = true })
+hl.workspace_rule({ workspace = '1', monitor = 'eDP-1', default = true, persistent = true })
+
+-- Workspaces 1-5 always exist, so the bar can show empty ones as rings
+-- (waybar's persistent-workspaces needs this). 2-5 have no monitor: they
+-- open wherever they're first used.
+for i = 2, 5 do
+    hl.workspace_rule({ workspace = tostring(i), persistent = true })
+end
