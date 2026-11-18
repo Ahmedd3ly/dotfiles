@@ -194,3 +194,31 @@ Accent variants follow the same pattern (e.g. catppuccin-mocha-pink).
 
 Note: Spicetify and Vencord both modify the official clients, which their
 terms of service technically forbid; cosmetic mods are rarely acted on.
+
+## Watchdogs off (no "watchdog did not stop!" at shutdown)
+
+Why: two unrelated "watchdogs", neither useful on a laptop that is attended:
+- Hardware watchdog (Intel TCO timer, module iTCO_wdt): a timer in the
+  chipset that resets the machine if nothing pets it, meant for unattended
+  servers. systemd arms it during reboot (RebootWatchdogSec), and at
+  shutdown the kernel prints "watchdog: watchdog0: watchdog did not stop!"
+  because the driver is closed without being disarmed. Harmless, just noise.
+- Kernel soft-lockup / NMI watchdog: periodic checks for stuck CPUs; the
+  NMI one keeps a perf counter busy and costs a little power.
+Neither relates to daily use here; disabling both is the Arch wiki's
+"Improving performance" advice for desktops/laptops.
+
+```bash
+printf '%s\n' '# Hardware watchdog: not needed on an attended laptop (see RUNBOOK.md)' \
+  'blacklist iTCO_wdt' 'blacklist iTCO_vendor_support' \
+  | sudo tee /etc/modprobe.d/nowatchdog.conf
+# kernel parameters: add to GRUB_CMDLINE_LINUX_DEFAULT
+sudo sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 nowatchdog nmi_watchdog=0"/' /etc/default/grub
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo etckeeper commit "watchdogs off: blacklist iTCO_wdt, nowatchdog nmi_watchdog=0"
+```
+
+Check after reboot: `lsmod | grep -i tco` prints nothing; `cat
+/proc/sys/kernel/watchdog /proc/sys/kernel/nmi_watchdog` prints 0 and 0;
+no "did not stop" in `journalctl -b -1 | grep -i watchdog` after a reboot.
+Undo: delete /etc/modprobe.d/nowatchdog.conf, remove the two parameters.
