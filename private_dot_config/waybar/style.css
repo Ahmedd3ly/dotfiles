@@ -105,6 +105,43 @@ window#waybar {
     transition: all 0.3s cubic-bezier(.55, -0.68, .48, 1.682);
 }
 
+/* ---- Accent block: menu + workspaces, colours inverted ------------------
+ * The wallpaper accent becomes the fill and the island's dark crust becomes
+ * the ink. The active workspace flips back (crust pill, accent dot), so it
+ * still stands out. Flush with the island's left edge: left1 has no left
+ * padding, and the block shares the 10pt radius. */
+
+#pill.left1 {
+    padding: 0;
+}
+
+/* Title spacing lives on the title, so an empty title (empty workspace)
+ * leaves no dark stub after the accent block. */
+#pill.left1 #window {
+    margin: 0 0.9em 0 0.6em;
+}
+
+#accent {
+    background-color: @wb-act-bg;
+    border-radius: 10pt;
+    padding: 0 0.4em 0 0.8em;
+}
+
+#accent #custom-menu,
+#accent #workspaces button {
+    color: @main-bg;
+}
+
+#accent #workspaces button.active {
+    background: @main-bg;
+    color: @wb-act-bg;
+}
+
+#accent #workspaces button:hover {
+    background: alpha(@main-bg, 0.25);
+    color: @main-bg;
+}
+
 /* ---- Spacing ----------------------------------------------------------- */
 
 .modules-left, .modules-center, .modules-right {

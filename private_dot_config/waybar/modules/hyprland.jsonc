@@ -4,6 +4,9 @@
     "all-outputs": true,
     "active-only": false,
     "tooltip": false,
+    // Dots, not numbers: a big dot for the active workspace, small for the rest.
+    "format": "{icon}",
+    "format-icons": { "active": "󰝥", "default": "󰧟" },
     "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
     "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
   },
