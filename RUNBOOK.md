@@ -244,6 +244,12 @@ ai                                       # first run: log in through the browser
 ls -A ~ | grep -i claude                 # nothing: no ~/.claude, no ~/.claude.json
 ```
 
+Account sync off: settings.json is seeded (once) with disableClaudeAiConnectors,
+syncClaudeAiPlugins=false and syncClaudeAiSkills=false. Logging in otherwise
+imports the claude.ai account's connectors and plugins as MCP servers, and its
+skills into skills/synced, which is the shared ~/.config/agents/skills.
+Turn one back on in ~/.config/claude/settings.json when you actually want it.
+
 Safety: never start it with permissions skipped. System changes: plan mode
 first (Shift+Tab), Timeshift snapshot, then review `chezmoi diff` / `sudo
 etckeeper vcs diff`. Engine switch: ~/.config/ai/agent + a branch in ~/.local/bin/ai.

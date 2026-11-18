@@ -23,6 +23,7 @@ first-launch.sh
 .config/claude/*
 !.config/claude/CLAUDE.md
 !.config/claude/skills
+!.config/claude/settings.json   # seeded once (create_); Claude edits it afterwards
 
 # SSH keys and machine state: never in the repo (only ~/.ssh/config is tracked)
 .ssh/id_*

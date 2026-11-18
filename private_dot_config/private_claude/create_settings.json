@@ -1,0 +1,5 @@
+{
+  "disableClaudeAiConnectors": true,
+  "syncClaudeAiPlugins": false,
+  "syncClaudeAiSkills": false
+}
