@@ -1,0 +1,9 @@
+# █▀▄▀█ █░█ ▀█▀ █▀▀
+# █░▀░█ █▄█ ░█░ ██▄
+#
+# Why: programs whose crashes don't notify (crash-notify). One glob per line,
+# matched against the crashed program's full path; # starts a comment.
+# Muting hides the notification only: the dump is kept and `diag crash` works.
+# Edit with: chezmoi edit ~/.config/diag/mute
+
+*/.cache/*            # package builds: paru runs test suites that abort on purpose

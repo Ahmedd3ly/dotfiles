@@ -1,0 +1,15 @@
+# █▀▀ █▀█ ▄▀█ █▀ █░█
+# █▄▄ █▀▄ █▀█ ▄█ █▀█
+#
+# Why: wake crash-notify when systemd-coredump writes a dump. systemd's own
+# inotify watch, no extra process. Lives with the graphical session.
+[Unit]
+Description=Watch for new core dumps
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Path]
+PathChanged=/var/lib/systemd/coredump
+
+[Install]
+WantedBy=graphical-session.target

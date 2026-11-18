@@ -1,0 +1,7 @@
+# Why: one pass of crash-notify per change in the coredump directory.
+[Unit]
+Description=Notify about new core dumps
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/crash-notify

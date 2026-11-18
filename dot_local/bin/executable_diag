@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# █▀▄ █ ▄▀█ █▀▀
+# █▄▀ █ █▀█ █▄█
+#
+# Why: turn a failure into a facts report on disk, then hand the agent the
+# report (not raw dumps) through `ai -r`, read-only. Engine-neutral; the
+# agent follows the "diagnose" skill. Reports stay in ~/.cache/diag.
+# Never sends the core file itself (it holds process memory).
+#
+# Usage: diag crash [PID]   a core dump (default: the newest)
+#        diag boot          errors and failed units since boot
+#        diag unit NAME     one systemd unit (system or user)
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+dir="${XDG_CACHE_HOME:-$HOME/.cache}/diag"
+mkdir -p "$dir"
+now=$(date +%Y%m%d-%H%M%S)
+
+header() {
+    printf '# %s\n\n- Host: %s, kernel %s\n- %s\n- Report made: %s\n' \
+        "$1" "$(uname -n)" "$(uname -r)" "$(pacman -Q hyprland 2>/dev/null || echo 'hyprland ?')" "$(date -Is)"
+}
+section() { printf '\n## %s\n\n```\n' "$1"; cat; printf '```\n'; }
+
+case "${1:-}" in
+    crash)
+        pid=${2:-$(coredumpctl list --json=short --no-pager -n1 | jq -r '.[-1].pid')}
+        info=$(coredumpctl info --no-pager "$pid")
+        exe=$(sed -n 's/^ *Executable: //p' <<<"$info" | head -n1)
+        usec=$(coredumpctl list --json=short --no-pager "$pid" | jq -r '.[-1].time')
+        s=$(( ${usec%%.*} / 1000000 ))
+        report="$dir/$now-crash-${exe##*/}.md"
+        {
+            header "Crash: ${exe##*/} (PID $pid)"
+            pacman -Qo "$exe" 2>&1 | section "Package"
+            coredumpctl list --no-pager "$exe" 2>&1 | tail -n 15 | section "Earlier crashes of this program"
+            printf '%s\n' "$info" | section "coredumpctl info"
+            journalctl --no-pager -o short-iso --since "@$((s - 60))" --until "@$((s + 5))" 2>&1 |
+                tail -n 150 | section "Journal, 60 s before to 5 s after"
+        } > "$report"
+        task="Diagnose the crash in ./${report##*/} following the diagnose skill." ;;
+    boot)
+        report="$dir/$now-boot.md"
+        {
+            header "Errors since boot"
+            { systemctl --failed --no-legend; systemctl --user --failed --no-legend; } 2>&1 | section "Failed units"
+            journalctl -b -p err --no-pager -o short-iso 2>&1 | tail -n 300 | section "journalctl -b -p err (last 300)"
+        } > "$report"
+        task="Triage the errors in ./${report##*/} following the diagnose skill: group them, say which matter." ;;
+    unit)
+        unit=${2:?usage: diag unit NAME}; scope=()
+        systemctl cat "$unit" >/dev/null 2>&1 || scope=(--user)
+        report="$dir/$now-unit-${unit//\//_}.md"
+        {
+            header "Unit: $unit ${scope[*]}"
+            systemctl "${scope[@]}" status --no-pager -l "$unit" 2>&1 | section "status"
+            journalctl "${scope[@]}" -u "$unit" -b -n 150 --no-pager -o short-iso 2>&1 | section "journal (this boot)"
+        } > "$report"
+        task="Diagnose why the unit in ./${report##*/} failed, following the diagnose skill." ;;
+    *)
+        sed -n '/^# Usage/,/^[^#]/{/^#/s/^# \{0,1\}//p}' "$0" >&2; exit 2 ;;
+esac
+
+cd "$dir"
+exec ai -r "$task"

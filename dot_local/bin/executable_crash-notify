@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# █▀▀ █▀█ ▄▀█ █▀ █░█
+# █▄▄ █▀▄ █▀█ ▄█ █▀█
+#
+# Why: "X crashed, click to diagnose". Started by crash-notify.path when
+# systemd-coredump writes a dump; no daemon. Notifies once per new crash of
+# your own processes, skips muted programs (~/.config/diag/mute) and repeats
+# of the same program within 10 minutes. A click opens `diag crash <pid>`
+# in the floating AI terminal. Each prompt runs in its own transient unit, so
+# a notification waiting for a click never blocks the next crash.
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+state="${XDG_STATE_HOME:-$HOME/.local/state}/diag"
+mute="${XDG_CONFIG_HOME:-$HOME/.config}/diag/mute"
+mkdir -p "$state/seen"
+
+if [[ ${1:-} == --prompt ]]; then              # crash-notify --prompt PID EXE SIG
+    pid=$2 name=${3##*/} sig=$4
+    act=$(notify-send -a crash -i dialog-error -t 20000 -A default=Diagnose \
+        "$name crashed ($sig)" "Click to diagnose, or later: diag crash $pid") || exit 0
+    [[ $act == default ]] && exec kitty --class ai -e diag crash "$pid"
+    exit 0
+fi
+
+muted() {
+    [[ -r $mute ]] || return 1
+    local line pat
+    while IFS= read -r line; do
+        pat=${line%%#*}; pat=${pat%"${pat##*[![:space:]]}"}
+        # shellcheck disable=SC2053  # $pat is a glob on purpose
+        [[ -n $pat && $1 == $pat ]] && return 0
+    done < "$mute"
+    return 1
+}
+
+# First run: start from now instead of replaying old dumps.
+if [[ ! -s $state/last ]]; then date +%s%6N > "$state/last"; exit 0; fi
+last=$(<"$state/last")
+
+# The dump file lands a moment before its journal entry: retry briefly.
+rows=""
+for _ in 1 2 3 4 5; do
+    rows=$(coredumpctl list --json=short --no-pager --since=-15min 2>/dev/null |
+        jq -c --argjson last "$last" --argjson uid "$(id -u)" \
+            '.[]? | select(((.time | tonumber?) // 0) > $last and .uid == $uid)') || rows=""
+    [[ -n $rows ]] && break
+    sleep 1
+done
+[[ -z $rows ]] && exit 0
+
+while IFS= read -r row; do
+    t=$(jq -r .time <<<"$row"); pid=$(jq -r .pid <<<"$row")
+    exe=$(jq -r .exe <<<"$row"); sig=$(jq -r .sig <<<"$row")
+    echo "$t" > "$state/last"
+    [[ $sig =~ ^[0-9]+$ ]] && sig="SIG$(kill -l "$sig")"
+    muted "$exe" && continue
+    seen="$state/seen/$(printf '%s' "$exe" | md5sum | cut -c1-16)"
+    if [[ -e $seen ]] && (( $(date +%s) - $(stat -c %Y "$seen") < 600 )); then continue; fi
+    touch "$seen"
+    systemd-run --user --collect --quiet --unit="crash-prompt-$pid" -- "$0" --prompt "$pid" "$exe" "$sig"
+done <<<"$rows"

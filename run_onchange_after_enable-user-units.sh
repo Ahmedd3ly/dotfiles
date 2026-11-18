@@ -10,6 +10,7 @@
 # ssh-agent.service ships with openssh (WantedBy=default.target, so it starts
 # at login, before the graphical session): holds the unlocked SSH key, so the
 # passphrase is asked once per login (see ~/.ssh/config AddKeysToAgent).
+# crash-notify.path (ours, ~/.config/systemd/user): crash notifications.
 set -eu
 
 systemctl --user enable \
@@ -19,4 +20,5 @@ systemctl --user enable \
     hypridle.service \
     hyprsunset.service \
     waybar.service \
-    ssh-agent.service
+    ssh-agent.service \
+    crash-notify.path
