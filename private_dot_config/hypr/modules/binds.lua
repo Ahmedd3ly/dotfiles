@@ -57,6 +57,7 @@ bind(M("Return"), exec(apps.terminal),    "[Apps] terminal")
 bind(M("E"),      exec(apps.fileManager), "[Apps] file manager")
 bind(M("B"),      exec(apps.browser),     "[Apps] browser")
 bind(M("C"),      exec(apps.editor),      "[Apps] editor")
+bind(M("SHIFT + Return"), exec("kitty --class ai -e ai"), "[Apps] AI agent (engine: ~/.config/ai/agent)")
 
 ---- Menus (rofi; a second press closes the open menu) ----------------------
 local function menu(cmd) return exec("pkill -x rofi || " .. cmd) end

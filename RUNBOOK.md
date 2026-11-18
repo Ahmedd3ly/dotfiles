@@ -222,3 +222,27 @@ Check after reboot: `lsmod | grep -i tco` prints nothing; `cat
 /proc/sys/kernel/watchdog /proc/sys/kernel/nmi_watchdog` prints 0 and 0;
 no "did not stop" in `journalctl -b -1 | grep -i watchdog` after a reboot.
 Undo: delete /etc/modprobe.d/nowatchdog.conf, remove the two parameters.
+
+## AI agent CLI (Claude Code)
+
+Why: the agent behind `ai` (SUPER+Shift+Return, `ask`, crash diagnosis).
+Native installer, not pacman: it's the vendor's recommended method, needs no
+Node.js, and updates itself in the background. Files: launcher
+~/.local/bin/claude, versions in ~/.local/share/claude. Its settings, login and
+history go to ~/.config/claude because CLAUDE_CONFIG_DIR is set (zsh 10-env and
+`ai`); set it before the first run or it creates ~/.claude and ~/.claude.json.
+None of that state is in the dotfiles (.chezmoiignore).
+
+```bash
+exec zsh; echo "$CLAUDE_CONFIG_DIR"      # /home/<you>/.config/claude
+curl -fsSL https://claude.ai/install.sh | bash
+claude --version                         # "<version> (Claude Code)"
+ai                                       # first run: log in through the browser
+ls -A ~ | grep -i claude                 # nothing: no ~/.claude, no ~/.claude.json
+```
+
+Safety: never start it with permissions skipped. System changes: plan mode
+first (Shift+Tab), Timeshift snapshot, then review `chezmoi diff` / `sudo
+etckeeper vcs diff`. Engine switch: ~/.config/ai/agent + a branch in ~/.local/bin/ai.
+Uninstall: `rm ~/.local/bin/claude; rm -rf ~/.local/share/claude ~/.config/claude`
+(the last one deletes login and history; the tracked links come back on apply).

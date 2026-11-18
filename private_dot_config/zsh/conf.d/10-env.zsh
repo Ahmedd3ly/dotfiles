@@ -8,3 +8,6 @@ export DOTNET_CLI_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/dotnet"
 export NUGET_PACKAGES="${XDG_CACHE_HOME:-$HOME/.cache}/NuGetPackages"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 path+=("$DOTNET_CLI_HOME/.dotnet/tools")
+# Claude Code: settings, login and history in ~/.config/claude, not ~/.claude
+# + ~/.claude.json. Set before the first run. (`ai` sets it for itself too.)
+export CLAUDE_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/claude"

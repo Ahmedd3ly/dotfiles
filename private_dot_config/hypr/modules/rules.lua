@@ -33,6 +33,16 @@ hl.window_rule({
     float = true,
 })
 
+-- AI agent terminal (SUPER+Shift+Return, kitty --class ai): floats centred
+-- over the work instead of reflowing the tiles.
+hl.window_rule({
+    name   = "float-ai",
+    match  = { class = "^ai$" },
+    float  = true,
+    size   = "monitor_w*0.6 monitor_h*0.7",
+    center = true,
+})
+
 -- Layers (bar, launcher, notifications): frosted-glass blur behind them.
 -- ignore_alpha = 0 skips fully transparent pixels, so rounded corners and
 -- gaps in the bar don't get a blurred rectangle. Namespaces: waybar,

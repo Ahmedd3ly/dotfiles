@@ -18,6 +18,12 @@ first-launch.sh
 .config/kitty/accents.conf
 .config/hypr/modules/accents.lua
 
+# AI engine state (login token, history, caches): never in the repo. Only
+# the instructions and skills links are tracked; they point at ~/.config/agents.
+.config/claude/*
+!.config/claude/CLAUDE.md
+!.config/claude/skills
+
 # SSH keys and machine state: never in the repo (only ~/.ssh/config is tracked)
 .ssh/id_*
 .ssh/known_hosts*

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# ▄▀█ █
+# █▀█ █
+#
+# Why: the only file that knows which AI engine runs. The keybind, diag and
+# ask all call `ai`, never an engine directly. To switch engines, write its
+# name in ~/.config/ai/agent and add one branch below (map the three modes to
+# that engine's flags; check its --help, they differ and change).
+#
+# Usage:
+#   ai                 interactive session
+#   ai "task"          interactive, with a first message
+#   ai -r "task"       interactive, read-only (the engine's plan mode): diagnosis
+#   ai -p "question"   one-shot answer on stdout; piped stdin goes along as context
+set -euo pipefail
+
+conf="${XDG_CONFIG_HOME:-$HOME/.config}/ai/agent"
+# Config file only, no env override: generic names like AI_AGENT are already
+# set by other tools.
+agent="$(sed -n '/^[^#[:space:]]/{p;q}' "$conf" 2>/dev/null || true)"
+agent="${agent:-claude}"
+
+mode=chat
+case "${1:-}" in
+    -r) mode=plan;  shift ;;
+    -p) mode=print; shift ;;
+esac
+
+case "$agent" in
+    claude)
+        # Settings, login and history in ~/.config/claude instead of ~/.claude
+        # and ~/.claude.json (also set in zsh's 10-env for a bare `claude`).
+        export CLAUDE_CONFIG_DIR="${CLAUDE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/claude}"
+        case "$mode" in
+            chat)  exec claude "$@" ;;
+            plan)  exec claude --permission-mode plan "$@" ;;
+            print) exec claude -p "$@" ;;
+        esac ;;
+    *)
+        echo "ai: no adapter for '$agent' (set the engine in $conf, add a branch in $0)" >&2
+        exit 2 ;;
+esac

@@ -1,0 +1,2 @@
+# Which AI engine `ai` runs (first non-comment line). Adapters: ~/.local/bin/ai
+claude
