@@ -51,12 +51,12 @@ default-timeout=0
 # Kept out of history and doesn't light the bell.
 [app-name=osd]
 anchor=bottom-center
-outer-margin=0,0,64,0
-width=330
-padding=10,18
+outer-margin=0,0,110,0
+width=280
+padding=16,10
 border-size=1
 border-color=#585b70
-font=JetBrainsMono Nerd Font 12
+font=JetBrainsMono Nerd Font 11
 text-alignment=center
 format=%b
 markup=1
