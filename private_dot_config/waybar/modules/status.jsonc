@@ -8,14 +8,15 @@
       { "type": "audio-in", "tooltip": true }
     ]
   },
-  // bar-updates checks every 6 h, once for all monitors (shared cache); click
-  // opens kitty to upgrade, then clears the cache so the count refreshes.
+  // bar-updates checks every 6 h, once for all monitors (shared cache). Click
+  // opens the sysupdate panel (summary, package list, snapshot + upgrade),
+  // which refreshes this count when it closes.
   "custom/updates": {
     "exec": "$HOME/.local/bin/bar-updates",
     "return-type": "json",
     "interval": 21600,
     "signal": 20,
-    "on-click": "kitty --title upgrade sh -c 'sudo pacman -Syu; paru -Sua; read -p \"Done. Enter to close\" _'; rm -f ~/.cache/waybar/updates.json; pkill -RTMIN+20 waybar"
+    "on-click": "kitty --class sysupdate -e $HOME/.local/bin/sysupdate"
   },
   "network": {
     "format-wifi": "",

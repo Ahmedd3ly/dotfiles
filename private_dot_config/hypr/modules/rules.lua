@@ -43,6 +43,15 @@ hl.window_rule({
     center = true,
 })
 
+-- Update panel (bar updates icon -> sysupdate): floats centred like the AI one.
+hl.window_rule({
+    name   = "float-sysupdate",
+    match  = { class = "^sysupdate$" },
+    float  = true,
+    size   = "monitor_w*0.5 monitor_h*0.6",
+    center = true,
+})
+
 -- Layers (bar, launcher, notifications): frosted-glass blur behind them.
 -- ignore_alpha = 0 skips fully transparent pixels, so rounded corners and
 -- gaps in the bar don't get a blurred rectangle. Namespaces: waybar,
