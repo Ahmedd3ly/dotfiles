@@ -58,6 +58,6 @@ hl.workspace_rule({ workspace = "1", monitor = "eDP-1", default = true, persiste
 -- Workspaces 1-9 always exist, so the bar can show empty ones as rings
 -- (waybar's persistent-workspaces needs this). 2-9 have no monitor: they
 -- open wherever they're first used.
-for i = 2, 7 do
+for i = 2, 6 do
 	hl.workspace_rule({ workspace = tostring(i), persistent = true })
 end
