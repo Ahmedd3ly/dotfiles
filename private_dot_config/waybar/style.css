@@ -119,7 +119,7 @@ window#waybar {
  * own, and the block shares the 10pt radius. */
 
 #pill.left1 {
-    padding: 1;
+    padding: 0;
 }
 
 /* Title spacing lives on the title, so an empty title (empty workspace)
@@ -129,10 +129,12 @@ window#waybar {
     margin: 0 1.2em;
 }
 
+/* Deep wallpaper accent (tone 40) -> Catppuccin Latte mauve, white ink:
+ * 6.5:1 and 5.4:1. Only the block paints the gradient; its children are
+ * transparent so one continuous gradient runs under the logo and the dots. */
 #accent {
-    background-color: @wb-act-bg;
-    /* Wallpaper accent -> a deep mauve (wb-act-end, matugen waybar template). */
-    background-image: linear-gradient(to right, @wb-act-bg, @wb-act-end);
+    background-color: @wb-acc-start;
+    background-image: linear-gradient(to right, @wb-acc-start, @wb-act-end);
     border-radius: 10pt;
     margin: 0;
     padding: 0 1em;   /* + the logo's label spacing (0.4em) = the 1.4em inset */
@@ -143,26 +145,27 @@ window#waybar {
 }
 
 #accent #custom-menu,
-#accent #workspaces button {
-    color: @main-bg;
+#accent #workspaces button,
+#accent #workspaces button.active,
+#accent #workspaces button.visible {
+    color: #ffffff;
+    background: transparent;
 }
 
 /* Dots, evenly spaced: no stretched pill, the glyph alone marks the state
  * (solid / ringed / ring, see modules/hyprland.jsonc). px, not em: at 7px
- * an em is only 7px. 4px each side = 8px between dots, and the last dot's
- * 4px + the block's 1em (11px) = 15px, the same 1.4em inset as the logo. */
+ * an em is only 7px. */
 #accent #workspaces button,
 #accent #workspaces button.active,
 #accent #workspaces button.visible {
-    background: transparent;
-    padding: 0 4px;
+    padding: 0 3px;
     margin: 0;
     font-size: 7px;
 }
 
 #accent #workspaces button:hover {
-    background: alpha(@main-bg, 0.18);
-    color: @main-bg;
+    background: alpha(#ffffff, 0.18);
+    color: #ffffff;
 }
 
 /* ---- Spacing ----------------------------------------------------------- */
