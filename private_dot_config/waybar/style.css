@@ -74,7 +74,7 @@ window#waybar {
     border-radius: 10pt 0 10pt 0;
 }
 #leaf {
-    margin: 0.3em 1em 0.3em 0;      /* gap faces the media island */
+    margin: 0.3em 1em;      /* gap faces the media island */
 }
 
 /* Inverse leaf: top-right + bottom-left rounded */
@@ -82,7 +82,7 @@ window#waybar {
     border-radius: 0 10pt 0 10pt;
 }
 #leaf-inverse {
-    margin: 0.3em 0 0.3em 1em;      /* mirror of #leaf */
+    margin: 0.3em 1em;      /* mirror of #leaf */
 }
 
 /* ---- Workspaces: active one stretches, bouncy transitions -------------- */
@@ -120,7 +120,7 @@ window#waybar {
  * own, and the block shares the 10pt radius. */
 
 #pill.left1 {
-    padding: 0;
+    padding: 1;
 }
 
 /* Title spacing lives on the title, so an empty title (empty workspace)
@@ -137,27 +137,12 @@ window#waybar {
  * Other modes, swap the two colour lines (and the ink below):
  *   fixed Latte mauve end:  @wb-acc-start -> #8839ef          (ink #ffffff)
  *   classic light accent:   @wb-act-bg -> @wb-acc-light-end   (ink @main-bg) */
-/* Right end cut as a backslash: GTK3 has no clip-path, so the top layer is
- * a 16px strip at the right edge whose top-right half is painted in the
- * island fill. A "to bottom left" gradient splits the strip exactly along
- * its top-left -> bottom-right diagonal; 48%/52% softens the edge by ~1px so
- * it isn't jagged. The left end stays rounded. Undo: border-radius 10pt,
- * background-image = only the colour gradient, padding 0 1em.
- * Slant width: the 16px (and the matching padding-right). */
 #accent {
     background-color: @wb-acc-start;
-    background-image:
-        linear-gradient(to bottom left, @main-bg 48%, alpha(@main-bg, 0) 52%),
-        linear-gradient(to right, @wb-acc-start, @wb-act-end);
-    background-size: 16px 100%, 100% 100%;
-    background-position: right top, left top;
-    background-repeat: no-repeat;
-    border-radius: 10pt 0 0 10pt;
+    background-image: linear-gradient(to right, @wb-acc-start, @wb-act-end);
+    border-radius: 10pt;
     margin: 0;
-    /* left: 1em + the logo's label spacing = the 1.4em inset; right: the
-     * same 1em (11px at the 11px font) plus the 16px slant = 27px, so the
-     * last dot clears the cut. */
-    padding: 0 27px 0 1em;
+    padding: 0 1em;   /* + the logo's label spacing (0.4em) = the 1.4em inset */
 }
 
 #accent #custom-menu {
