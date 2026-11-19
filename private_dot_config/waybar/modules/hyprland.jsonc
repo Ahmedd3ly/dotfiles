@@ -14,9 +14,9 @@
       "default": "󰐾",
       "empty": "󰐽"
     },
-    // 1-5 always shown, the same five on both bars ([] = every output). Each
-    // also needs persistent = true in Hyprland (monitors.lua). Avoid "*": 5,
-    // which makes five per monitor and gave the two bars different lists.
+    // 1-6 always shown, the same six on both bars ([] = every output). Each
+    // also needs persistent = true in Hyprland (monitors.lua). Avoid "*": 6,
+    // which makes six per monitor and gave the two bars different lists.
     "persistent-workspaces": {
       "1": [],
       "2": [],
