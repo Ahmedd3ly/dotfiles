@@ -18,6 +18,7 @@ tlp                         # laptop power (then: sudo systemctl enable --now tl
 tlp-pd                      # TLP profiles over the power-profiles-daemon D-Bus API (bar switcher; sudo systemctl enable --now tlp-pd)
 sof-firmware                # Intel audio DSP firmware: no speakers/mic on this laptop without it
 chezmoi                     # this repo
+pacutils                    # pacreport: unowned files and package audit (RUNBOOK.md, "Package audit")
 etckeeper                   # /etc under git (local only)
 man-db
 man-pages

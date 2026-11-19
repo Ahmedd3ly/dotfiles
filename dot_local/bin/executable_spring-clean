@@ -1,0 +1,220 @@
+#!/usr/bin/env bash
+# █▀▀ █░░ █▀▀ ▄▀█ █▄░█
+# █▄▄ █▄▄ ██▄ █▀█ █░▀█
+#
+# Why: monthly (or post-big-update) housekeeping in one interactive pass.
+# Every destructive step shows a size and asks first; read-only checks
+# (package audit, unowned files, failed units, reboot, etckeeper) just report.
+#
+#   spring-clean            clean + audit
+#   spring-clean --upgrade  snapshot, paru -Syu, pacdiff, then clean + audit
+#
+# Needs: paru, pacman-contrib (paccache, pacdiff), pacutils (pacreport).
+# Log: $XDG_STATE_HOME/spring-clean/<date>.log (last 12 kept).
+# Manual counterpart and what "normal" pacreport output is: RUNBOOK.md,
+# "Package audit".
+set -uo pipefail # no -e: a "no" at a prompt is a normal non-zero return
+
+# ---------- Config ---------------------------------------------------------
+PACCACHE_RETAIN=2  # package versions kept per package (allows a downgrade)
+CACHE_DAYS=30      # ~/.cache files untouched for N days are pruned
+JOURNAL_RETAIN=14d # journalctl --vacuum-time
+CORE_DAYS=14       # coredumps older than N days (newer ones feed `diag`)
+LOG_KEEP=12
+
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/spring-clean"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
+# ~/.cache dirs the age prune skips: they have their own step below, are
+# content-addressed (deleting by age corrupts them), or hold live state.
+CACHE_SKIP=(paru uv npm cliphist mozilla diag thumbnails)
+
+# ---------- Helpers --------------------------------------------------------
+announce() { printf '\n\e[1;34m==> %s\e[0m\n' "$1"; }
+note() { printf '    %s\n' "$*"; }
+confirm() {
+    local ans
+    read -r -p "    ${1:-Proceed?} [y/N] " ans
+    [[ $ans =~ ^[yY]([eE][sS])?$ ]]
+}
+size() { du -sh "$@" 2>/dev/null | awk '{print $1}' | tail -1; }
+ssize() { sudo du -sh "$@" 2>/dev/null | awk '{print $1}' | tail -1; }
+
+# ---------- CLI ------------------------------------------------------------
+DO_UPGRADE=false
+case "${1:-}" in
+    -u | --upgrade) DO_UPGRADE=true ;;
+    -h | --help) sed -n '5,12s/^# \{0,1\}//p' "$0"; exit 0 ;;
+    "") ;;
+    *) echo "Unknown option: $1 (try --help)" >&2; exit 2 ;;
+esac
+
+# ---------- Preflight ------------------------------------------------------
+((EUID == 0)) && { echo "Run as your user; it calls sudo where needed." >&2; exit 1; }
+missing=()
+for c in paru paccache pacdiff pacreport; do command -v "$c" >/dev/null || missing+=("$c"); done
+((${#missing[@]})) && { echo "Missing: ${missing[*]} (paru, pacman-contrib, pacutils)" >&2; exit 1; }
+
+mkdir -p "$STATE"
+LOG="$STATE/$(date +%F_%H-%M-%S).log"
+exec > >(tee -a "$LOG") 2>&1
+ls -1t "$STATE"/*.log 2>/dev/null | tail -n +$((LOG_KEEP + 1)) | xargs -r rm --
+
+sudo -v || exit 1
+# Keep the sudo timestamp alive for the whole run (prompts can take a while).
+while kill -0 "$$" 2>/dev/null; do sudo -n true; sleep 50; done 2>/dev/null &
+
+announce "Spring-clean starting $(date '+%F %R')"
+
+# ---------- 1. Snapshot ----------------------------------------------------
+announce "Timeshift snapshot"
+note "Recovery if anything below goes wrong: sudo timeshift --restore"
+if confirm "Create a snapshot first?"; then
+    sudo timeshift --create --comments "spring-clean $(date +%F)"
+fi
+
+# ---------- 2. Upgrade (optional) -----------------------------------------
+if $DO_UPGRADE; then
+    announce "System upgrade (paru -Syu)"
+    paru -Syu
+fi
+
+# ---------- 3. .pacnew / .pacsave -----------------------------------------
+announce "Config files left by pacman (.pacnew/.pacsave)"
+mapfile -t PACNEW < <(pacdiff -o 2>/dev/null)
+if ((${#PACNEW[@]})); then
+    printf '    %s\n' "${PACNEW[@]}"
+    if confirm "Merge them now with nvim -d (pacdiff)?"; then
+        sudo DIFFPROG='nvim -d' pacdiff
+        note "Then commit /etc: sudo etckeeper commit \"pacdiff merge\""
+    fi
+else
+    note "None."
+fi
+
+# ---------- 4. Pacman cache ------------------------------------------------
+announce "Pacman cache (keep $PACCACHE_RETAIN versions, drop uninstalled)"
+sudo rm -rf /var/cache/pacman/pkg/download-* # stale partial downloads
+note "Now: $(size /var/cache/pacman/pkg)"
+if confirm "Trim the pacman cache?"; then
+    sudo paccache -rk"$PACCACHE_RETAIN"
+    sudo paccache -ruk0
+    note "After: $(size /var/cache/pacman/pkg)"
+fi
+
+# ---------- 5. AUR build cache ---------------------------------------------
+announce "paru build cache ($CACHE/paru)"
+note "Now: $(size "$CACHE/paru")"
+if [[ -d $CACHE/paru ]] && confirm "Wipe paru clones and builds (re-cloned on next AUR update)?"; then
+    rm -rf "${CACHE:?}/paru/"*
+fi
+
+# ---------- 6. Orphans -----------------------------------------------------
+announce "Orphaned packages"
+mapfile -t ORPHANS < <(pacman -Qdtq)
+if ((${#ORPHANS[@]})); then
+    printf '    %s\n' "${ORPHANS[@]}"
+    confirm "Remove these (pacman -Rns)?" && sudo pacman -Rns "${ORPHANS[@]}"
+else
+    note "None."
+fi
+
+# ---------- 7. Package list audit -----------------------------------------
+announce "pkg_minimal.lst vs installed (pacman -Qqe)"
+LIST="$(chezmoi source-path 2>/dev/null)/pkg_minimal.lst"
+if [[ -f $LIST ]]; then
+    listed=$(awk '!/^[[:space:]]*#/ && NF {print $1}' "$LIST" | sort -u)
+    # The pacstrap set is documented in the list's header, not as entries.
+    pacstrap=$(awk '/NOT repeated here:/ {f=1; next}
+                    f && /^#   / {sub(/^#[ ]+/, ""); print; next}
+                    f {exit}' "$LIST" | tr ' ' '\n' | sed '/^$/d' | sort -u)
+    explicit=$(pacman -Qqe | sort -u)
+    notinst=$(comm -23 <(echo "$listed") <(pacman -Qq | sort -u))
+    notlisted=$(comm -13 <(printf '%s\n%s\n' "$listed" "$pacstrap" | sort -u) <(echo "$explicit"))
+    note "Listed, not installed: ${notinst:-none}" | tr '\n' ' '; echo
+    note "Installed, not listed: ${notlisted:-none}" | tr '\n' ' '; echo
+else
+    note "pkg_minimal.lst not found (chezmoi source missing?); skipped."
+fi
+
+# ---------- 8. Dev tool caches ---------------------------------------------
+announce "Dev caches (own commands, never age-pruned)"
+command -v uv >/dev/null && note "uv:  $(size "$CACHE/uv")"
+command -v npm >/dev/null && note "npm: $(size "$CACHE/npm")"
+if confirm "Run 'uv cache prune' and 'npm cache clean --force'?"; then
+    command -v uv >/dev/null && uv cache prune
+    command -v npm >/dev/null && npm cache clean --force
+fi
+
+# ---------- 9. ~/.cache age prune ------------------------------------------
+announce "~/.cache: files unused > $CACHE_DAYS days, and thumbnails"
+note "Skipped: ${CACHE_SKIP[*]}"
+note "Before: $(size "$CACHE")"
+if confirm "Prune ~/.cache and wipe thumbnails?"; then
+    rm -rf "${CACHE:?}/thumbnails/"*
+    n=0
+    for d in "$CACHE"/*/; do
+        name=$(basename "$d")
+        [[ " ${CACHE_SKIP[*]} " == *" $name "* ]] && continue
+        # find -delete implies -depth, which disables -prune: hence per dir.
+        c=$(find "$d" -type f -mtime +"$CACHE_DAYS" -print -delete | wc -l)
+        find "$d" -mindepth 1 -type d -empty -delete
+        n=$((n + c))
+    done
+    note "Removed $n files. After: $(size "$CACHE")"
+fi
+
+# ---------- 10. Trash ------------------------------------------------------
+announce "Trash"
+TRASH="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
+note "Now: $(size "$TRASH")"
+if [[ -n $(gio list trash:/// 2>/dev/null) ]]; then
+    gio list trash:/// | sed 's/^/    /'
+    confirm "Empty the Trash (permanent)?" && gio trash --empty
+fi
+
+# ---------- 11. Journal ----------------------------------------------------
+announce "systemd journal (vacuum to $JOURNAL_RETAIN)"
+jsize() { journalctl --disk-usage 2>/dev/null | grep -oE '[0-9.]+[KMGT]' | head -1; }
+note "Now: $(jsize)"
+if confirm "Rotate and vacuum the journal?"; then
+    sudo journalctl --rotate
+    sudo journalctl --vacuum-time="$JOURNAL_RETAIN"
+    note "After: $(jsize)"
+fi
+
+# ---------- 12. Coredumps --------------------------------------------------
+announce "Coredumps (/var/lib/systemd/coredump, keep last $CORE_DAYS days)"
+note "Now: $(ssize /var/lib/systemd/coredump)"
+old=$(sudo find /var/lib/systemd/coredump -type f -mtime +"$CORE_DAYS" | wc -l)
+if ((old)) && confirm "Delete $old coredump(s) older than $CORE_DAYS days?"; then
+    sudo find /var/lib/systemd/coredump -type f -mtime +"$CORE_DAYS" -delete
+    note "After: $(ssize /var/lib/systemd/coredump)"
+fi
+
+# ---------- 13. Unowned files ----------------------------------------------
+announce "Files no package owns (pacreport, known-normal noise hidden)"
+FULL="$STATE/unowned-$(date +%F).txt"
+sudo pacreport --unowned-files 2>/dev/null |
+    sed -n '/^Unowned Files:/,/^[^ ]/{/^  /p}' | sed 's/^  //' >"$FULL"
+# Generated caches, hook-made links, service state, etckeeper, enabled units.
+grep -vE '\.cache$|/modules\.|hwdb\.bin$|locale-archive$|/info/dir$|gschemas\.compiled$|^/etc/fonts/conf\.d/|\.wants/$|^/etc/\.|-$|^/etc/ca-certificates/extracted/|^/etc/NetworkManager/system-connections/|^/var/lib/(NetworkManager|upower|systemd|pacman|bluetooth|private|dbus|lastlog|libuuid|machines|portables|tpm2-tss|power-profiles-daemon|postgres|openldap)/|^/var/spool/anacron/|^/var/db/sudo/|^/boot/|^/efi/|/\.updated$|^/etc/(adjtime|hostname|locale\.conf|localtime|machine-id|os-release|vconsole\.conf|ld\.so\.cache)$|^/etc/pacman\.d/gnupg/' \
+    "$FULL" | sed 's/^/    /'
+note "Full list: $FULL"
+note "Your own /etc files are expected here (etckeeper tracks them)."
+
+# ---------- 14. Failed units -----------------------------------------------
+announce "Failed systemd units"
+sys=$(systemctl list-units --state=failed --no-legend --plain)
+usr=$(systemctl --user list-units --state=failed --no-legend --plain)
+[[ -z $sys$usr ]] && note "None."
+[[ -n $sys ]] && { note "system:"; echo "$sys" | sed 's/^/      /'; }
+[[ -n $usr ]] && { note "user:"; echo "$usr" | sed 's/^/      /'; }
+
+# ---------- 15. Reboot / etckeeper -----------------------------------------
+announce "Pending"
+[[ -d /usr/lib/modules/$(uname -r) ]] ||
+    note "Reboot needed: running kernel $(uname -r) is no longer installed."
+sudo etckeeper unclean 2>/dev/null &&
+    note "/etc has uncommitted changes: sudo etckeeper commit \"<what>\""
+
+announce "Done in ${SECONDS}s. Log: $LOG"

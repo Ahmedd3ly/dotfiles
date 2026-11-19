@@ -132,6 +132,11 @@ daemon-reload`, and remove the hyprlock line from autostart.lua.
 Why: pkg_minimal.lst should match what is installed on purpose, so a rebuild
 installs exactly this system. Run after adding or removing software.
 
+`spring-clean` (~/.local/bin, monthly or after a big update; `--upgrade`
+adds paru -Syu + pacdiff) runs everything below plus the cache, journal,
+coredump and Trash cleanup, asking before each destructive step. The
+manual commands stay here for when the script isn't available.
+
 ```bash
 L=~/.local/share/chezmoi/pkg_minimal.lst
 awk '!/^[[:space:]]*#/ && NF {print $1}' "$L" | sort -u > /tmp/listed
@@ -143,6 +148,21 @@ echo "orphans:"; pacman -Qqdt
 
 "installed, not listed" also shows the pacstrap set named in the list's
 header; anything else either gets a line in the list or gets removed.
+
+Files no package owns (needs pacutils):
+
+```bash
+sudo pacreport --unowned-files
+```
+
+Expected and fine: generated caches (`*.cache`, `modules.*`, `hwdb.bin`,
+`locale-archive`), `/etc/fonts/conf.d` links (made by a pacman hook),
+systemd `*.wants/` links, NetworkManager/upower state, etckeeper's
+`/etc/.git`, and this machine's own files in `/etc` (tracked by
+etckeeper). Look closer at anything in `/usr/lib` or `/var/lib/<app>`
+whose app is no longer installed. pacreport's "Unneeded Packages
+Installed Explicitly" just means nothing depends on them (leaf
+packages), so it is not a removal list.
 
 Housekeeping (pacman-contrib):
 
