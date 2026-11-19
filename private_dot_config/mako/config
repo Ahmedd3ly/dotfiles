@@ -44,18 +44,22 @@ default-timeout=3000
 border-color=#f38ba8
 default-timeout=0
 
-# On-screen indicator (~/.local/bin/osd): volume, brightness, mic. One popup,
-# replaced in place, bottom centre, icon only; the accent fill is the level
-# (progress-color, from ./accents). Kept out of history and doesn't light
-# the bell.
+# On-screen indicator (~/.local/bin/osd): volume, brightness, mic, drawn as a
+# Windows-style slider (icon, bar, number; the bar is markup in the body).
+# One popup, replaced in place, bottom centre. outer-margin (not margin) sets
+# the distance from the screen edge; margin only spaces notifications apart.
+# Kept out of history and doesn't light the bell.
 [app-name=osd]
 anchor=bottom-center
-width=220
-margin=0,0,56,0
-padding=6,0
-font=JetBrainsMono Nerd Font 18
+outer-margin=0,0,64,0
+width=330
+padding=10,18
+border-size=1
+border-color=#585b70
+font=JetBrainsMono Nerd Font 12
 text-alignment=center
-format=%s
+format=%b
+markup=1
 icons=0
 default-timeout=1200
 history=0

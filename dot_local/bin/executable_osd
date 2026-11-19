@@ -3,9 +3,10 @@
 # █▄█ ▄█ █▄▀
 #
 # Why: volume, brightness and mic keys change the value, then show one
-# small popup at the bottom centre: an icon, with the popup filling up to the
-# level (mako's progress hint, accent from the wallpaper). Each press
-# replaces the previous popup instead of stacking. Style: [app-name=osd] in
+# small Windows-style slider at the bottom centre: icon, bar, number. The bar
+# is text (Pango markup): the filled part in the wallpaper accent (read from
+# mako's matugen accents file), the rest dim. Each press replaces the previous
+# popup instead of stacking. Style: [app-name=osd] in
 # ~/.config/mako/config. No daemon; mako is already running.
 # Usage: osd volume up|down|mute · osd mic mute · osd brightness up|down
 set -euo pipefail
@@ -28,7 +29,7 @@ read_wpctl() { wpctl get-volume "$1" | awk '{ printf "%d %d\n", $2 * 100 + 0.5, 
 case "$1" in
     volume)
         read -r level muted < <(read_wpctl @DEFAULT_AUDIO_SINK@)
-        if   (( muted ));      then icon="󰝟"; level=0
+        if   (( muted ));      then icon="󰝟"
         elif (( level < 34 )); then icon="󰕿"
         elif (( level < 67 )); then icon="󰖀"
         else                        icon="󰕾"; fi ;;
@@ -42,10 +43,21 @@ case "$1" in
         else                        icon="󰃠"; fi ;;
 esac
 
+# Slider: 18 segments, filled part in the accent (grey when muted), the rest
+# surface2. The number is padded to 3 so the bar doesn't shift.
+accent=$(sed -n 's/^border-color=//p' "${XDG_CONFIG_HOME:-$HOME/.config}/mako/accents" 2>/dev/null)
+[[ $accent =~ ^#[0-9a-fA-F]{6} ]] || accent="#cba6f7"
+fill=$accent; (( ${muted:-0} )) && fill="#6c7086"
+on=$(( (level * 18 + 50) / 100 ))
+bar=$(printf '%*s' "$on" '' | sed 's/ /━/g')
+rest=$(printf '%*s' $(( 18 - on )) '' | sed 's/ /━/g')
+num=$(printf '%3d' "$level"); [[ $1 == mic ]] && num="   "
+body="<span size='150%'>$icon</span>  <span color='$fill'>$bar</span><span color='#45475a'>$rest</span>  $num"
+
 # Replace the last popup (its id is kept for this login only). Holding a key
 # runs this many times in parallel, so take turns on the id file.
 exec 9>"$id_file.lock"
 flock 9
 replace=()
 [[ -s $id_file ]] && replace=(-r "$(<"$id_file")")
-notify-send -a osd -t 1200 -h "int:value:$level" -p "${replace[@]}" "$icon" > "$id_file"
+notify-send -a osd -t 1200 -p "${replace[@]}" osd "$body" > "$id_file"
