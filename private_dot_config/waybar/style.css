@@ -123,6 +123,8 @@ window#waybar {
 
 #accent {
     background-color: @wb-act-bg;
+    /* Light accent to the same hue, darker (both from the wallpaper). */
+    background-image: linear-gradient(to right, @wb-act-bg, @wb-act-end);
     border-radius: 16pt;
     margin: 2px 0 0px 2px;
     padding: 0 0.8em 0 0.8em;
