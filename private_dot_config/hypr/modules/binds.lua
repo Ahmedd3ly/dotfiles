@@ -98,9 +98,10 @@ bind(M("mouse_down"), hl.dsp.focus({ workspace = "e+1" }), "[Workspace] next (sc
 bind(M("mouse_up"),   hl.dsp.focus({ workspace = "e-1" }), "[Workspace] previous (scroll)")
 
 ---- Hardware keys (locked = also work on the lock screen) -----------------
-local vol_up   = exec("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+")
-local vol_down = exec("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")
-local vol_mute = exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+-- Each goes through osd: change the value, then show the bottom-centre popup.
+local vol_up   = exec("osd volume up")
+local vol_down = exec("osd volume down")
+local vol_mute = exec("osd volume mute")
 local hold     = { locked = true, repeating = true }
 
 bind("XF86AudioRaiseVolume", vol_up,   "[Hardware] volume up",   hold)
@@ -109,10 +110,10 @@ bind("XF86AudioMute",        vol_mute, "[Hardware] mute",        { locked = true
 bind("F11", vol_up,   "[Hardware] volume up",   hold)
 bind("F10", vol_down, "[Hardware] volume down", hold)
 bind("F9",  vol_mute, "[Hardware] mute",        { locked = true })
-bind("XF86AudioMicMute", exec("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), "[Hardware] mute microphone", { locked = true })
+bind("XF86AudioMicMute", exec("osd mic mute"), "[Hardware] mute microphone", { locked = true })
 
-bind("XF86MonBrightnessUp",   exec("brightnessctl -e4 -n2 set 5%+"), "[Hardware] brightness up",   hold)
-bind("XF86MonBrightnessDown", exec("brightnessctl -e4 -n2 set 5%-"), "[Hardware] brightness down", hold)
+bind("XF86MonBrightnessUp",   exec("osd brightness up"), "[Hardware] brightness up",   hold)
+bind("XF86MonBrightnessDown", exec("osd brightness down"), "[Hardware] brightness down", hold)
 
 bind("XF86AudioPlay",  exec("playerctl play-pause"), "[Media] play/pause", { locked = true })
 bind("XF86AudioPause", exec("playerctl play-pause"), "[Media] play/pause", { locked = true })

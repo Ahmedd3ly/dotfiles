@@ -9,3 +9,5 @@
 # matugen overwrites it from ~/.config/matugen/templates/mako-accents
 # on every wall-set; edits here are overwritten.
 border-color=#ca9ee6
+# Progress fill (the osd popup level): the accent at 40%, over the background.
+progress-color=over #ca9ee666

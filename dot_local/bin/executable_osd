@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# █▀█ █▀ █▀▄
+# █▄█ ▄█ █▄▀
+#
+# Why: volume, brightness and mic keys change the value, then show one
+# small popup at the bottom centre: an icon, with the popup filling up to the
+# level (mako's progress hint, accent from the wallpaper). Each press
+# replaces the previous popup instead of stacking. Style: [app-name=osd] in
+# ~/.config/mako/config. No daemon; mako is already running.
+# Usage: osd volume up|down|mute · osd mic mute · osd brightness up|down
+set -euo pipefail
+
+id_file="${XDG_RUNTIME_DIR:-/tmp}/osd.id"
+
+case "${1:-} ${2:-}" in
+    "volume up")       wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+    "volume down")     wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+    "volume mute")     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+    "mic mute")        wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle ;;
+    "brightness up")   brightnessctl -q -e4 -n2 set 5%+ ;;
+    "brightness down") brightnessctl -q -e4 -n2 set 5%- ;;
+    *) sed -n 's/^# Usage: //p' "$0" >&2; exit 2 ;;
+esac
+
+# "Volume: 0.45" or "Volume: 0.45 [MUTED]" -> "45 0" / "45 1"
+read_wpctl() { wpctl get-volume "$1" | awk '{ printf "%d %d\n", $2 * 100 + 0.5, /MUTED/ }'; }
+
+case "$1" in
+    volume)
+        read -r level muted < <(read_wpctl @DEFAULT_AUDIO_SINK@)
+        if   (( muted ));      then icon="󰝟"; level=0
+        elif (( level < 34 )); then icon="󰕿"
+        elif (( level < 67 )); then icon="󰖀"
+        else                        icon="󰕾"; fi ;;
+    mic)
+        read -r _ muted < <(read_wpctl @DEFAULT_AUDIO_SOURCE@)
+        if (( muted )); then icon="󰍭"; level=0; else icon="󰍬"; level=100; fi ;;
+    brightness)
+        level=$(brightnessctl -m | cut -d, -f4 | tr -d %)
+        if   (( level < 34 )); then icon="󰃞"
+        elif (( level < 67 )); then icon="󰃟"
+        else                        icon="󰃠"; fi ;;
+esac
+
+# Replace the last popup (its id is kept for this login only). Holding a key
+# runs this many times in parallel, so take turns on the id file.
+exec 9>"$id_file.lock"
+flock 9
+replace=()
+[[ -s $id_file ]] && replace=(-r "$(<"$id_file")")
+notify-send -a osd -t 1200 -h "int:value:$level" -p "${replace[@]}" "$icon" > "$id_file"
