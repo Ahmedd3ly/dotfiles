@@ -1,0 +1,16 @@
+/* ======================================================================
+   Vesktop Quick CSS
+   ======================================================================
+   Why: the Catppuccin Mocha theme, plus Noto Naskh Arabic in Discord's
+   font stacks. Chromium falls back per character with the app locale
+   (en), so the fontconfig rule for lang=ar (fontconfig/conf.d/
+   60-arabic-naskh.conf) never fires here. Naming Naskh right after
+   gg sans keeps gg sans for Latin and sends Arabic to Naskh.
+   Note: the @import must stay the first rule. */
+@import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
+
+:root {
+  --font-primary: "gg sans", "Noto Naskh Arabic", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "gg sans", "Noto Naskh Arabic", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-headline: "ABC Ginto Nord", "gg sans", "Noto Naskh Arabic", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

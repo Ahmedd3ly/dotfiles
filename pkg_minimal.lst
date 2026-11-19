@@ -91,6 +91,7 @@ ttf-jetbrains-mono-nerd
 ttf-cascadia-code-nerd      # kitty font (CaskaydiaCove, as on HyDE)
 noto-fonts                  # includes Arabic coverage
 noto-fonts-emoji
+wqy-microhei                # 5 MB CJK fallback (e.g. U+3022 〢 in Discord names); noto-fonts-cjk is 300 MB
 
 # --------------------------------------------------- // Apps
 firefox                     # official repo, native Wayland
