@@ -13,7 +13,8 @@
 @define-color wb-hvr-bg {{ colors.tertiary.default.hex }};  /* hover */
 /* To follow the wallpaper again, swap in the commented line: the same hue as
  * wb-act-bg at tone 60 (5.9:1). For a second hue, use palettes.tertiary._60. */
-/* Accent block gradient start: the wallpaper accent at tone 40, 6.5:1 with white ink. */
-@define-color wb-acc-start {{ palettes.primary._40.hex }};
-@define-color wb-act-end #8839ef;   /* Catppuccin Latte mauve, 5.4:1 with white */
+/* Accent block (style.css, #accent). The gradient END comes from a second
+ * matugen run on the wallpaper's 2nd most dominant colour: accents-end.css. */
+@define-color wb-acc-start {{ palettes.primary._40.hex }};      /* deep start, white ink 6.5:1 */
+@define-color wb-acc-light-end {{ palettes.primary._60.hex }};  /* classic mode only, dark ink */
 /* @define-color wb-act-end {{ palettes.primary._60.hex }}; */

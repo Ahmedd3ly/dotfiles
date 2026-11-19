@@ -19,6 +19,7 @@
 
 @import "theme.css";
 @import "accents.css";
+@import "accents-end.css";   /* wb-act-end: 2nd dominant colour (wall-set) */
 
 * {
     border-radius: 0;
@@ -119,7 +120,7 @@ window#waybar {
  * own, and the block shares the 10pt radius. */
 
 #pill.left1 {
-    padding: 0;
+    padding: 1;
 }
 
 /* Title spacing lives on the title, so an empty title (empty workspace)
@@ -129,9 +130,13 @@ window#waybar {
     margin: 0 1.2em;
 }
 
-/* Deep wallpaper accent (tone 40) -> Catppuccin Latte mauve, white ink:
- * 6.5:1 and 5.4:1. Only the block paints the gradient; its children are
- * transparent so one continuous gradient runs under the logo and the dots. */
+/* Mode D (now): deep wallpaper accent -> the wallpaper's 2nd most dominant
+ * colour at the same depth (Latte mauve if there is none), white ink at
+ * ~6.5:1. Only the block paints; its children stay transparent so one
+ * gradient runs under the logo and the dots.
+ * Other modes, swap the two colour lines (and the ink below):
+ *   fixed Latte mauve end:  @wb-acc-start -> #8839ef          (ink #ffffff)
+ *   classic light accent:   @wb-act-bg -> @wb-acc-light-end   (ink @main-bg) */
 #accent {
     background-color: @wb-acc-start;
     background-image: linear-gradient(to right, @wb-acc-start, @wb-act-end);
@@ -154,11 +159,13 @@ window#waybar {
 
 /* Dots, evenly spaced: no stretched pill, the glyph alone marks the state
  * (solid / ringed / ring, see modules/hyprland.jsonc). px, not em: at 7px
- * an em is only 7px. */
+ * an em is only 7px. 4px each side = 8px between dots, and the last dot's
+ * 4px + the block's 1em (11px) = 15px, the same 1.4em inset as the logo. */
 #accent #workspaces button,
 #accent #workspaces button.active,
 #accent #workspaces button.visible {
-    padding: 0 3px;
+    background: transparent;
+    padding: 0 4px;
     margin: 0;
     font-size: 7px;
 }
