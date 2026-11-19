@@ -1,3 +1,9 @@
+# XDG base dirs: defined first so every path below can rely on them
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 # User scripts (shot, keyhint, emoji-pick, powermenu...) for binds, the bar and
 # systemd user units; uwsm exports this to the whole session.
 export PATH="$HOME/.local/bin:$PATH"
@@ -20,3 +26,23 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Video decode on the Intel iGPU (the NVIDIA card is opt-in via prime-run)
 export LIBVA_DRIVER_NAME=iHD
+
+# NVIDIA shader/compute caches (otherwise ~/.nv)
+export __GL_SHADER_DISK_CACHE_PATH="$XDG_CACHE_HOME/nv"
+export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
+
+# less: search history out of $HOME's root
+export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
+
+# npm: cache out of $HOME's root (otherwise ~/.npm)
+export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm"
+
+# .NET: keep ~/.dotnet and ~/.nuget out of $HOME; global tools on PATH; no telemetry
+export DOTNET_CLI_HOME="$XDG_DATA_HOME/dotnet"
+export NUGET_PACKAGES="$XDG_CACHE_HOME/NuGetPackages"
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export PATH="$PATH:$DOTNET_CLI_HOME/.dotnet/tools"
+
+# Claude Code: settings, login and history in ~/.config/claude, not ~/.claude
+# + ~/.claude.json. Set before the first run.
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"

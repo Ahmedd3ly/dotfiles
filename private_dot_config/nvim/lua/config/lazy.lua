@@ -31,7 +31,7 @@ require("lazy").setup({
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
   install = { colorscheme = { "tokyonight", "habamax" } },
-  rocks = { enabled = false }, -- no plugin needs luarocks
+  rocks = { enabled = false },
   checker = {
     enabled = false, -- check for plugin updates periodically
     notify = false, -- notify on update

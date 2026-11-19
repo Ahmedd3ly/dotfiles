@@ -1,4 +1,7 @@
--- Static Catppuccin Mocha to match the desktop neutrals; not recoloured by matugen (yet).
+-- Tokyo Night over a translucent kitty + Hyprland blur (the HyDE look). Static; not matugen-driven.
 return {
-  { "LazyVim/LazyVim", opts = { colorscheme = "catppuccin-mocha" } },
+  {
+    "folke/tokyonight.nvim",
+    opts = { transparent = true, styles = { sidebars = "transparent", floats = "transparent" } },
+  },
 }

@@ -1,4 +1,4 @@
--- Keep in-editor markdown rendering; turn off the browser preview and LaTeX (no tools installed for it).
+-- Keep in-editor markdown rendering; the browser preview isn't needed.
 return {
   { "iamcco/markdown-preview.nvim", enabled = false },
   { "MeanderingProgrammer/render-markdown.nvim", opts = { latex = { enabled = false } } },
