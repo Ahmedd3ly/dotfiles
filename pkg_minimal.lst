@@ -43,6 +43,7 @@ hyprpolkitagent             # auth agent
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk      # file picker
 xdg-user-dirs
+xdg-terminal-exec           # GLib/Thunar/uwsm launch terminal apps
 hypridle                    # idle daemon
 hyprlock                    # lock screen
 hyprsunset                  # night light
