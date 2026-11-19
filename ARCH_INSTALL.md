@@ -19,18 +19,6 @@ What comes after (GRUB theme, autologin, watchdogs, AI agent, app themes) is in
 - **No display manager.** Log in at the tty; `uwsm` starts Hyprland.
 - **No disk encryption.** If you want LUKS on a laptop, decide before Phase 2, because it changes the initramfs hooks and GRUB cmdline.
 
-## Pitfalls this runbook avoids
-
-- Typos in the original notes: `ping - c`, `neoim`, `etc/vconsole.conf` (missing `/`), `daemon --reexec`, `systemctl start /dev/zram0`, and `ram /2` (should be `ram / 2`). zram-generator needs no manual start.
-- Enabling `ar_EG` but setting `LANG=en_US.UTF-8` without generating `en_US`. Both are enabled now.
-- `useradd -s /bin/zsh` ran before zsh was installed, which breaks that user's login shell. zsh is in pacstrap now.
-- `nvidia-modeset` is `nvidia_modeset` (underscore). More importantly, "replace filesystems with btrfs" in HOOKS would break boot. `filesystems` stays; I only drop `fsck` (useless on Btrfs) and append the snapshot overlay hook. I also dropped early NVIDIA loading: Intel drives the panel, and it only makes the initramfs fragile.
-- `blkid >> /etc/default/grub` appended junk to the config, and the variable is `GRUB_CMDLINE_LINUX_DEFAULT`. GRUB detects `root=` and `rootflags=subvol=@` on its own, so that step is gone.
-- `genfstab` writes `subvolid=` into fstab, which breaks Timeshift restores because restored subvolumes get new IDs. I strip them. Mount options are identical across subvolumes, and `ssd`, `space_cache=v2` and `discard=async` are defaults on current kernels.
-- `echo ... > .zshrc` as root overwrites root's file. `EDITOR` now goes in `/etc/environment`.
-- `systemd-timesyncd` was never enabled, so the installed system wouldn't sync its clock.
-- sudo: a drop-in file replaces hand-editing `/etc/sudoers`.
-
 ## Phase 0: Pre-flight
 
 - Back up what you need. Everything on `nvme0n1` is destroyed.
