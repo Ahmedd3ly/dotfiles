@@ -119,7 +119,7 @@ window#waybar {
  * own, and the block shares the 10pt radius. */
 
 #pill.left1 {
-    padding: 0;
+    padding: 1;
 }
 
 /* Title spacing lives on the title, so an empty title (empty workspace)
