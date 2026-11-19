@@ -63,6 +63,7 @@ pipewire-alsa
 pipewire-pulse
 wireplumber                 # also gives you wpctl, replaces pamixer
 pavucontrol                 # one GUI mixer
+noise-suppression-for-voice # RNNoise LADSPA plugin for the PipeWire mic filter (pipewire.conf.d/60-rnnoise.conf)
 playerctl
 bluez
 bluetui                     # TUI bluetooth manager (talks to bluez directly; no bluez-utils needed)
