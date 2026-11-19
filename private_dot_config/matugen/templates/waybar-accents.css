@@ -11,10 +11,7 @@
  */
 @define-color wb-act-bg {{ colors.primary.default.hex }};   /* active workspace */
 @define-color wb-hvr-bg {{ colors.tertiary.default.hex }};  /* hover */
-/* Accent block gradient end. Fixed for now: Mocha mauve (#cba6f7) darkened
- * to HSL lightness 66%: 4.9:1 against the crust-coloured dots. Lighter, safer:
- * #b27cf3 (6.3:1). Darker: #974def (4.1:1, dots start to sink).
- * To follow the wallpaper again, swap in the commented line: the same hue as
+/* To follow the wallpaper again, swap in the commented line: the same hue as
  * wb-act-bg at tone 60 (5.9:1). For a second hue, use palettes.tertiary._60. */
-@define-color wb-act-end #a260f1;
+@define-color wb-act-end #b48ef0; /* Accent block gradient end */
 /* @define-color wb-act-end {{ palettes.primary._60.hex }}; */

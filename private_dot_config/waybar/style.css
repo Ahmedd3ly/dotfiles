@@ -3,7 +3,18 @@
  *
  * Why: HyDE's island look, rebuilt by hand from its defaults.css and
  * groups/{pill,pill-in,leaf,leaf-inverse}.css, top bar only. Pure look.
- * Colours: theme.css (static Mocha) + accents.css (matugen). Radius 10pt matches Hyprland's rounding.
+ * Colours: theme.css (static Mocha) + accents.css (matugen).
+ *
+ * Spacing system (one value per job, so every island reads the same):
+ *   radius            10pt everywhere (matches Hyprland's window rounding)
+ *   island gap        2em between islands (1em margin on each facing side)
+ *   island inset      island padding 1em + label padding/margin 0.2em each
+ *                     = 1.4em from an island's edge to its text
+ *   module gap        0.4em between modules inside an island (label margins)
+ *   icon to text      a double space inside each module's format string
+ *   vertical          0.3em above and below every island
+ * em follows each element's own font-size, so the small-font parts (the
+ * workspace dots) use px instead, sized to land on the same 1.4em.
  */
 
 @import "theme.css";
@@ -12,7 +23,7 @@
 * {
     border-radius: 0;
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 10px;
+    font-size: 11px;
 }
 
 window#waybar {
@@ -27,8 +38,7 @@ window#waybar {
 
 #pill, #pill-in, #leaf, #leaf-inverse {
     background-color: @main-bg;
-    border-style: solid;
-    border-color: @main-bg;
+    border-width: 0;
     padding: 0 1em;
 }
 
@@ -45,7 +55,6 @@ window#waybar {
 /* Half pill, curve facing inwards: hangs from the top edge */
 #pill-in, #pill-in button {
     border-radius: 0 0 10pt 10pt;
-    border-width: 0;
 }
 #pill-in {
     margin: 0 1em 0.3em;
@@ -62,19 +71,17 @@ window#waybar {
 /* Leaf: top-left + bottom-right rounded */
 #leaf, #leaf button {
     border-radius: 10pt 0 10pt 0;
-    border-width: 0;
 }
 #leaf {
-    margin: 0.3em 1em 0.3em 0;
+    margin: 0.3em 1em 0.3em 0;      /* gap faces the media island */
 }
 
 /* Inverse leaf: top-right + bottom-left rounded */
 #leaf-inverse, #leaf-inverse button {
     border-radius: 0 10pt 0 10pt;
-    border-width: 0;
 }
 #leaf-inverse {
-    margin: 0.3em 1em 0.3em 0;
+    margin: 0.3em 0 0.3em 1em;      /* mirror of #leaf */
 }
 
 /* ---- Workspaces: active one stretches, bouncy transitions -------------- */
@@ -108,26 +115,31 @@ window#waybar {
 /* ---- Accent block: menu + workspaces, colours inverted ------------------
  * The wallpaper accent becomes the fill and the island's dark crust becomes
  * the ink. Workspaces are dots: solid = current, ringed = has windows,
- * ring = empty. Flush with the island's left edge: left1 has no left
- * padding, and the block shares the 10pt radius. */
+ * ring = empty. Flush with the island's edges: left1 has no padding of its
+ * own, and the block shares the 10pt radius. */
 
 #pill.left1 {
     padding: 0;
 }
 
 /* Title spacing lives on the title, so an empty title (empty workspace)
- * leaves no dark stub after the accent block. */
+ * leaves no dark stub after the accent block. 1.2em + the label's 0.2em
+ * padding = the standard 1.4em inset, on both sides of the title. */
 #pill.left1 #window {
-    margin: 0 0.9em 0 1.6em;
+    margin: 0 1.2em;
 }
 
 #accent {
     background-color: @wb-act-bg;
     /* Wallpaper accent -> a deep mauve (wb-act-end, matugen waybar template). */
     background-image: linear-gradient(to right, @wb-act-bg, @wb-act-end);
-    border-radius: 16pt;
-    margin: 2px 0 0px 2px;
-    padding: 0 0.8em 0 0.8em;
+    border-radius: 10pt;
+    margin: 0;
+    padding: 0 1em;   /* + the logo's label spacing (0.4em) = the 1.4em inset */
+}
+
+#accent #custom-menu {
+    font-size: 12px;  /* the logo, a touch larger than the 11px text */
 }
 
 #accent #custom-menu,
@@ -136,17 +148,16 @@ window#waybar {
 }
 
 /* Dots, evenly spaced: no stretched pill, the glyph alone marks the state
- * (solid / ringed / ring, see modules/hyprland.jsonc). */
+ * (solid / ringed / ring, see modules/hyprland.jsonc). px, not em: at 7px
+ * an em is only 7px. 4px each side = 8px between dots, and the last dot's
+ * 4px + the block's 1em (11px) = 15px, the same 1.4em inset as the logo. */
 #accent #workspaces button,
-#accent #workspaces button.active {
+#accent #workspaces button.active,
+#accent #workspaces button.visible {
     background: transparent;
-    padding: 0 0.25em;
-    margin: 0.3em 0;
-    font-size: 9px;
-}
-
-#accent #workspaces button.visible:not(.active) {
-    color: alpha(@main-bg, 0.55);
+    padding: 0 4px;
+    margin: 0;
+    font-size: 7px;
 }
 
 #accent #workspaces button:hover {

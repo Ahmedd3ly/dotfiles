@@ -8,13 +8,15 @@
 // Config changes: systemctl --user restart waybar (CSS reloads by itself).
 {
   "layer": "top",
-  "output": ["*"],
+  "output": [
+    "*"
+  ],
   "height": 10,
+  "fixed-center": false,
   "position": "top",
   "exclusive": true,
   "passthrough": false,
   "reload_style_on_change": true,
-
   "include": [
     "$HOME/.config/waybar/modules/menu.jsonc",
     "$HOME/.config/waybar/modules/hyprland.jsonc",
@@ -28,35 +30,50 @@
     "$HOME/.config/waybar/modules/tray.jsonc",
     "$HOME/.config/waybar/modules/toggles.jsonc"
   ],
-
   // Group shapes (see style.css): pill = full pill, pill-in = half pill
   // curving inwards, leaf / leaf-inverse = opposite rounded corners.
   // "name#tag" reuses a shape; CSS targets the part before "#".
   "group/pill#left1": {
     "orientation": "inherit",
-    "modules": ["group/accent", "hyprland/window"]
+    "modules": [
+      "group/accent",
+      "hyprland/window"
+    ]
   },
   // Menu + workspaces on the wallpaper accent (colours inverted, see style.css);
   // the window title stays on the dark island fill.
   "group/accent": {
     "orientation": "inherit",
-    "modules": ["custom/menu", "hyprland/workspaces"]
+    "modules": [
+      "custom/menu",
+      "hyprland/workspaces"
+    ]
   },
   "group/pill#left2": {
     "orientation": "inherit",
-    "modules": ["custom/weather"]
+    "modules": [
+      "custom/weather"
+    ]
   },
   "group/leaf": {
     "orientation": "inherit",
-    "modules": ["cpu", "memory"]
+    "modules": [
+      "cpu",
+      "memory"
+    ]
   },
   "group/pill-in": {
     "orientation": "inherit",
-    "modules": ["group/mediaplayer"]
+    "modules": [
+      "group/mediaplayer"
+    ]
   },
   "group/leaf-inverse": {
     "orientation": "inherit",
-    "modules": ["temperature#gpu", "temperature#cpu"]
+    "modules": [
+      "temperature#gpu",
+      "temperature#cpu"
+    ]
   },
   "group/pill#right1": {
     "orientation": "inherit",
@@ -82,10 +99,23 @@
   },
   "group/pill#right3": {
     "orientation": "inherit",
-    "modules": ["group/clock-cal", "custom/notifications"]
+    "modules": [
+      "group/clock-cal",
+      "custom/notifications"
+    ]
   },
-
-  "modules-left": ["group/pill#left1", "group/pill#left2"],
-  "modules-center": ["group/leaf", "group/pill-in", "group/leaf-inverse"],
-  "modules-right": ["group/pill#right1", "group/pill#right2", "group/pill#right3"]
+  "modules-left": [
+    "group/pill#left1",
+    "group/pill#left2"
+  ],
+  "modules-center": [
+    "group/leaf",
+    "group/pill-in",
+    "group/leaf-inverse"
+  ],
+  "modules-right": [
+    "group/pill#right1",
+    "group/pill#right2",
+    "group/pill#right3"
+  ]
 }

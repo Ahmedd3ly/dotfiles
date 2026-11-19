@@ -10,29 +10,31 @@
 # (A scrolling title was tried and dropped: every scroll step redraws the
 # blurred bar.)
 set -uo pipefail
-export LC_CTYPE=C.UTF-8   # count and cut characters, not bytes (Arabic titles)
+export LC_CTYPE=C.UTF-8 # count and cut characters, not bytes (Arabic titles)
 
-WIDTH=40
+WIDTH=30
 fmt='{{status}}'$'\t''{{title}}'$'\t''{{artist}}'
 
 emit() {
-    local status="$1" title="$2" artist="$3" icon text
-    case "$status" in
-        Playing) icon="󰐊" ;;
-        Paused)  icon="󰏤" ;;
-        *) jq -cn '{text: "󰎆  nothing playing", tooltip: "No media player", class: "idle"}'
-           return ;;
-    esac
-    text="$title${artist:+ - $artist}"
-    [ "${#text}" -gt "$WIDTH" ] && text="${text:0:WIDTH-1}…"
-    jq -cn --arg t "$icon  $text" --arg ti "$title" --arg ar "$artist" --arg c "${status,,}" \
-        '{text: $t, tooltip: ($ti + (if $ar == "" then "" else "\n" + $ar end)), class: $c}'
+  local status="$1" title="$2" artist="$3" icon text
+  case "$status" in
+  Playing) icon="󰐊" ;;
+  Paused) icon="󰏤" ;;
+  *)
+    jq -cn '{text: "󰎆  nothing playing", tooltip: "No media player", class: "idle"}'
+    return
+    ;;
+  esac
+  text="$title${artist:+ - $artist}"
+  [ "${#text}" -gt "$WIDTH" ] && text="${text:0:WIDTH-1}…"
+  jq -cn --arg t "$icon  $text" --arg ti "$title" --arg ar "$artist" --arg c "${status,,}" \
+    '{text: $t, tooltip: ($ti + (if $ar == "" then "" else "\n" + $ar end)), class: $c}'
 }
 
-IFS=$'\t' read -r s t a <<< "$(playerctl metadata --format "$fmt" 2>/dev/null)"
+IFS=$'\t' read -r s t a <<<"$(playerctl metadata --format "$fmt" 2>/dev/null)"
 emit "${s:-}" "${t:-}" "${a:-}"
 
 playerctl --follow metadata --format "$fmt" 2>/dev/null |
-    while IFS=$'\t' read -r s t a; do
-        emit "${s:-}" "${t:-}" "${a:-}"
-    done
+  while IFS=$'\t' read -r s t a; do
+    emit "${s:-}" "${t:-}" "${a:-}"
+  done
