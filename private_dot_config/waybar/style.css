@@ -113,40 +113,44 @@ window#waybar {
     transition: all 0.3s cubic-bezier(.55, -0.68, .48, 1.682);
 }
 
-/* ---- Accent block: menu + workspaces, colours inverted ------------------
- * The wallpaper accent becomes the fill and the island's dark crust becomes
- * the ink. Workspaces are dots: solid = current, ringed = has windows,
- * ring = empty. Flush with the island's edges: left1 has no padding of its
- * own, and the block shares the 10pt radius. */
+/* ---- Accent block: menu + workspaces ----------------------------------
+ * One gradient (accents.css -> accents-end.css) under the logo and the dots;
+ * children stay transparent. White ink, ~6.5:1. Dots: solid = current,
+ * ringed = has windows, ring = empty. */
 
 #pill.left1 {
-    padding: 1;
+    padding: 0;
 }
 
-/* Title spacing lives on the title, so an empty title (empty workspace)
- * leaves no dark stub after the accent block. 1.2em + the label's 0.2em
- * padding = the standard 1.4em inset, on both sides of the title. */
+/* Spacing on the title, so an empty title leaves no stub. */
 #pill.left1 #window {
     margin: 0 1.2em;
 }
 
-/* Mode D (now): deep wallpaper accent -> the wallpaper's 2nd most dominant
- * colour at the same depth (Latte mauve if there is none), white ink at
- * ~6.5:1. Only the block paints; its children stay transparent so one
- * gradient runs under the logo and the dots.
- * Other modes, swap the two colour lines (and the ink below):
- *   fixed Latte mauve end:  @wb-acc-start -> #8839ef          (ink #ffffff)
- *   classic light accent:   @wb-act-bg -> @wb-acc-light-end   (ink @main-bg) */
 #accent {
     background-color: @wb-acc-start;
     background-image: linear-gradient(to right, @wb-acc-start, @wb-act-end);
     border-radius: 10pt;
     margin: 0;
-    padding: 0 1em;   /* + the logo's label spacing (0.4em) = the 1.4em inset */
+    padding: 0 1em;
 }
 
+/* Optional "/" cut on the right end (GTK3 has no clip-path): an 18px strip
+ * painted in the island fill. To enable, replace the #accent rules above with:
+ *
+ *   background-image:
+ *       linear-gradient(to top left, @main-bg 45%, alpha(@main-bg, 0) 55%),
+ *       linear-gradient(to right, @wb-acc-start, @wb-act-end);
+ *   background-size: 18px 100%, 100% 100%;
+ *   background-position: right top, left top;
+ *   background-repeat: no-repeat;
+ *   border-radius: 10pt 6px 0 10pt;
+ *   padding: 0 29px 0 1em;
+ *
+ * "\" instead: "to bottom left", radius 10pt 0 6px 10pt. Sharper: 48%/52%. */
+
 #accent #custom-menu {
-    font-size: 12px;  /* the logo, a touch larger than the 11px text */
+    font-size: 12px;
 }
 
 #accent #custom-menu,
@@ -157,14 +161,11 @@ window#waybar {
     background: transparent;
 }
 
-/* Dots, evenly spaced: no stretched pill, the glyph alone marks the state
- * (solid / ringed / ring, see modules/hyprland.jsonc). px, not em: at 7px
- * an em is only 7px. 4px each side = 8px between dots, and the last dot's
- * 4px + the block's 1em (11px) = 15px, the same 1.4em inset as the logo. */
+/* Dots: px, not em (at 7px an em is 7px). 4px + the block's 1em matches
+ * the logo's inset. */
 #accent #workspaces button,
 #accent #workspaces button.active,
 #accent #workspaces button.visible {
-    background: transparent;
     padding: 0 4px;
     margin: 0;
     font-size: 7px;
