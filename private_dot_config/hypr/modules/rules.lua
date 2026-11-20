@@ -43,6 +43,23 @@ hl.window_rule({
     center = true,
 })
 
+-- Tutor terminal (SUPER+Shift+T, kitty --class tutor): like the AI one but
+-- taller for reading, its own border gradient from the wallpaper accents
+-- (tertiary -> secondary; stock Mocha pink -> mauve until matugen has run),
+-- and the rest of the screen dimmed so a study session reads as focus mode.
+local ok, accent = pcall(require, 'modules.accents')
+local tutor = ok and type(accent) == 'table' and accent.tutor
+    or { colors = { "rgba(f5c2e7ff)", "rgba(cba6f7ff)" }, angle = 135 }
+hl.window_rule({
+    name         = "float-tutor",
+    match        = { class = "^tutor$" },
+    float        = true,
+    size         = "monitor_w*0.55 monitor_h*0.8",
+    center       = true,
+    border_color = table.concat(tutor.colors, " ") .. " " .. tutor.angle .. "deg",
+    dim_around   = true,
+})
+
 -- Update panel (bar updates icon -> sysupdate): floats centred like the AI one.
 hl.window_rule({
     name   = "float-sysupdate",

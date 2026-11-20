@@ -64,6 +64,7 @@ bind(M("E"), exec(apps.fileManager), "[Apps] file manager")
 bind(M("B"), exec(apps.browser), "[Apps] browser")
 bind(M("C"), exec(apps.editor), "[Apps] editor")
 bind(M("SHIFT + Return"), exec("ai-term"), "[Apps] AI agent scratchpad")
+bind(M("SHIFT + T"), exec("tutor"), "[Apps] Socratic tutor scratchpad")
 
 ---- Menus (rofi; a second press closes the open menu) ----------------------
 local function menu(cmd)

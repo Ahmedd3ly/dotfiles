@@ -12,6 +12,7 @@
 #   ai "task"          interactive, with a first message
 #   ai -r "task"       interactive, read-only (the engine's plan mode): diagnosis
 #   ai -p "question"   one-shot answer on stdout; piped stdin goes along as context
+#   ai -c              continue the most recent session in this folder (tutor)
 set -euo pipefail
 
 conf="${XDG_CONFIG_HOME:-$HOME/.config}/ai/agent"
@@ -24,6 +25,7 @@ mode=chat
 case "${1:-}" in
     -r) mode=plan;  shift ;;
     -p) mode=print; shift ;;
+    -c) mode=continue; shift ;;
 esac
 
 case "$agent" in
@@ -37,6 +39,7 @@ case "$agent" in
             chat)  exec claude "$@" ;;
             plan)  exec claude --permission-mode plan "$@" ;;
             print) exec claude -p "$@" ;;
+            continue) exec claude --continue "$@" ;;
         esac ;;
     *)
         echo "ai: no adapter for '$agent' (set the engine in $conf, add a branch in $0)" >&2
