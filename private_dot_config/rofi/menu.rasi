@@ -1,7 +1,13 @@
+// █▀▄▀█ █▀▀ █▄░█ █░█
+// █░▀░█ ██▄ █░▀█ █▄█
+//
+// Why: the layout for long-row dmenu menus (keyhint, anim-pick), which pass
+// it with -theme. Short-row menus use the default, clipboard.rasi.
 // Ported from HyDE (GPL-3.0): https://github.com/HyDE-Project/HyDE/tree/master/Configs/.local/share/hyde/rofi/themes/clipboard.rasi
-// The one list layout for every dmenu menu (clipboard, emoji, keybindings,
-// power, animation and wallpaper pickers). Default theme via config.rasi.
-// Wallpaper crops from ~/.cache/wall (wall-cache).
+// Changes: wallpaper crops from ~/.cache/wall (wall-cache), look from
+// theme.rasi, the full-width wallpaper banner from style_10 instead of
+// the blur strip + thumbnail, and 33em wide so keyhint's longest row
+// (~66 chars) fits; anything longer is cut with … on purpose.
 /**
  * ROFI Layout 
  *
@@ -22,8 +28,8 @@ configuration {
 
 // Main //
 window {
-    width:                       23em;
-    height:                      30em;
+    width:                       33em;
+    height:                      36em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
@@ -38,41 +44,31 @@ mainbox {
     spacing:                     0em;
     padding:                     0.5em;
     orientation:                 vertical;
-    children:                    [ "wallbox" , "listbox" ];
+    children:                    [ "inputbar" , "listbox" ];
     background-color:            transparent;
-}
-wallbox {
-    spacing:                     0em;
-    padding:                     0em;
-    expand:                      false;
-    orientation:                 horizontal;
-    background-color:            transparent;
-    background-image:            url("~/.cache/wall/blur.png", width);
-    children:                    [ "wallframe" , "inputbar" ];
-}
-wallframe {
-    width:                       5em;
-    spacing:                     0em;
-    padding:                     0em;
-    expand:                      false;
-    background-color:            @main-bg;
-    background-image:            url("~/.cache/wall/quad.png", width);
 }
 
 
 // Inputs //
+// Banner from style_10: the wallpaper crop across the full width, search
+// pill floating on it (style_10 hides the entry; a dmenu needs it).
 inputbar {
     enabled:                     true;
-    padding:                     0em;
+    padding:                     2.5em 4em;
     children:                    [ "entry" ];
-    background-color:            @main-bg;
-    expand:                      true;
+    background-color:            transparent;
+    background-image:            url("~/.cache/wall/thmb.png", width);
+    border-radius:               1em;
+    expand:                      false;
 }
 entry {
     enabled:                     true;
-    padding:                     1.8em;
+    padding:                     0.6em 1em;
+    border-radius:               1em;
     text-color:                  @main-fg;
-    background-color:            transparent;
+    background-color:            @main-bg;
+    placeholder:                 "search";
+    placeholder-color:           #cdd6f480;
 }
 
 

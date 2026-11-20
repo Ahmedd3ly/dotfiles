@@ -1,7 +1,7 @@
 // █▀█ █▀█ █▀▀ █
 // █▀▄ █▄█ █▀░ █
 //
-// Why: the global look every rofi layout imports (styles/*.rasi, menu.rasi):
+// Why: the global look every rofi layout imports (styles/*.rasi, clipboard.rasi, menu.rasi):
 // colours from HyDE's "Catppuccin Mocha" rofi.theme, plus the window border
 // and rounding HyDE injected at launch (border = Hyprland border_size,
 // window radius = rounding x 3, row radius = rounding x 2). A layout that

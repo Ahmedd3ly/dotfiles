@@ -2,7 +2,8 @@
 // █▀▄ █▄█ █▀░ █
 //
 // Why: global rofi settings. Plain `rofi -dmenu` calls (clipboard, emoji,
-// power, keyhint, anim-pick) get menu.rasi; the launcher, window switcher
+// rofi-style) get clipboard.rasi; keyhint and anim-pick pass menu.rasi,
+// the power menu powermenu.rasi; the launcher, window switcher
 // and file browser are started by rofi-launch with the layout chosen in
 // rofi-style (SUPER+Shift+A).
 
@@ -13,4 +14,4 @@ configuration {
     icon-theme:           "Tela-circle-dracula";   // AUR: tela-circle-icon-theme-dracula (as on HyDE)
 }
 
-@theme "~/.config/rofi/menu.rasi"
+@theme "~/.config/rofi/clipboard.rasi"

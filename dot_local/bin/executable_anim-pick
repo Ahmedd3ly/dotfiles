@@ -13,9 +13,10 @@ current=$(sed -n 's/^return "\(.*\)"$/\1/p' "$choice_file" 2>/dev/null || true)
 
 pick=$(for f in "$hypr"/animations/*.lua; do
            n=${f##*/}; n=${n%.lua}
-           desc=$(sed -n '1s/^-- //p' "$f")
+           desc=$(sed -n '1{s/^-- //;s/ animation profile for Hyprland$//;p}' "$f")
            printf '%s%s\t%s\n' "$n" "$([ "$n" = "${current:-standard}" ] && echo ' *')" "$desc"
-       done | column -t -s $'\t' | rofi -dmenu -i -p animation) || exit 0
+       done | column -t -s $'\t' | rofi -dmenu -i -p animation \
+           -theme "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/menu.rasi") || exit 0
 
 name=${pick%% *}
 printf 'return "%s"\n' "$name" > "$choice_file"

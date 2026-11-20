@@ -68,7 +68,7 @@ bind(M("SHIFT + A"), exec("rofi-style"),             "[Menu] rofi layout per men
 bind(M("SHIFT + W"), menu("wall-pick"),              "[Menu] wallpaper (recolours the desktop)")
 bind(M("grave"),     menu("keyhint"),                "[Menu] keybinding cheat sheet")
 bind(M("period"),    menu("emoji-pick"),             "[Menu] emoji to clipboard")
-bind(M("V"),         menu("cliphist list | rofi -dmenu -i -p clip | cliphist decode | wl-copy"),
+bind(M("V"),         menu("cliphist list | rofi -dmenu -i -display-columns 2 -p clip | cliphist decode | wl-copy"),
     "[Menu] clipboard history")
 
 ---- Utilities -------------------------------------------------------------

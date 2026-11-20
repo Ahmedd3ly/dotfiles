@@ -4,15 +4,47 @@
 #
 # Why: searchable cheat sheet built live from `hyprctl binds`, so it can
 # never drift from the config. Only binds with a description are listed.
+# Look replicates HyDE's keybinds_hint.sh + hint-hyprland.py --format rofi:
+# a " Section" header per "[Section]" prefix (config order), rows as
+# "SUPER SHIFT + R  >  description" with the key column padded to one
+# width, a ━ rule closing each group. Long rows are cut by rofi (…).
+# Layout: rofi/menu.rasi (shared with anim-pick).
+# Unlike HyDE, headers and rules are non-selectable, and each row carries
+# its section as rofi meta, so typing "media" still finds the media keys.
 set -euo pipefail
 
 hyprctl binds -j | jq -r '
     def bit($n): ((.modmask / $n) | floor) % 2 == 1;
     def mods: [ (if bit(64) then "SUPER" else empty end),
-                (if bit(4)  then "CTRL"  else empty end),
                 (if bit(8)  then "ALT"   else empty end),
-                (if bit(1)  then "SHIFT" else empty end) ] | join("+");
+                (if bit(4)  then "CTRL"  else empty end),
+                (if bit(1)  then "SHIFT" else empty end) ] | join(" ");
+    def esc: gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
     .[] | select(.description != null and .description != "")
-        | "\(mods | if . == "" then "" else . + "+" end)\(.key)\t\(.description)"' |
-    column -t -s $'\t' |
-    rofi -dmenu -i -p keys > /dev/null || true
+        | (.description | capture("^\\[(?<s>[^]]*)\\] *(?<d>.*)$") // {s: "Misc", d: .}) as $p
+        | [$p.s, ([mods, .key] | map(select(. != "")) | join(" + ") | esc), ($p.d | esc)]
+        | @tsv' |
+    awk -F'\t' '
+        { if (!($1 in seen)) { seen[$1] = 1; order[++n] = $1 }
+          key[NR] = $2; desc[NR] = $3; sec[NR] = $1
+          k = $2; gsub(/&[a-z]+;/, "x", k)            # an entity renders as 1 char
+          d = $3; gsub(/&[a-z]+;/, "x", d)
+          klen[NR] = length(k); if (length(k) > kw) kw = length(k)
+          if (length(d) > dw) dw = length(d) }
+        END {
+            for (i = 1; i <= NR; i++) {
+                row = sprintf("%s%*s  &gt;  %s", key[i], kw - klen[i], "", desc[i])
+                rows[sec[i]] = rows[sec[i]] row "\n"
+            }
+            rule = sprintf("%*s", kw + 5 + dw, ""); gsub(/ /, "━", rule)
+            for (i = 1; i <= n; i++) {
+                s = order[i]
+                printf " %s\0nonselectable\x1ftrue\n", s
+                c = split(rows[s], r, "\n")
+                for (j = 1; j < c; j++) printf "%s\0meta\x1f%s\n", r[j], s
+                printf "%s\0nonselectable\x1ftrue\n", rule
+            }
+        }' |
+    rofi -dmenu -i -markup-rows -no-custom -selected-row 1 -p keys \
+         -theme "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/menu.rasi" \
+         -theme-str 'entry { placeholder: "⌨️ Keybindings"; }' > /dev/null || true
