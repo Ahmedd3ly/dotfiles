@@ -13,4 +13,4 @@
 /* 2nd dominant colour at tone 40, hue pinned to mauve (285): keeps that
  * colour's depth and saturation, never drifts pink. Plain 2nd colour:
  * drop the set_hue filter. More magenta: 300. Bluer mauve: 270. */
-@define-color wb-act-end {{ palettes.primary._40.hex | set_hue: 285.0 }};
+@define-color wb-act-end {{ palettes.primary._40.hex | set_hue: 320.0}};
