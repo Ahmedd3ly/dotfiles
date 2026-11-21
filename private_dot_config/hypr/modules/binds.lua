@@ -22,16 +22,16 @@ end
 
 ---- Session ---------------------------------------------------------------
 bind(M("L"), exec("pidof hyprlock || hyprlock"), "[Session] lock screen")
-bind(M("End"), exec("session-fade uwsm stop"), "[Session] log out (fades out)")
+bind(M("End"), exec("session-fade uwsm stop"), "[Session] log out")
 bind("CONTROL + ALT + Delete", exec("powermenu"), "[Session] power menu")
 bind(M("SHIFT + R"), exec("hyprctl reload"), "[Session] reload config")
 
 ---- Windows ---------------------------------------------------------------
 bind(M("Q"), hl.dsp.window.close(), "[Window] close")
 bind("ALT + F4", hl.dsp.window.close(), "[Window] close")
-bind(M("T"), hl.dsp.window.float({ action = "toggle" }), "[Window] toggle floating")
 bind(M("F"), hl.dsp.window.fullscreen(), "[Window] toggle fullscreen")
 bind(M("S"), hl.dsp.layout("togglesplit"), "[Window] toggle split")
+bind(M("Shift + F"), hl.dsp.window.float({ action = "toggle" }), "[Window] toggle floating")
 bind("ALT + Tab", hl.dsp.window.cycle_next(), "[Window] cycle focus")
 
 for _, dir in ipairs({ "left", "right", "up", "down" }) do
@@ -60,9 +60,9 @@ bind(M("mouse:273"), hl.dsp.window.resize(), "[Window] resize with mouse", { mou
 
 ---- Apps ------------------------------------------------------------------
 bind(M("Return"), exec(apps.terminal), "[Apps] terminal")
-bind(M("E"), exec(apps.fileManager), "[Apps] file manager")
+bind(M("D"), exec(apps.fileManager), "[Apps] file manager")
 bind(M("B"), exec(apps.browser), "[Apps] browser")
-bind(M("C"), exec(apps.editor), "[Apps] editor")
+bind(M("E"), exec(apps.editor), "[Apps] editor")
 bind(M("SHIFT + Return"), exec("ai-term"), "[Apps] AI agent scratchpad")
 bind(M("SHIFT + T"), exec("tutor"), "[Apps] Socratic tutor scratchpad")
 
@@ -71,9 +71,9 @@ local function menu(cmd)
 	return exec("pkill -x rofi || " .. cmd)
 end
 bind(M("A"), exec("rofi-launch launcher"), "[Menu] app launcher")
+bind(M("R"), exec("rofi-style"), "[Menu] rofi layout per menu")
 bind(M("Tab"), exec("rofi-launch window"), "[Menu] window switcher")
-bind(M("SHIFT + E"), exec("rofi-launch files"), "[Menu] file browser")
-bind(M("SHIFT + A"), exec("rofi-style"), "[Menu] rofi layout per menu")
+bind(M("SHIFT + D"), exec("rofi-launch files"), "[Menu] file browser")
 bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker")
 bind(M("grave"), menu("keyhint"), "[Menu] keybinding cheat sheet")
 bind(M("period"), menu("emoji-pick"), "[Menu] emoji to clipboard")
@@ -86,7 +86,7 @@ bind(
 ---- Utilities -------------------------------------------------------------
 bind(M("Space"), exec("hyprctl switchxkblayout all next"), "[Utility] switch keyboard layout", { locked = true })
 bind(M("SHIFT + C"), exec("hyprpicker -an"), "[Utility] colour picker to clipboard")
-bind(M("SHIFT + Y"), menu("anim-pick"), "[Utility] try animation presets")
+bind(M("SHIFT + A"), menu("anim-pick"), "[Utility] try animation presets")
 bind(M("SHIFT + S"), exec("shot region"), "[Screenshot] region")
 bind(M("CONTROL + S"), exec("shot freeze"), "[Screenshot] frozen region")
 bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor")
@@ -98,7 +98,7 @@ for i = 1, 10 do
 	bind(M(key), hl.dsp.focus({ workspace = i }), "[Workspace] go to " .. i)
 	bind(M("SHIFT + " .. key), hl.dsp.window.move({ workspace = i }), "[Workspace] move window to " .. i)
 	bind(
-		M("ALT + " .. key),
+		M("CONTROL + " .. key),
 		hl.dsp.window.move({ workspace = i, follow = false }),
 		"[Workspace] move window to " .. i .. " silently"
 	)
@@ -112,8 +112,8 @@ bind(M("CONTROL + ALT + Left"), hl.dsp.window.move({ workspace = "r-1" }), "[Wor
 bind(M("mouse_down"), hl.dsp.focus({ workspace = "e+1" }), "[Workspace] next (scroll)")
 bind(M("mouse_up"), hl.dsp.focus({ workspace = "e-1" }), "[Workspace] previous (scroll)")
 
----- Hardware keys (locked = also work on the lock screen) -----------------
--- Each goes through osd: change the value, then show the bottom-centre popup.
+---- Hardware keys -----------------
+-- locked = also works on the lock screen
 local vol_up = exec("osd volume up")
 local vol_down = exec("osd volume down")
 local vol_mute = exec("osd volume mute")
