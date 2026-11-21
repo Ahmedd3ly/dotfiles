@@ -23,6 +23,7 @@
     "$HOME/.config/waybar/modules/media.jsonc",
     "$HOME/.config/waybar/modules/clock.jsonc",
     "$HOME/.config/waybar/modules/notifications.jsonc",
+    "$HOME/.config/waybar/modules/pomo.jsonc",
     "$HOME/.config/waybar/modules/weather.jsonc",
     "$HOME/.config/waybar/modules/audio.jsonc",
     "$HOME/.config/waybar/modules/status.jsonc",
@@ -90,7 +91,8 @@
     "modules": [
       "privacy",
       "group/volumecontrol",
-      "power-profiles-daemon",
+      // "power-profiles-daemon",
+      "custom/pomo",
       "custom/updates",
       "network",
       "battery"

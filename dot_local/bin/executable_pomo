@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# █▀█ █▀█ █▀▄▀█ █▀█
+# █▀▀ █▄█ █░▀░█ █▄█
+#
+# Why: a Pomodoro timer with no daemon and no packages. Focus blocks turn on
+# mako's do-not-disturb; breaks lock the screen so they actually happen. Each
+# phase end is a one-shot `systemd-run --user` timer that calls `pomo next`;
+# state is one small file in $XDG_RUNTIME_DIR (gone after a reboot). The bar
+# module (waybar/modules/pomo.jsonc) shows it; SUPER+Shift+P toggles.
+# Usage: pomo toggle | stop | skip | status | next (timer only)
+set -euo pipefail
+
+FOCUS=$((25 * 60)) SHORT=$((5 * 60)) LONG=$((15 * 60)) ROUNDS=4
+LOCK_DELAY=3   # seconds between the break notification and the lock
+
+state_dir="${XDG_RUNTIME_DIR:-/run/user/$UID}/pomo"
+state="$state_dir/state"
+unit=pomo-next
+self="$HOME/.local/bin/pomo"   # absolute: systemd's PATH has no ~/.local/bin
+
+# State: phase (idle|focus|short|long), round (1..ROUNDS), end (epoch while
+# running), left (seconds while paused, else 0).
+phase=idle round=1 end=0 left=0
+[[ -r $state ]] && source "$state"
+
+save() {
+    mkdir -p "$state_dir"
+    printf 'phase=%s round=%s end=%s left=%s\n' "$phase" "$round" "$end" "$left" > "$state"
+}
+refresh() {   # 14: this module, 11: the bell (DND icon)
+    pkill -RTMIN+14 waybar 2>/dev/null || true
+    pkill -RTMIN+11 waybar 2>/dev/null || true
+}
+dnd() { makoctl mode "$1" do-not-disturb > /dev/null 2>&1 || true; }   # -a / -r
+cancel() { systemctl --user stop "$unit.timer" 2>/dev/null || true; }
+schedule() {   # $1 = seconds from now
+    cancel
+    systemd-run --user --quiet --collect --unit="$unit" \
+        --on-active="$1s" --timer-property=AccuracySec=1s "$self" next
+    end=$(( $(date +%s) + $1 )) left=0
+}
+start_focus() {
+    phase=focus
+    dnd -a
+    schedule "$FOCUS"
+}
+
+case "${1:-status}" in
+    toggle)
+        if [[ $phase == idle ]]; then
+            start_focus
+        elif (( left > 0 )); then                      # paused -> resume
+            schedule "$left"
+        else                                           # running -> pause
+            cancel
+            left=$(( end - $(date +%s) )); (( left > 0 )) || left=1
+        fi
+        save; refresh ;;
+
+    stop)
+        cancel
+        [[ $phase == focus ]] && dnd -r
+        phase=idle round=1 end=0 left=0
+        save; refresh ;;
+
+    skip)
+        [[ $phase == idle ]] && exit 0
+        cancel
+        exec "$self" next ;;
+
+    next)   # a phase just ended
+        case $phase in
+            focus)
+                dnd -r
+                if (( round >= ROUNDS )); then phase=long len=$LONG; else phase=short len=$SHORT; fi
+                schedule "$len"
+                save; refresh
+                notify-send -a pomo "Pomodoro: break" \
+                    "Round $round done. $((len / 60)) min break; the screen locks in ${LOCK_DELAY}s."
+                sleep "$LOCK_DELAY"
+                # hypridle runs hyprlock (lock_cmd), outside this transient
+                # unit, so the lock survives this script exiting.
+                loginctl lock-session ;;
+            short|long)
+                if [[ $phase == long ]]; then round=1; else round=$((round + 1)); fi
+                phase=idle end=0 left=0
+                save; refresh
+                notify-send -a pomo "Pomodoro: break over" \
+                    "Click the timer (or SUPER+Shift+P) to start round $round." ;;
+        esac ;;
+
+    status)
+        if [[ $phase == idle ]]; then
+            tip="Pomodoro: idle"
+            (( round > 1 )) && tip+=" (next: round $round of $ROUNDS)"
+            printf '{"text":"󱎫","tooltip":"%s\\nclick: start  ·  right-click: reset","class":"idle"}\n' "$tip"
+            exit 0
+        fi
+        if (( left > 0 )); then s=$left; class="\"$phase\",\"paused\""; else s=$(( end - $(date +%s) )); class="\"$phase\""; fi
+        (( s > 0 )) || s=0
+        m=$(( (s + 59) / 60 ))   # round up: "1m" until it is really over
+        case $phase in
+            focus) icon="󱎫" name="Focus" ;;
+            short) icon="󰅶" name="Short break" ;;
+            long)  icon="󰅶" name="Long break" ;;
+        esac
+        (( left > 0 )) && name+=" (paused)"
+        printf '{"text":"%s  %sm","tooltip":"%s · round %s of %s · %sm left\\nclick: pause/resume  ·  middle: skip  ·  right-click: reset","class":[%s]}\n' \
+            "$icon" "$m" "$name" "$round" "$ROUNDS" "$m" "$class" ;;
+
+    *) echo "usage: pomo toggle | stop | skip | status" >&2; exit 2 ;;
+esac

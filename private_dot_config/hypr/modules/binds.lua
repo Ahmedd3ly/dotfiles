@@ -65,6 +65,7 @@ bind(M("B"), exec(apps.browser), "[Apps] browser")
 bind(M("E"), exec(apps.editor), "[Apps] editor")
 bind(M("SHIFT + Return"), exec("ai-term"), "[Apps] AI agent scratchpad")
 bind(M("SHIFT + T"), exec("tutor"), "[Apps] Socratic tutor scratchpad")
+bind(M("SHIFT + P"), exec("pomo toggle"), "[Apps] Pomodoro start / pause")
 
 ---- Menus (rofi; a second press closes the open menu) ----------------------
 local function menu(cmd)

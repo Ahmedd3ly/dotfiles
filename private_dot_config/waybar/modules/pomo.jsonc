@@ -1,0 +1,15 @@
+// Pomodoro timer (pomo): idle icon, or minutes left in a focus block/break.
+// Why: a glanceable countdown in the status island (right2, the old
+// power-profiles slot); focus blocks also switch the bell to do-not-disturb.
+// pomo signals 14 on every change; the 10 s poll only advances the minutes.
+{
+  "custom/pomo": {
+    "exec": "$HOME/.local/bin/pomo status",
+    "return-type": "json",
+    "interval": 10,
+    "signal": 14,
+    "on-click": "$HOME/.local/bin/pomo toggle",
+    "on-click-middle": "$HOME/.local/bin/pomo skip",
+    "on-click-right": "$HOME/.local/bin/pomo stop"
+  }
+}

@@ -208,6 +208,7 @@ label.module, label.text-button {
 #network,
 #power-profiles-daemon,
 #custom-notifications,
+#custom-pomo,
 #custom-menu {
     padding-right: 0.5em;
 }
@@ -224,6 +225,13 @@ button {
 #idle_inhibitor.activated {
     color: @wb-hvr-bg;
 }
+
+/* pomo: focus in the wallpaper accent like the other "on" toggles, breaks
+ * in Mocha teal, paused dimmed. */
+#custom-pomo.focus { color: @wb-hvr-bg; }
+#custom-pomo.short,
+#custom-pomo.long { color: #94e2d5; }
+#custom-pomo.paused { opacity: 0.5; }
 
 #battery.warning:not(.charging) { color: #fab387; }
 #battery.critical:not(.charging) { color: #f38ba8; }
