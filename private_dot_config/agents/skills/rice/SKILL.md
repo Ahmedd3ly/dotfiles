@@ -40,8 +40,10 @@ hypr/modules/palette.lua, read by look.lua) and the whole starship.toml
 Always dark Mocha, by choice, in every theme: waybar (theme.css) and hyprlock
 (literals); their accent templates use `colors.*.dark` so they match too.
 Bar accent block: gradient wallpaper colour -> its 2nd dominant colour when
-the hue is within 60 deg (wall-set step 2b writes waybar/accents-end.css; one
---dry-run JSON query), else palettes.secondary._40 (waybar-accents.css).
+the hue is within max_hue = 125 deg (wall-set step 2b writes
+waybar/accents-end.css; one --dry-run JSON query), else
+palettes.secondary._40 (waybar-accents.css). 125 keeps sakura's pink and
+accepts blue -> crimson on a few wallpapers; 60 dropped both.
 Wallpaper-coloured apps: cava (cava/themes/matugen; wall-set sends USR2) and
 Heroic (heroic/themes/matugen.css, read at Heroic's start; RUNBOOK).
 Apps that follow the theme via palette.json "flavor" / "nvim_style": Vesktop

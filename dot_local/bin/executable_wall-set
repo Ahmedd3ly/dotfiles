@@ -29,10 +29,13 @@ matugen -q image "$img" -m "$mode" --import-json "$palette"
 
 # 2b. Bar gradient end: the wallpaper's 2nd dominant colour (tone 40), but
 # only when its hue is within $max_hue degrees of the main colour; a far hue
-# (a small red patch on a blue picture) would clash, so accents.css's
-# fallback (the main colour, muted) stays. JSON only (--dry-run): nothing
-# else is rendered. No 2nd colour in the image: fallback too.
-max_hue=60
+# (e.g. teal -> brown) would clash, so accents.css's fallback (the main
+# colour, muted) stays. JSON only (--dry-run): nothing else is rendered. No
+# 2nd colour in the image: fallback too.
+# 125 lets sakura's blue -> pink through (121); chosen knowing it also lets
+# blue -> crimson through (switch_swirl 117, deer 107, boat 100). At 60
+# those fell back too.
+max_hue=125
 cfg="${XDG_CONFIG_HOME:-$HOME/.config}"
 end_css="$cfg/waybar/accents-end.css"
 start=$(sed -n 's/^@define-color wb-acc-start \(#[0-9a-fA-F]\{6\}\).*/\1/p' "$cfg/waybar/accents.css")
