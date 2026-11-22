@@ -2,11 +2,13 @@
 # █▀█ █▀▀ █▀▀ █▀█ █▀█ █▀▄
 # █▀▄ ██▄ █▄▄ █▄█ █▀▄ █▄▀
 #
-# Why: record the monitor you're on, with what the system plays, using
-# wf-recorder; one key toggles it (binds.lua: SUPER+Alt+R). Press again to
-# stop: wf-recorder gets SIGINT, so the file is finalised properly.
-# Audio: the monitor of the current default output (speakers, headphones or
-# HDMI, whichever is playing), not the microphone.
+# Why: record the monitor you're on, with what the system plays and your
+# mic, using wf-recorder; one key toggles it (binds.lua: SUPER+Alt+R). Press
+# again to stop: wf-recorder gets SIGINT, so the file is finalised properly.
+# Audio: wf-recorder takes one source, so while recording a temporary
+# PipeWire null sink "rec_mix" gets two loopbacks, the default output's
+# monitor (Spotify, games...) and the default mic (muting it still works);
+# wf-recorder records rec_mix.monitor. All three are unloaded on stop.
 # Video: h264 on the Intel iGPU (VA-API), via its stable PCI path; the
 # renderD numbers swap between boots. No iGPU node: software x264.
 # Files: ~/Videos/Recordings/rec_<date>.mp4
@@ -14,12 +16,22 @@
 set -euo pipefail
 
 state="${XDG_RUNTIME_DIR:-/tmp}/record.file"
+mods="${XDG_RUNTIME_DIR:-/tmp}/record.modules"   # pactl module ids to unload
 notify() { notify-send -a record -i media-record "$@" || true; }
+
+# Remove the temporary mix (if any).
+unmix() {
+    if [ -s "$mods" ]; then
+        tac "$mods" | while read -r m; do pactl unload-module "$m" 2>/dev/null || true; done
+    fi
+    rm -f "$mods"
+}
 
 # Running: stop it.
 if pgrep -x wf-recorder >/dev/null; then
     pkill -INT -x wf-recorder
     while pgrep -x wf-recorder >/dev/null; do sleep 0.1; done   # file finalised
+    unmix
     notify "Recording saved" "$(cat "$state" 2>/dev/null || echo "~/Videos/Recordings")"
     rm -f "$state"
     exit 0
@@ -34,9 +46,21 @@ printf '%s\n' "$file" > "$state"
 # The stable path is a symlink; wf-recorder needs the real renderD node.
 igpu=$(readlink -e /dev/dri/by-path/pci-0000:00:02.0-render 2>/dev/null || true)
 if [ -n "$igpu" ]; then enc=(-c h264_vaapi -d "$igpu"); else enc=(-c libx264); fi
+
+# Audio mix: system output + mic -> rec_mix (low-latency loopbacks).
 audio=()
 sink=$(pactl get-default-sink 2>/dev/null || true)
-[ -n "$sink" ] && audio=(--audio="$sink.monitor")
+mic=$(pactl get-default-source 2>/dev/null || true)
+if [ -n "$sink" ]; then
+    unmix   # leftovers of a crashed run
+    {
+        pactl load-module module-null-sink sink_name=rec_mix \
+            sink_properties=device.description=Recording-mix
+        pactl load-module module-loopback source="$sink.monitor" sink=rec_mix latency_msec=20
+        [ -n "$mic" ] && pactl load-module module-loopback source="$mic" sink=rec_mix latency_msec=20
+    } > "$mods"
+    audio=(--audio=rec_mix.monitor)
+fi
 
 setsid -f wf-recorder -o "$output" "${enc[@]}" "${audio[@]}" -f "$file" >/dev/null 2>&1
 notify "Recording $output" "SUPER+Alt+R again to stop"
