@@ -23,77 +23,83 @@ G=$'\e[1;32m' Y=$'\e[1;33m' R=$'\e[1;31m' B=$'\e[1m' D=$'\e[2m' N=$'\e[0m'
 rule() { printf '%s%s%s\n' "$D" "────────────────────────────────────────────────────" "$N"; }
 
 collect() {
-    printf '%sChecking for updates…%s\r' "$D" "$N"
-    # checkupdates: exit 0 = updates, 2 = none, 1 = could not check (network).
-    repo_list=$(checkupdates 2>/dev/null); repo_rc=$?
-    # paru -Qua exits 1 both when there's nothing and on failure: empty = 0.
-    aur_list=$(paru -Qua 2>/dev/null)
-    repo=$(grep -c . <<<"$repo_list"); aur=$(grep -c . <<<"$aur_list")
-    total=$(( repo + aur ))
-    printf '\e[2K'
+  printf '%sChecking for updates…%s\r' "$D" "$N"
+  # checkupdates: exit 0 = updates, 2 = none, 1 = could not check (network).
+  repo_list=$(flock -w 120 "${XDG_RUNTIME_DIR:-/tmp}/checkupdates.lock" checkupdates 2>/dev/null)
+  repo_rc=$?
+  # paru -Qua exits 1 both when there's nothing and on failure: empty = 0.
+  aur_list=$(paru -Qua 2>/dev/null)
+  repo=$(grep -c . <<<"$repo_list")
+  aur=$(grep -c . <<<"$aur_list")
+  total=$((repo + aur))
+  printf '\e[2K'
 }
 
-row() {    # name count failed
-    local state="${G}up to date${N}"
-    if (( $3 )); then state="${R}couldn't check${N}"
-    elif (( $2 )); then state="${Y}pending${N}"; fi
-    printf '  %-22s %7s   %s\n' "$1" "$2" "$state"
+row() { # name count failed
+  local state="${G}up to date${N}"
+  if (($3)); then
+    state="${R}couldn't check${N}"
+  elif (($2)); then state="${Y}pending${N}"; fi
+  printf '  %-22s %7s   %s\n' "$1" "$2" "$state"
 }
 
 summary() {
-    printf '\n  %sSystem update%s\n' "$B" "$N"; rule
-    printf '  %s%-22s %7s   %s%s\n' "$D" "Source" "Pending" "State" "$N"
-    row "Official repositories" "$repo" "$(( repo_rc == 1 ))"
-    row "AUR" "$aur" 0
-    rule
-    row "Total" "$total" 0
+  printf '\n  %sSystem update%s\n' "$B" "$N"
+  rule
+  printf '  %s%-22s %7s   %s%s\n' "$D" "Source" "Pending" "State" "$N"
+  row "Official repositories" "$repo" "$((repo_rc == 1))"
+  row "AUR" "$aur" 0
+  rule
+  row "Total" "$total" "$((repo_rc == 1))"
 }
 
-list() {   # title, "name old -> new" lines
-    [[ -z $2 ]] && return
-    printf '\n  %s%s%s\n' "$B" "$1" "$N"
-    awk -v d="$D" -v g="$G" -v n="$N" \
-        '{ printf "    %-28s %s%-20s%s →  %s%s%s\n", $1, d, $2, n, g, $4, n }' <<<"$2"
+list() { # title, "name old -> new" lines
+  [[ -z $2 ]] && return
+  printf '\n  %s%s%s\n' "$B" "$1" "$N"
+  awk -v d="$D" -v g="$G" -v n="$N" \
+    '{ printf "    %-28s %s%-20s%s →  %s%s%s\n", $1, d, $2, n, g, $4, n }' <<<"$2"
 }
 
 refresh_bar() {
-    rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/waybar/updates.json"
-    pkill -RTMIN+20 waybar 2>/dev/null
+  rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/waybar/updates.json"
+  pkill -RTMIN+20 waybar 2>/dev/null
 }
 
 collect
 summary
-if (( total == 0 )); then
-    printf '\n  %sSystem is up to date.%s\n' "$G" "$N"
+if ((repo_rc == 1 && total == 0)); then
+  printf '\n  %sCouldn'\''t check the official repositories; try again shortly.%s\n' "$R" "$N"
+elif ((total == 0)); then
+  printf '\n  %sSystem is up to date.%s\n' "$G" "$N"
 else
-    list "Official repositories" "$repo_list"
-    list "AUR" "$aur_list"
-    # Reboot-level packages in this batch, names only, on one line.
-    critical=$(printf '%s\n%s\n' "$repo_list" "$aur_list" | grep -E "$CRITICAL" | awk '{print $1}' | paste -sd' ')
+  list "Official repositories" "$repo_list"
+  list "AUR" "$aur_list"
+  # Reboot-level packages in this batch, names only, on one line.
+  critical=$(printf '%s\n%s\n' "$repo_list" "$aur_list" | grep -E "$CRITICAL" | awk '{print $1}' | paste -sd' ')
+  if [[ -n $critical ]]; then
+    printf '\n  %sReboot-level: %s%s\n' "$Y" "$critical" "$N"
+    printf '  %sA Timeshift snapshot is taken first; reboot afterwards.%s\n' "$Y" "$N"
+  else
+    printf '\n  %sNo reboot-level packages: no snapshot needed.%s\n' "$G" "$N"
+  fi
+  read -rp $'\n  Apply updates now? [Y/n] ' answer
+  if [[ -z $answer || $answer =~ ^[Yy] ]]; then
+    snap=true
     if [[ -n $critical ]]; then
-        printf '\n  %sReboot-level: %s%s\n' "$Y" "$critical" "$N"
-        printf '  %sA Timeshift snapshot is taken first; reboot afterwards.%s\n' "$Y" "$N"
+      printf '\n  %sSnapshot first (Timeshift), then paru -Syu%s\n\n' "$B" "$N"
+      snap=(sudo timeshift --create --comments "pre-upgrade $(date +%F): $critical")
     else
-        printf '\n  %sNo reboot-level packages: no snapshot needed.%s\n' "$G" "$N"
+      printf '\n  %sparu -Syu (no snapshot)%s\n\n' "$B" "$N"
     fi
-    read -rp $'\n  Apply updates now? [Y/n] ' answer
-    if [[ -z $answer || $answer =~ ^[Yy] ]]; then
-        snap=true
-        if [[ -n $critical ]]; then
-            printf '\n  %sSnapshot first (Timeshift), then paru -Syu%s\n\n' "$B" "$N"
-            snap=(sudo timeshift --create --comments "pre-upgrade $(date +%F): $critical")
-        else
-            printf '\n  %sparu -Syu (no snapshot)%s\n\n' "$B" "$N"
-        fi
-        if "${snap[@]}" && paru -Syu; then
-            collect
-            summary
-        else
-            printf '\n  %sUpgrade stopped or failed; nothing else was changed.%s\n' "$R" "$N"
-        fi
+    if "${snap[@]}" && paru -Syu; then
+      collect
+      summary
     else
-        printf '\n  %sSkipped.%s\n' "$Y" "$N"
+      printf '\n  %sUpgrade stopped or failed; nothing else was changed.%s\n' "$R" "$N"
     fi
+  else
+    printf '\n  %sSkipped.%s\n' "$Y" "$N"
+  fi
 fi
 refresh_bar
 read -rp $'\n  Enter to close ' _
