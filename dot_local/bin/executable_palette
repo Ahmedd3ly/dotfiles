@@ -52,13 +52,15 @@ def colours():
 
 def render(rows, width, height):
     W, H = width * SS, height * SS
-    margin = W * 0.07
     pill_h = W * 0.075
     gap = W * 0.04
-    scale = min(1.0, (H - 2 * margin) / (4 * pill_h + 3 * gap))  # fit short windows
+    scale = min(1.0, H * 0.84 / (4 * pill_h + 3 * gap))  # fit short windows
     pill_h, gap = pill_h * scale, gap * scale
     d = pill_h * 1.18                            # swatch a little taller than the pill
     ring = d * 0.11
+    # Side margins follow the pill size (not the window width), so a wide,
+    # short window gets long ramps instead of empty sides.
+    margin = min(W * 0.07, pill_h * 0.8)
     top = (H - (4 * pill_h + 3 * gap)) / 2
     x0 = margin + d / 2                          # pill starts under the swatch's centre
     x1 = W - margin

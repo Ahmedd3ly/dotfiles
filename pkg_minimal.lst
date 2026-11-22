@@ -76,7 +76,7 @@ cliphist
 wl-clip-persist
 grim
 slurp
-wf-recorder                 # screen recording (`record`, SUPER+Alt+R; Wayland screencopy like grim; VA-API h264 on the iGPU)
+wf-recorder                 # screen recording (`record`, SUPER+Alt+R: focused monitor + system sound; VA-API h264 on the iGPU)
 satty                       # screenshot annotation
 hyprpicker                  # color picker
 jq                          # glue for scripts

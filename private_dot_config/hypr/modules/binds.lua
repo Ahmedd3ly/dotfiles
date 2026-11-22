@@ -95,8 +95,7 @@ bind(M("CONTROL + S"), exec("shot freeze"), "[Screenshot] frozen region")
 -- locked = also on the lock screen (hyprlock); region/freeze need slurp, so not those
 bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor", { locked = true })
 bind("Print", exec("shot all"), "[Screenshot] all monitors", { locked = true })
-bind(M("ALT + R"), exec("record monitor"), "[Screenshot] record focused monitor (again: stop)")
-bind(M("ALT + SHIFT + R"), exec("record region"), "[Screenshot] record a region (again: stop)")
+bind(M("ALT + R"), exec("record"), "[Screenshot] record focused monitor + sound (again: stop)")
 
 ---- Workspaces ------------------------------------------------------------
 for i = 1, 10 do
