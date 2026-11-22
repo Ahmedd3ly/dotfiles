@@ -242,9 +242,13 @@ button {
 
 /* ---- Tooltips and menus ------------------------------------------------- */
 
+/* Text colour set explicitly: the GTK theme follows the desktop theme, and
+ * light adw-gtk3 would put dark menu text / white tooltip text on this
+ * always-dark bar. */
 tooltip * {
     background: transparent;
     border: none;
+    color: @main-fg;
 }
 
 tooltip {
@@ -257,9 +261,23 @@ menu {
     background-color: @main-bg;
 }
 
-menu menuitem:hover {
+menu menuitem,
+menu menuitem label {
+    color: @main-fg;
+}
+
+menu menuitem:disabled label {
+    color: alpha(@main-fg, 0.5);
+}
+
+menu menuitem:hover,
+menu menuitem:hover label {
     background-color: @wb-act-bg;
     color: @wb-act-fg;
+}
+
+menu separator {
+    background-color: alpha(@main-fg, 0.2);
 }
 
 @keyframes fadeIn {

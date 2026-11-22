@@ -172,11 +172,14 @@ sudo paccache -ruk0             # drop cached packages that are no longer instal
 sudo systemctl enable --now paccache.timer   # weekly, keeps 3 (default)
 ```
 
-## Apps: Spotify (Spicetify) and Discord (Vesktop), static Catppuccin Mocha
+## Apps: Spotify (Spicetify) and Discord (Vesktop), Catppuccin per desktop theme
 
 Why native, not Flatpak: no runtimes or second update channel, and both
 theming tools patch the app's own files, which a sandbox gets in the way of.
-Static Mocha like Firefox/Neovim: no matugen hooks, no daemons.
+The flavour follows the desktop theme (theme-pick, SUPER+Shift+T): theme-set
+runs `spicetify config color_scheme <flavor> && spicetify apply` (restarts a
+running Spotify), and matugen renders Vesktop's quickCss.css import line.
+The one-time setup below is still manual.
 
 Spotify: spotify-launcher keeps Spotify in ~/.local/share/spotify-launcher,
 user-writable, so Spicetify needs no sudo and no chmod 777 on /opt/spotify.
@@ -203,13 +206,10 @@ Discord: Vesktop has Vencord built in, so Discord updates never undo it.
 paru -S --needed vesktop-bin
 ```
 
-Then in Vesktop: Settings → Vencord → Themes → "Edit QuickCSS", add the line
-below, and tick "Enable Custom CSS":
-
-```css
-@import url("https://catppuccin.github.io/discord/dist/catppuccin-mocha.theme.css");
-```
-
+Then in Vesktop: Settings → Vencord → Themes → tick "Enable Custom CSS".
+The QuickCSS file itself (~/.config/vesktop/settings/quickCss.css) is
+rendered by matugen from ~/.config/matugen/templates/vesktop-quickcss.css,
+importing catppuccin-<flavor>.theme.css; edit the template, not the editor.
 Accent variants follow the same pattern (e.g. catppuccin-mocha-pink).
 
 Note: Spicetify and Vencord both modify the official clients, which their

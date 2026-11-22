@@ -1,6 +1,7 @@
 /* Colours, from HyDE's "Catppuccin Mocha" waybar.theme. Static Mocha
- * neutrals and text. The two accent backgrounds (wb-act-bg, wb-hvr-bg) live
- * in accents.css, which matugen generates from the wallpaper. */
+ * neutrals and text in EVERY theme (theme-pick does not touch the bar: it
+ * stays dark on purpose). The two accent backgrounds (wb-act-bg, wb-hvr-bg)
+ * live in accents.css, which matugen generates from the wallpaper. */
 
 @define-color bar-bg    rgba(0, 0, 0, 0.1);   /* near-clear: the blurred wallpaper shows through (HyDE Mocha value) */
 @define-color main-bg   #11111b;              /* crust: island fill */

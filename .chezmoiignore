@@ -18,6 +18,7 @@ first-launch.sh
 # matugen outputs (generated from ~/.config/matugen/templates)
 .config/kitty/accents.conf
 .config/hypr/modules/accents.lua
+.config/hypr/modules/palette.lua
 
 # AI engine state (login token, history, caches): never in the repo. Only
 # the instructions and skills links are tracked; they point at ~/.config/agents.

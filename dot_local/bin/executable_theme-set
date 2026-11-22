@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀ ▄▄ █▀ █▀▀ ▀█▀
+# ░█░ █▀█ ██▄ █░▀░█ ██▄ ░░ ▄█ ██▄ ░█░
+#
+# Why: switch the desktop theme (neutrals + light/dark). A theme is a folder
+# ~/.config/themes/<id>/palette.json plus its wallpapers in
+# ~/Pictures/Wallpapers/<id>/. This records the choice, flips GTK / libadwaita
+# light or dark (gsettings; Firefox and GTK 4 apps follow live, GTK 3 apps
+# such as Thunar on their next start), then hands a wallpaper of that theme
+# to wall-set, which renders everything through matugen.
+# Wallpaper: the one last used in this theme, else its first image.
+# Also follows the theme: Thunar (restart), Spotify (spicetify, restart),
+# Vesktop and Neovim (via matugen / theme-get, no hook here).
+# Usage: theme-set <id>        (picker: theme-pick, SUPER+Shift+T)
+set -euo pipefail
+
+id=${1:?usage: theme-set <theme id>}
+palette="${XDG_CONFIG_HOME:-$HOME/.config}/themes/$id/palette.json"
+state="${XDG_STATE_HOME:-$HOME/.local/state}/theme"
+walls="${WALL_DIR:-$HOME/Pictures/Wallpapers}/$id"
+
+fail() { echo "theme-set: $1" >&2; notify-send -a theme "Theme not changed" "$1" || true; exit 1; }
+[ -f "$palette" ] || fail "no theme '$id' ($palette missing)"
+jq -e '.theme | .mode and .gtk and .color_scheme' "$palette" >/dev/null \
+    || fail "$palette needs theme.mode, theme.gtk and theme.color_scheme"
+
+img=$(readlink -e "$state/$id.wall" 2>/dev/null || true)
+if [ -z "$img" ]; then
+    img=$(find "$walls" -maxdepth 1 -type f \
+        -regextype posix-extended -iregex '.*\.(jpe?g|png|webp|gif|bmp)$' 2>/dev/null | sort | head -n1)
+fi
+[ -n "$img" ] || fail "no wallpapers in $walls"
+
+# Record the theme first: wall-set reads it through theme-get. Put the old
+# one back if wall-set fails, so state and colours never disagree.
+mkdir -p "$state"
+prev=$(cat "$state/current" 2>/dev/null || true)
+printf '%s\n' "$id" > "$state/current.tmp" && mv "$state/current.tmp" "$state/current"
+
+if ! wall-set "$img"; then
+    if [ -n "$prev" ]; then printf '%s\n' "$prev" > "$state/current"; else rm -f "$state/current"; fi
+    fail "wall-set failed for $img"
+fi
+
+g="gsettings set org.gnome.desktop.interface"
+$g color-scheme "$(jq -r .theme.color_scheme "$palette")"
+$g gtk-theme    "$(jq -r .theme.gtk "$palette")"
+
+# GTK 3 reads its theme once at start, and Thunar lives on as a D-Bus
+# activated daemon (Thunar --daemon), so closing its windows never restarts
+# it. Quit it; the next thunar call or D-Bus request starts a fresh one.
+if pgrep -x Thunar >/dev/null; then thunar -q || true; fi
+
+# Spotify (Spicetify): the Catppuccin flavour is patched into Spotify's own
+# files, so a change needs `spicetify apply`, which restarts Spotify when it
+# is running (playback stops for a few seconds; accepted). Not running: apply
+# with -n so Spotify isn't launched. In the background (apply takes seconds),
+# detached so it outlives this script. Same flavour already: nothing to do.
+# Log: $XDG_STATE_HOME/theme/spicetify.log
+flavor=$(jq -r '.theme.flavor // empty' "$palette")
+cfg_ini="${XDG_CONFIG_HOME:-$HOME/.config}/spicetify/config-xpui.ini"
+if command -v spicetify >/dev/null && [ -n "$flavor" ] \
+    && ! grep -qE "^color_scheme[[:space:]]*=[[:space:]]*$flavor\$" "$cfg_ini" 2>/dev/null; then
+    restart=-n; pgrep -x spotify >/dev/null && restart=
+    setsid -f sh -c 'spicetify -q config color_scheme "$1" && spicetify -q $2 apply' \
+        sh "$flavor" "$restart" > "$state/spicetify.log" 2>&1
+fi

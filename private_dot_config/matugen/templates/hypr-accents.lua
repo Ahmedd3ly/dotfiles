@@ -10,7 +10,7 @@
 -- Read by modules/look.lua (pcall(require, 'modules.accents')).
 return {
     active   = { colors = { "rgba({{ colors.primary.default.hex_stripped }}ff)", "rgba({{ colors.tertiary.default.hex_stripped }}ff)" }, angle = 45 },
-    inactive = { colors = { "rgba({{ colors.secondary.default.hex_stripped }}cc)", "rgba(6c7086cc)" }, angle = 45 }, -- -> static overlay0
+    inactive = { colors = { "rgba({{ colors.secondary.default.hex_stripped }}cc)", "rgba({{ theme.overlay0 }}cc)" }, angle = 45 }, -- -> theme overlay0
     -- tutor scratchpad border (rules.lua): same palette, other roles and direction
     tutor    = { colors = { "rgba({{ colors.tertiary.default.hex_stripped }}ff)", "rgba({{ colors.secondary.default.hex_stripped }}ff)" }, angle = 135 },
 }

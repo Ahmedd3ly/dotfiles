@@ -1,0 +1,26 @@
+{
+  "_why": "One theme for theme-pick (SUPER+Shift+T): neutrals and light/dark mode. wall-set passes this file to matugen (--import-json), so templates read {{ theme.<key> }}; hex without #. Accents still come from the wallpaper. Wallpapers: ~/Pictures/Wallpapers/<id>/.",
+  "theme": {
+    "id": "catppuccin-mocha",
+    "name": "Catppuccin Mocha",
+    "mode": "dark",
+    "gtk": "adw-gtk3-dark",
+    "shadow": "11111b",
+    "opacity_active": 0.90, "opacity_inactive": 0.75,
+    "flavor": "mocha", "nvim_style": "moon",
+    "color_scheme": "prefer-dark",
+
+    "rosewater": "f5e0dc", "flamingo": "f2cdcd", "pink": "f5c2e7", "mauve": "cba6f7",
+    "red": "f38ba8", "maroon": "eba0ac", "peach": "fab387", "yellow": "f9e2af",
+    "green": "a6e3a1", "teal": "94e2d5", "sky": "89dceb", "sapphire": "74c7ec",
+    "blue": "89b4fa", "lavender": "b4befe",
+    "text": "cdd6f4", "subtext1": "bac2de", "subtext0": "a6adc8",
+    "overlay2": "9399b2", "overlay1": "7f849c", "overlay0": "6c7086",
+    "surface2": "585b70", "surface1": "45475a", "surface0": "313244",
+    "base": "1e1e2e", "mantle": "181825", "crust": "11111b",
+
+    "ansi_black": "43465a", "ansi_black_bright": "43465a",
+    "ansi_blue": "87b0f9",
+    "ansi_white": "cdd6f4", "ansi_white_bright": "a1a8c9"
+  }
+}

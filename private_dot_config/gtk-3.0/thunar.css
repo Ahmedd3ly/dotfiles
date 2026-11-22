@@ -3,7 +3,8 @@
  *
  * Why: Thunar in the same language as the bar islands and rofi: darker
  * sidebar, no divider lines, rounded accent selection. Colours come from
- * colors.css (named colours), so Phase 8 recolours this file for free.
+ * palette.css + accents.css (named colours), so theme and wallpaper
+ * changes recolour this file for free.
  * Thunar windows carry the "thunar" style class; inspect live with
  * GTK_DEBUG=interactive thunar.
  */

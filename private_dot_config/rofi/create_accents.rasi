@@ -13,4 +13,5 @@
 * {
     main-br:            #cba6f7ff;
     select-bg:          #b4befeff;
+    select-fg:          #11111bff;
 }

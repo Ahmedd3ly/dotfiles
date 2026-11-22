@@ -6,15 +6,14 @@
 // and rounding HyDE injected at launch (border = Hyprland border_size,
 // window radius = rounding x 3, row radius = rounding x 2). A layout that
 // sets its own radius still wins, because it is read after this file.
-// ACCENTS: main-br (window border) and select-bg (highlighted row) come from
-// accents.rasi, imported at the end so it overrides; matugen generates it
-// from the wallpaper. Everything here is static Mocha.
+// COLOURS: both from matugen. palette.rasi = the current theme's neutrals
+// (main-bg, main-fg, placeholder-fg, tile-bg; theme-pick, SUPER+Shift+T);
+// accents.rasi = main-br, select-bg, select-fg from the wallpaper, imported
+// at the end so it overrides.
+
+@import "~/.config/rofi/palette.rasi"
 
 * {
-    /* Neutrals (accents: see accents.rasi) */
-    main-bg:            #11111be6;   /* 90%: the rofi layer rule blurs behind it */
-    main-fg:            #cdd6f4ff;
-    select-fg:          #11111bff;
     separatorcolor:     transparent;
     border-color:       transparent;
 }

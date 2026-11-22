@@ -1,7 +1,7 @@
 # Tutor folder
 
 Why: this folder exists only for socratic-tutor sessions (opened by the
-`tutor` script, SUPER+Shift+T). It is not a code project: do not edit files
+`tutor` script, SUPER+T). It is not a code project: do not edit files
 here except the progress notes below.
 
 - When the user says "save state", also write the state block to

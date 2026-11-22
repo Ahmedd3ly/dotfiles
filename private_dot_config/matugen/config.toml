@@ -1,15 +1,20 @@
 # █▀▄▀█ ▄▀█ ▀█▀ █░█ █▀▀ █▀▀ █▄░█
 # █░▀░█ █▀█ ░█░ █▄█ █▄█ ██▄ █░▀█
 #
-# Why: wallpaper -> accent colours. matugen fills the templates in ./templates
-# and writes small accent files that each app includes on top of its static
-# Catppuccin Mocha neutrals. Outputs are generated, chezmoi-ignored, never
-# hand-edited. wall-set (Phase 8) runs this and sets the wallpaper with awww;
-# matugen itself never touches the wallpaper.
-# Scheme: tonal-spot (default), dark. Every accent lands at ~9.6:1 on #1e1e2e,
-# so no contrast clamp is needed (tested on boat, forest, rain_world).
+# Why: theme + wallpaper -> every colour. matugen fills the templates in
+# ./templates and writes small files per app: palette.* (the current
+# theme's neutrals, from {{ theme.* }}) and accents.* (from the wallpaper).
+# Waybar and hyprlock have no palette: they stay Mocha in every theme, and
+# their accent templates use colors.*.dark.
+# Outputs are generated, never hand-edited (seeded once by chezmoi).
+# wall-set runs this with the theme's mode and palette:
+#   matugen image <img> -m <light|dark> --import-json ~/.config/themes/<id>/palette.json
+# and sets the wallpaper with awww; matugen itself never touches it.
+# Scheme: tonal-spot (default). Dark: accents land at ~9.6:1 on Mocha base
+# (tested on boat, forest, rain_world). Light: tone-40 accents on Latte base;
+# text on an accent always uses matugen's on_* role.
 # Relative paths resolve from this file's folder.
-# Run by hand: matugen image <wallpaper>
+# Run by hand: wall-set <wallpaper>  (passes the theme flags)
 
 [config]
 # 0 = most dominant colour. Also stops v4's interactive picker, which fails
@@ -50,3 +55,47 @@ post_hook = "hyprctl reload >/dev/null || true"
 input_path = "./templates/hyprlock-accents.conf"
 output_path = "../hypr/hyprlock-accents.conf"
 # no hook: hyprlock reads its config each time it locks
+
+# ---- Theme neutrals (theme-pick / theme-set) --------------------------------
+# These read only {{ theme.* }}: the palette.json that wall-set passes with
+# --import-json (~/.config/themes/<id>/). Each output is seeded once with
+# Mocha by chezmoi (create_*), so apps load before the first wall-set.
+# Hooks: matugen renders every template first and runs the hooks after
+# (tested), so the accent hooks above (kitty, mako, Hyprland) already load
+# these files; they need no hooks of their own.
+
+[templates.kitty-palette]
+input_path = "./templates/kitty-palette.conf"
+output_path = "../kitty/palette.conf"
+
+[templates.rofi-palette]
+input_path = "./templates/rofi-palette.rasi"
+output_path = "../rofi/palette.rasi"
+
+[templates.mako-palette]
+input_path = "./templates/mako-palette"
+output_path = "../mako/palette"
+
+[templates.gtk-palette]
+input_path = "./templates/gtk-palette.css"
+output_path = "../gtk-3.0/palette.css"
+
+[templates.hyprtoolkit]
+input_path = "./templates/hyprtoolkit.conf"
+output_path = "../hypr/hyprtoolkit.conf"
+# no hook: hyprtoolkit watches the file
+
+[templates.starship]
+input_path = "./templates/starship.toml"
+output_path = "../starship.toml"
+# no hook: starship reads its config on every prompt
+
+[templates.hypr-palette]
+input_path = "./templates/hypr-palette.lua"
+output_path = "../hypr/modules/palette.lua"
+# no hook: the hyprland (accents) hook above reloads after all renders
+
+[templates.vesktop]
+input_path = "./templates/vesktop-quickcss.css"
+output_path = "../vesktop/settings/quickCss.css"
+# no hook: Vencord watches its QuickCSS file and reloads it live

@@ -12,4 +12,5 @@
 * {
     main-br:            {{ colors.primary.default.hex }};   /* window border */
     select-bg:          {{ colors.primary.default.hex }};   /* highlighted row */
+    select-fg:          {{ colors.on_primary.default.hex }};   /* text on the highlighted row */
 }

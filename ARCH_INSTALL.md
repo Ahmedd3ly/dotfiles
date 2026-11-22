@@ -299,8 +299,10 @@ sudo systemctl enable --now bluetooth
 `chezmoi apply` also enables the user services (waybar, mako, hypridle, hyprsunset,
 ssh-agent, crash notifications). The tracked `~/.config/zsh/.zprofile` starts Hyprland
 through uwsm on tty1: log out and back in, and Hyprland starts. Check it with
-`hyprctl reload && hyprctl configerrors` (expect no output), then pick a wallpaper
-(`SUPER+Shift+W`; wallpapers go in `~/Pictures/Wallpapers/<theme>/`, they aren't in the repo).
+`hyprctl reload && hyprctl configerrors` (expect no output), then put wallpapers in
+`~/Pictures/Wallpapers/<theme id>/` (`catppuccin-mocha`, `catppuccin-latte`; they aren't in
+the repo) and pick a theme with `SUPER+Shift+T`, even Mocha: that run sets GTK light/dark
+(gsettings) and the first wallpaper. `SUPER+Shift+W` then picks wallpapers within the theme.
 
 Make the games partition yours and create a Steam library folder on it. It is ext4 because Proton prefixes gain nothing from copy-on-write.
 

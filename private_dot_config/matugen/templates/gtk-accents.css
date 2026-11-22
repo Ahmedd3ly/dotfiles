@@ -11,3 +11,4 @@
  */
 @define-color accent_color          {{ colors.primary.default.hex }};   /* links, checks, focus */
 @define-color accent_bg_color       {{ colors.primary.default.hex }};   /* selection, suggested buttons */
+@define-color accent_fg_color       {{ colors.on_primary.default.hex }};   /* text on the accent */

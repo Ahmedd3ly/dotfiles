@@ -43,7 +43,7 @@ hl.window_rule({
     center = true,
 })
 
--- Tutor terminal (SUPER+Shift+T, kitty --class tutor): like the AI one but
+-- Tutor terminal (SUPER+T, kitty --class tutor): like the AI one but
 -- taller for reading, its own border gradient from the wallpaper accents
 -- (tertiary -> secondary; stock Mocha pink -> mauve until matugen has run),
 -- and the rest of the screen dimmed so a study session reads as focus mode.

@@ -68,7 +68,7 @@ entry {
     text-color:                  @main-fg;
     background-color:            @main-bg;
     placeholder:                 "search";
-    placeholder-color:           #cdd6f480;
+    placeholder-color:           @placeholder-fg;
 }
 
 

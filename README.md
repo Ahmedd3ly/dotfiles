@@ -50,7 +50,7 @@
 
 | | |
 |---|---|
-| 🎨 **Wallpaper-driven theme** | matugen derives the accents; Catppuccin Mocha neutrals stay fixed, so text is always readable. |
+| 🎨 **Wallpaper-driven theme** | SUPER+Shift+T picks a theme (Catppuccin Mocha dark / Latte light) for the neutrals; matugen derives the accents from that theme's wallpapers, so text is always readable. |
 | 🪟 **Polished, not heavy** | Blur, animations, fades to black on logout/reboot, a themed GRUB. All of it is cheap config. |
 | 🤖 **AI, my way** | `SUPER+Shift+Return` opens an agent. Crashes offer a one-click diagnosis. Swapping the engine is one line. |
 | 🔋 **Laptop-aware** | Idle power on battery cut from 36.8 W to 17.5 W. The NVIDIA GPU is unplugged from the bus on battery. Game mode on one key. |

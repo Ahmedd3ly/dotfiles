@@ -13,9 +13,13 @@
 # --menu DIR: print rofi dmenu rows for wall-pick instead: one row per theme
 # folder or image in DIR, each with a 400x400 centre-crop thumbnail from
 # $XDG_CACHE_HOME/wall/thumbs (made only when missing or older than the image).
+# --themes: rows for theme-pick instead: 'id<TAB>name', one per
+# ~/.config/themes/<id>/palette.json, thumbnail = the theme's last wallpaper
+# (theme-set's $XDG_STATE_HOME/theme/<id>.wall), else its first image.
 # Called by rofi-launch only when the wallpaper changed; wall-set
 # calls it on every change. Package: python-pillow.
 import hashlib
+import json
 import os
 import sys
 from pathlib import Path
@@ -50,6 +54,25 @@ def menu(root: Path) -> None:
     for f in images(root):
         print(f"{f.stem}\0icon\x1f{thumb(f)}")
 
+
+def themes() -> None:
+    """rofi rows for theme-pick: 'id\tname\0icon\x1fthumb' (rofi shows column 2)."""
+    home = Path.home()
+    conf = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config")) / "themes"
+    state = Path(os.environ.get("XDG_STATE_HOME", home / ".local/state")) / "theme"
+    walls = Path(os.environ.get("WALL_DIR", home / "Pictures/Wallpapers"))
+    for d in sorted(x for x in conf.iterdir() if (x / "palette.json").is_file()):
+        name = json.loads((d / "palette.json").read_text())["theme"].get("name", d.name)
+        last = state / f"{d.name}.wall"
+        pics = sorted(f for f in (walls / d.name).glob("*") if f.suffix.lower() in EXTS)
+        pic = last.resolve() if last.exists() else (pics[0] if pics else None)
+        row = f"{d.name}\t{name}" + ("" if pics else " (no wallpapers)")
+        print(row + (f"\0icon\x1f{thumb(pic)}" if pic else ""))
+
+
+if len(sys.argv) == 2 and sys.argv[1] == "--themes":
+    themes()
+    sys.exit(0)
 
 if len(sys.argv) == 3 and sys.argv[1] == "--menu":
     menu(Path(sys.argv[2]).expanduser())

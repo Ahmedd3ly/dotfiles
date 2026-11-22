@@ -1,3 +1,3 @@
 /* Same palette as GTK 3; one place to edit. */
-@import url("../gtk-3.0/colors.css");
+@import url("../gtk-3.0/palette.css");
 @import url("../gtk-3.0/accents.css");

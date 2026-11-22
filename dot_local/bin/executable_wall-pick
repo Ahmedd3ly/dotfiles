@@ -2,14 +2,15 @@
 # █░█░█ ▄▀█ █░░ █░░ ▄▄ █▀█ █ █▀▀ █▄▀
 # ▀▄▀▄▀ █▀█ █▄▄ █▄▄ ░░ █▀▀ █ █▄▄ █░█
 #
-# Why: the wallpaper menu. Themes are folders in ~/Pictures/Wallpapers; with
-# more than one folder you pick the theme first, then the wallpaper. The
-# choice goes to wall-set, which sets it and recolours the desktop.
+# Why: the wallpaper menu. Lists only the current theme's wallpapers
+# (~/Pictures/Wallpapers/<theme id>, from theme-get; switch themes with
+# theme-pick, SUPER+Shift+T). The choice goes to wall-set, which sets it and
+# recolours the desktop.
 # Thumbnails and rows come from wall-cache --menu; layout: rofi/wallpicker.rasi.
 # Bound to SUPER+Shift+W (hypr/modules/binds.lua).
 set -euo pipefail
 
-root="${WALL_DIR:-$HOME/Pictures/Wallpapers}"
+dir=$(theme-get --walls)
 theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpicker.rasi"
 cur=$(readlink -f "${XDG_CACHE_HOME:-$HOME/.cache}/wall/current" 2>/dev/null || true)
 
@@ -38,16 +39,9 @@ pick() {
         -theme-str "window { width: $(( cols * 236 + 40 ))px; } listview { columns: $cols; }" < "$rows"
 }
 
-dir=$root
-mapfile -t folders < <(find "$root" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
-if (( ${#folders[@]} > 1 )); then
-    t=$(pick "$root" "$(basename "$(dirname "$cur")")" theme) || exit 0
-    dir="$root/$t"
-elif (( ${#folders[@]} == 1 )); then
-    dir="$root/${folders[0]}"
-fi
+[ -d "$dir" ] || { notify-send -a theme "No wallpapers" "Add images to $dir" || true; exit 1; }
 
-name=$(pick "$dir" "$(basename "${cur%.*}")" wallpaper) || exit 0
+name=$(pick "$dir" "$(basename "${cur%.*}")" "$(theme-get name)") || exit 0
 img=$(find "$dir" -maxdepth 1 -type f -name "$name.*" -print -quit)
 [ -n "$img" ] || { echo "wall-pick: no file for $name in $dir" >&2; exit 1; }
 wall-set "$img"

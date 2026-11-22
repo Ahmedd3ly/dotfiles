@@ -2,7 +2,7 @@
 # ▀█▀ █░█ ▀█▀ █▀█ █▀█
 # ░█░ █▄█ ░█░ █▄█ █▀▄
 #
-# Why: SUPER+Shift+T. A floating AI terminal for the socratic-tutor skill,
+# Why: SUPER+T. A floating AI terminal for the socratic-tutor skill,
 # kept apart from the desktop/dev scratchpad (ai-term). Its own folder means
 # `ai -c` reopens the last tutoring session and tutoring history never mixes
 # with dotfiles work; its own kitty class "tutor" (rules.lua) and colours make
@@ -18,12 +18,13 @@ cd "$dir"
 # ever wiped, start one once with `cd ~/.local/share/tutor && ai`.
 set -- ai -c
 
-# Same Catppuccin + wallpaper accents as every kitty (theme.conf); this window
-# only swaps the base for Mocha "mantle" (one shade deeper), a beam cursor and
-# a slightly larger font for reading prose. The border is in rules.lua.
+# Same theme + wallpaper accents as every kitty (theme.conf); this window
+# only swaps the base for the theme's "mantle" (one shade deeper; theme-get),
+# a beam cursor and a slightly larger font for reading prose. The border is
+# in rules.lua.
 # shellcheck disable=SC2016  # expanded by the inner sh, not here
 exec kitty --class tutor \
     -o font_size=11.5 \
-    -o background=#181825 \
+    -o background="#$(theme-get mantle 2>/dev/null || echo 181825)" \
     -o cursor_shape=beam \
     sh -c '"$@" || { s=$?; printf "\n[%s exited with status %s; Enter closes]" "$1" "$s"; read -r _; }' sh "$@"

@@ -38,7 +38,7 @@ listview {
 element {
     padding:                     16px 0px;
     cursor:                      pointer;
-    background-color:            #31324466;   /* surface0, faint tile */
+    background-color:            @tile-bg;   /* surface0 at 40%, faint tile (palette.rasi) */
     text-color:                  @main-fg;
 }
 element selected.normal {

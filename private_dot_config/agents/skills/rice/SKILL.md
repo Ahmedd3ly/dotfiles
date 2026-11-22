@@ -14,19 +14,37 @@ All paths below are deployed paths; edit them in the chezmoi source
 | Hyprland | ~/.config/hypr/hyprland.lua requires modules/*.lua (monitors, input, look, animations, rules, binds, apps, autostart, gamemode) | `hyprctl reload && hyprctl configerrors` |
 | Env | ~/.config/uwsm/env, env-hyprland (read at login) | log out and in |
 | Bar | ~/.config/waybar/config.jsonc + modules/*.jsonc, style.css, theme.css | `pkill -USR2 -x waybar` |
-| Launcher/menus | ~/.config/rofi/*.rasi, scripts rofi-launch, powermenu, wall-pick | next launch |
+| Launcher/menus | ~/.config/rofi/*.rasi, scripts rofi-launch, powermenu, wall-pick, theme-pick | next launch |
 | Notifications | ~/.config/mako/config | `makoctl reload` |
 | Lock | ~/.config/hypr/hyprlock.conf (hyprlang, not Lua: its own format) | next lock |
 | Terminal | ~/.config/kitty | `pkill -USR1 -x kitty` |
-| Scripts | ~/.local/bin (shot, session-fade, nightlight, bar-*, wall-*) | n/a |
+| Scripts | ~/.local/bin (shot, session-fade, nightlight, bar-*, wall-*, theme-*) | n/a |
 
 ## Colours
-Neutrals are static Catppuccin Mocha literals (base #1e1e2e, mantle #181825,
-surface0 #313244, text #cdd6f4). Accents come from the wallpaper:
-`wall-set <image>` runs matugen (~/.config/matugen/config.toml), which renders
-templates/ into accents files per app and runs each app's reload hook.
-Text colours stay Mocha text for legibility. To restyle: edit the template or
-the app's static CSS, never a generated accents file.
+Two layers, both rendered by matugen on every `wall-set <image>`:
+- **Neutrals** (base, text, surfaces) come from the current
+  *theme*: ~/.config/themes/<id>/palette.json (catppuccin-mocha dark,
+  catppuccin-latte light), passed with `--import-json`; templates read
+  `{{ theme.<key> }}` (hex without #) into each app's `palette.*` file.
+- **Accents** come from the wallpaper (`{{ colors.* }}`, `-m` = theme mode)
+  into `accents.*`. Text on an accent uses `on_primary` / `on_tertiary`.
+Theme: `theme-pick` (SUPER+Shift+T) -> `theme-set <id>` (state in
+~/.local/state/theme, gsettings light/dark) -> `wall-set` with that theme's
+last wallpaper. `theme-get [--palette|--walls|<key>]` answers "which theme".
+Wallpapers per theme: ~/Pictures/Wallpapers/<id>/ (wall-pick lists only that).
+New theme: a palette.json with every key of the Mocha one + a wallpaper folder.
+Also per theme: window opacity (palette.json opacity_active/inactive ->
+hypr/modules/palette.lua, read by look.lua) and the whole starship.toml
+(rendered from templates/starship.toml; its colours are [palettes.theme]).
+Always dark Mocha, by choice, in every theme: waybar (theme.css) and hyprlock
+(literals); their accent templates use `colors.*.dark` so they match too.
+Apps that follow the theme via palette.json "flavor" / "nvim_style": Vesktop
+(quickCss.css rendered from templates/vesktop-quickcss.css), Spotify (theme-set
+runs spicetify config color_scheme + apply; restarts Spotify if running, log
+~/.local/state/theme/spicetify.log), Neovim (Tokyo Night moon/day, read at
+startup in plugins/colorscheme.lua). Static Mocha still: GRUB.
+To restyle: edit the template, the palette.json or the app's static CSS,
+never a generated palette.* / accents.* file.
 
 ## Workflow
 1. Read the relevant files first; check Hyprland keys in hl.meta.lua.

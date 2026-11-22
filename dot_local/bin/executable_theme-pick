@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀ ▄▄ █▀█ █ █▀▀ █▄▀
+# ░█░ █▀█ ██▄ █░▀░█ ██▄ ░░ █▀▀ █ █▄▄ █░█
+#
+# Why: the theme menu (SUPER+Shift+T, hypr/modules/binds.lua). One tile per
+# ~/.config/themes/<id>/ (thumbnail: that theme's wallpaper), current theme
+# preselected; the choice goes to theme-set. Same look as wall-pick
+# (rofi/wallpicker.rasi). Add a theme: a palette.json folder + wallpapers.
+set -euo pipefail
+
+theme="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpicker.rasi"
+cur=$(theme-get)
+
+# Logical width of the focused monitor (resolution / scale), as in wall-pick.
+mon_w=$(hyprctl monitors 2>/dev/null | awk '
+    / at / && /@/ { split($1, r, "x"); w = r[1] }
+    /scale:/      { s = $2 }
+    /focused: yes/ { printf "%d", w / s }' || true)
+mon_w=${mon_w:-1920}
+
+# Rows hold NULs (icon), which bash drops from $(...): go through a file.
+rows=$(mktemp -p "${XDG_RUNTIME_DIR:-/tmp}" theme-pick.XXXXXX)
+trap 'rm -f "$rows"' EXIT
+wall-cache --themes > "$rows"
+[ -s "$rows" ] || { echo "theme-pick: no themes in ~/.config/themes" >&2; exit 1; }
+
+n=$(wc -l < "$rows")
+sel=$(cut -f1 "$rows" | grep -nxF "$cur" | cut -d: -f1 || true)
+cols=$(( (mon_w - 100) / 236 ))          # 200px icon + padding + spacing
+(( cols > n )) && cols=$n
+(( cols < 1 )) && cols=1
+
+# Column 1 (id) is hidden; rofi returns the whole row.
+pick=$(rofi -dmenu -i -p theme -theme "$theme" \
+    -display-columns 2 -display-column-separator '\t' \
+    -selected-row "$(( ${sel:-1} - 1 ))" \
+    -theme-str "window { width: $(( cols * 236 + 40 ))px; } listview { columns: $cols; }" \
+    < "$rows") || exit 0
+# The current theme too: re-applying it is how a fresh machine gets its
+# gsettings light/dark, and it repairs a half-applied switch.
+id=${pick%%$'\t'*}
+theme-set "$id"

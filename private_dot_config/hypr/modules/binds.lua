@@ -64,7 +64,7 @@ bind(M("D"), exec(apps.fileManager), "[Apps] file manager")
 bind(M("B"), exec(apps.browser), "[Apps] browser")
 bind(M("E"), exec(apps.editor), "[Apps] editor")
 bind(M("SHIFT + Return"), exec("ai-term"), "[Apps] AI agent scratchpad")
-bind(M("SHIFT + T"), exec("tutor"), "[Apps] Socratic tutor scratchpad")
+bind(M("T"), exec("tutor"), "[Apps] Socratic tutor scratchpad")
 bind(M("SHIFT + P"), exec("pomo toggle"), "[Apps] Pomodoro start / pause")
 
 ---- Menus (rofi; a second press closes the open menu) ----------------------
@@ -75,7 +75,8 @@ bind(M("A"), exec("rofi-launch launcher"), "[Menu] app launcher")
 bind(M("R"), exec("rofi-style"), "[Menu] rofi layout per menu")
 bind(M("Tab"), exec("rofi-launch window"), "[Menu] window switcher")
 bind(M("SHIFT + D"), exec("rofi-launch files"), "[Menu] file browser")
-bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker")
+bind(M("SHIFT + T"), menu("theme-pick"), "[Menu] theme picker (light / dark)")
+bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker (current theme)")
 bind(M("grave"), menu("keyhint"), "[Menu] keybinding cheat sheet")
 bind(M("period"), menu("emoji-pick"), "[Menu] emoji to clipboard")
 bind(
@@ -90,8 +91,9 @@ bind(M("SHIFT + C"), exec("hyprpicker -an"), "[Utility] colour picker to clipboa
 bind(M("SHIFT + A"), menu("anim-pick"), "[Utility] try animation presets")
 bind(M("SHIFT + S"), exec("shot region"), "[Screenshot] region")
 bind(M("CONTROL + S"), exec("shot freeze"), "[Screenshot] frozen region")
-bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor")
-bind("Print", exec("shot all"), "[Screenshot] all monitors")
+-- locked = also on the lock screen (hyprlock); region/freeze need slurp, so not those
+bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor", { locked = true })
+bind("Print", exec("shot all"), "[Screenshot] all monitors", { locked = true })
 
 ---- Workspaces ------------------------------------------------------------
 for i = 1, 10 do
