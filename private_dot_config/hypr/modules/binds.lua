@@ -24,7 +24,6 @@ end
 bind(M("L"), exec("pidof hyprlock || hyprlock"), "[Session] lock screen")
 bind(M("End"), exec("session-fade uwsm stop"), "[Session] log out")
 bind("CONTROL + ALT + Delete", exec("powermenu"), "[Session] power menu")
-bind(M("SHIFT + R"), exec("hyprctl reload"), "[Session] reload config")
 
 ---- Windows ---------------------------------------------------------------
 bind(M("Q"), hl.dsp.window.close(), "[Window] close")
@@ -72,8 +71,8 @@ local function menu(cmd)
 	return exec("pkill -x rofi || " .. cmd)
 end
 bind(M("A"), exec("rofi-launch launcher"), "[Menu] app launcher")
-bind(M("R"), exec("rofi-style"), "[Menu] rofi layout per menu")
 bind(M("Tab"), exec("rofi-launch window"), "[Menu] window switcher")
+bind(M("SHIFT + R"), exec("rofi-style"), "[Menu] rofi layout per menu")
 bind(M("SHIFT + D"), exec("rofi-launch files"), "[Menu] file browser")
 bind(M("SHIFT + T"), menu("theme-pick"), "[Menu] theme picker")
 bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker")
@@ -95,7 +94,7 @@ bind(M("CONTROL + S"), exec("shot freeze"), "[Screenshot] frozen region")
 -- locked = also on the lock screen (hyprlock); region/freeze need slurp, so not those
 bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor", { locked = true })
 bind("Print", exec("shot all"), "[Screenshot] all monitors", { locked = true })
-bind(M("ALT + R"), exec("record"), "[Screenshot] record focused monitor + sound + mic (again: stop)")
+bind(M("R"), exec("record"), "[Screenshot] record focused monitor + sound + mic (again: stop)")
 
 ---- Workspaces ------------------------------------------------------------
 for i = 1, 10 do
