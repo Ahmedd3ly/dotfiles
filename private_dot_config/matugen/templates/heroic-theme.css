@@ -38,7 +38,9 @@ body.matugen {
     --text-title: #{{ theme.text }};
     --text-default: #{{ theme.text }};
     --text-secondary: #{{ theme.subtext1 }};
-    --text-tertiary: #{{ theme.subtext0 }};
+    /* Heroic draws button text (ADD GAME, .button) in text-tertiary on the
+     * accent, so it is the accent's own ink, not a muted grey. */
+    --text-tertiary: {{ colors.on_primary.default.hex }};
     --text-hover: {{ colors.primary.default.hex }};
     --navbar-inactive: #{{ theme.subtext0 }};
     --navbar-active: {{ colors.primary.default.hex }};
@@ -52,12 +54,13 @@ body.matugen {
 
     /* accents: wallpaper */
     --accent: {{ colors.primary.default.hex }};
+    --primary-button: {{ colors.primary.default.hex }};
     --accent-overlay: {{ colors.tertiary.default.hex }};
     --primary: {{ colors.primary.default.hex }};
     --primary-hover: {{ colors.tertiary.default.hex }};
     --install-button: {{ colors.primary.default.hex }};
     --secondary-button: {{ colors.tertiary.default.hex }};
-    --tertiary-button: #{{ theme.overlay0 }};
+    --tertiary-button: {{ colors.secondary.default.hex }};   /* also takes the text-tertiary ink */
     --tour-bullet-active: var(--accent);
     --tour-bullet-inactive: var(--accent-overlay);
 
