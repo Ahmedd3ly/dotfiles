@@ -6,8 +6,8 @@
  * ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ███████╗██████╔╝██║░░░██║░░░
  * ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ╚══════╝╚═════╝░╚═╝░░░╚═╝░░░
  *
- * Seed: Catppuccin Latte mauve, written by chezmoi only if this file is
- * missing. wall-set overwrites it (2nd dominant colour, or Latte mauve as the
- * fallback when the wallpaper has none).
+ * Seed, written by chezmoi only if this file is missing (style.css imports
+ * it). wall-set rewrites it on every wallpaper: the 2nd dominant colour as
+ * wb-act-end when its hue is close to the main one, else only this comment
+ * (accents.css's fallback end then applies).
  */
-@define-color wb-act-end #cba6f7;

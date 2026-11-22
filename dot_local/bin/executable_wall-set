@@ -27,23 +27,49 @@ awww img "$img" --transition-type grow --transition-pos 0.5,0.5 \
 # 2. Neutrals (theme) + accents (wallpaper): templates in ~/.config/matugen.
 matugen -q image "$img" -m "$mode" --import-json "$palette"
 
-# 2b. Bar gradient end: a second run on the 2nd most dominant colour, which
-# renders only that colour. No second colour in the image (the run fails):
-# Catppuccin Latte mauve.
+# 2b. Bar gradient end: the wallpaper's 2nd dominant colour (tone 40), but
+# only when its hue is within $max_hue degrees of the main colour; a far hue
+# (a small red patch on a blue picture) would clash, so accents.css's
+# fallback (the main colour, muted) stays. JSON only (--dry-run): nothing
+# else is rendered. No 2nd colour in the image: fallback too.
+max_hue=60
 cfg="${XDG_CONFIG_HOME:-$HOME/.config}"
-if ! matugen -q -c "$cfg/matugen/second.toml" image "$img" -m "$mode" --source-color-index 1 2>/dev/null; then
-    printf '@define-color wb-act-end #8839ef;   /* fallback: Catppuccin Latte mauve */\n' \
-        > "$cfg/waybar/accents-end.css"
+end_css="$cfg/waybar/accents-end.css"
+start=$(sed -n 's/^@define-color wb-acc-start \(#[0-9a-fA-F]\{6\}\).*/\1/p' "$cfg/waybar/accents.css")
+second=$(matugen -q image "$img" -m "$mode" --source-color-index 1 --dry-run -j hex 2>/dev/null \
+    | jq -r '.palettes.primary."40".color // empty' 2>/dev/null || true)
+# Hue (0-360) of #rrggbb (strtonum: gawk, Arch's awk).
+hue() { printf '%s\n' "${1#\#}" | awk '{
+    r = strtonum("0x" substr($0,1,2))/255; g = strtonum("0x" substr($0,3,2))/255
+    b = strtonum("0x" substr($0,5,2))/255
+    mx = r; if (g > mx) mx = g; if (b > mx) mx = b
+    mn = r; if (g < mn) mn = g; if (b < mn) mn = b
+    d = mx - mn; h = 0
+    if (d > 0) { if (mx == r) h = 60 * (((g - b) / d) % 6); else if (mx == g) h = 60 * ((b - r) / d + 2); else h = 60 * ((r - g) / d + 4) }
+    if (h < 0) h += 360; printf "%d\n", h }'; }
+gap=999
+if [ -n "$start" ] && [ -n "$second" ]; then
+    gap=$(( $(hue "$start") - $(hue "$second") )); gap=${gap#-}
+    (( gap > 180 )) && gap=$(( 360 - gap ))
+fi
+if (( gap <= max_hue )); then
+    printf '@define-color wb-act-end %s;   /* 2nd colour, %d deg from the main one (wall-set) */\n' \
+        "$second" "$gap" > "$end_css"
+else
+    printf '/* 2nd colour too far in hue (%s deg): fallback end from accents.css (wall-set) */\n' \
+        "$gap" > "$end_css"
 fi
 
 # 2c. Reload the apps once, here, after matugen has exited: its own
 # post_hooks can fire before a later template is written, and kitty, mako
 # and Hyprland each read two outputs (palette + accents). The others (rofi,
-# GTK, hyprlock, hyprtoolkit, starship, Vesktop) read their files on use.
+# GTK, hyprlock, hyprtoolkit, starship, Vesktop; Heroic at start) read
+# their files on use. cava: USR2 reloads its colours only.
 pkill -USR1 -x kitty  || true
 pkill -USR2 -x waybar || true
 makoctl reload        || true
 hyprctl reload >/dev/null || true
+pkill -USR2 -x cava   || true   # colours only
 
 # 3. Rofi crops, and the link rofi-launch checks. Also remember the image
 # per theme, so theme-set brings it back when you return to this theme.

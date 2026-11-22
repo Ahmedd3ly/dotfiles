@@ -65,6 +65,7 @@ wireplumber                 # also gives you wpctl, replaces pamixer
 pavucontrol                 # one GUI mixer
 noise-suppression-for-voice # RNNoise LADSPA plugin for the PipeWire mic filter (pipewire.conf.d/60-rnnoise.conf)
 playerctl
+cava                        # terminal audio visualiser, coloured from the wallpaper (matugen)
 bluez
 bluetui                     # TUI bluetooth manager (talks to bluez directly; no bluez-utils needed)
 brightnessctl

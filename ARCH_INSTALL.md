@@ -300,7 +300,7 @@ sudo systemctl enable --now bluetooth
 ssh-agent, crash notifications). The tracked `~/.config/zsh/.zprofile` starts Hyprland
 through uwsm on tty1: log out and back in, and Hyprland starts. Check it with
 `hyprctl reload && hyprctl configerrors` (expect no output), then put wallpapers in
-`~/Pictures/Wallpapers/<theme id>/` (`catppuccin-mocha`, `catppuccin-latte`; they aren't in
+`~/Pictures/Wallpapers/<theme id>/` (`catppuccin-mocha`; they aren't in
 the repo) and pick a theme with `SUPER+Shift+T`, even Mocha: that run sets GTK light/dark
 (gsettings) and the first wallpaper. `SUPER+Shift+W` then picks wallpapers within the theme.
 

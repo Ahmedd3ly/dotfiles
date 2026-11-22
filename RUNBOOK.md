@@ -297,6 +297,15 @@ paru -S --needed steam lib32-mesa lib32-vulkan-intel lib32-nvidia-utils heroic-g
 2. Heroic: log in to the stores, then Settings > General: default install
    path /games/Heroic and Wine prefixes /games/Heroic/Prefixes. Both names are
    skipped by the /games scanner, so Heroic games aren't listed twice.
+   Theme (desktop theme + wallpaper accent): Settings > General > Custom
+   Themes Path = `~/.config/heroic/themes`, then Theme = matugen. Or, with
+   Heroic closed:
+   ```bash
+   h=~/.config/heroic
+   jq --arg p "$h/themes" '.defaultSettings.customThemesPath = $p' $h/config.json > $h/c.tmp && mv $h/c.tmp $h/config.json
+   jq '.theme = "matugen.css"' $h/store/config.json > $h/s.tmp && mv $h/s.tmp $h/store/config.json
+   ```
+   matugen renders the file on every wall-set; Heroic reads it when it starts.
 3. Frame image (optional; GPL-3, from HyDE, so it isn't committed here).
    Without it the picker is a plain glass panel:
    ```bash

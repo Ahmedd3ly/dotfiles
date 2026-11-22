@@ -11,8 +11,8 @@
 #   matugen image <img> -m <light|dark> --import-json ~/.config/themes/<id>/palette.json
 # and sets the wallpaper with awww; matugen itself never touches it.
 # Scheme: tonal-spot (default). Dark: accents land at ~9.6:1 on Mocha base
-# (tested on boat, forest, rain_world). Light: tone-40 accents on Latte base;
-# text on an accent always uses matugen's on_* role.
+# (tested on boat, forest, rain_world). A light theme would get tone-40
+# accents; text on an accent always uses matugen's on_* role.
 # No post_hooks: matugen does not run a hook only after ALL templates are
 # written, so an app reading two outputs (palette + accents) could reload
 # half-done (seen with mako). wall-set reloads kitty, waybar, mako and
@@ -101,3 +101,15 @@ output_path = "../hypr/modules/palette.lua"
 input_path = "./templates/vesktop-quickcss.css"
 output_path = "../vesktop/settings/quickCss.css"
 # no hook: Vencord watches its QuickCSS file and reloads it live
+
+# ---- Apps, wallpaper accents + theme neutrals ------------------------------
+
+[templates.cava]
+input_path = "./templates/cava-theme"
+output_path = "../cava/themes/matugen"
+# reload: wall-set (pkill -USR2 cava: colours only)
+
+[templates.heroic]
+input_path = "./templates/heroic-theme.css"
+output_path = "../heroic/themes/matugen.css"
+# no hook: Heroic reads it at start (see the template)

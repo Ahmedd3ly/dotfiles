@@ -7,7 +7,7 @@
 # State: $XDG_STATE_HOME/theme/current holds the theme id (theme-set writes
 # it); missing or unknown -> catppuccin-mocha, the setup this grew from.
 # Usage:
-#   theme-get              theme id            (catppuccin-latte)
+#   theme-get              theme id            (catppuccin-mocha)
 #   theme-get --palette    palette.json path   (~/.config/themes/<id>/palette.json)
 #   theme-get --walls      wallpaper folder    (~/Pictures/Wallpapers/<id>)
 #   theme-get <key>        a palette value     (mode, name, base, ... hex without #)

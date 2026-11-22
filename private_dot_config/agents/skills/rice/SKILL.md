@@ -23,9 +23,10 @@ All paths below are deployed paths; edit them in the chezmoi source
 ## Colours
 Two layers, both rendered by matugen on every `wall-set <image>`:
 - **Neutrals** (base, text, surfaces) come from the current
-  *theme*: ~/.config/themes/<id>/palette.json (catppuccin-mocha dark,
-  catppuccin-latte light), passed with `--import-json`; templates read
-  `{{ theme.<key> }}` (hex without #) into each app's `palette.*` file.
+  *theme*: ~/.config/themes/<id>/palette.json (only catppuccin-mocha;
+  light themes were tried and dropped: too bright for Ahmed), passed with
+  `--import-json`; templates read `{{ theme.<key> }}` (hex without #) into
+  each app's `palette.*` file.
 - **Accents** come from the wallpaper (`{{ colors.* }}`, `-m` = theme mode)
   into `accents.*`. Text on an accent uses `on_primary` / `on_tertiary`.
 Theme: `theme-pick` (SUPER+Shift+T) -> `theme-set <id>` (state in
@@ -38,10 +39,15 @@ hypr/modules/palette.lua, read by look.lua) and the whole starship.toml
 (rendered from templates/starship.toml; its colours are [palettes.theme]).
 Always dark Mocha, by choice, in every theme: waybar (theme.css) and hyprlock
 (literals); their accent templates use `colors.*.dark` so they match too.
+Bar accent block: gradient wallpaper colour -> its 2nd dominant colour when
+the hue is within 60 deg (wall-set step 2b writes waybar/accents-end.css; one
+--dry-run JSON query), else palettes.secondary._40 (waybar-accents.css).
+Wallpaper-coloured apps: cava (cava/themes/matugen; wall-set sends USR2) and
+Heroic (heroic/themes/matugen.css, read at Heroic's start; RUNBOOK).
 Apps that follow the theme via palette.json "flavor" / "nvim_style": Vesktop
 (quickCss.css rendered from templates/vesktop-quickcss.css), Spotify (theme-set
 runs spicetify config color_scheme + apply; restarts Spotify if running, log
-~/.local/state/theme/spicetify.log), Neovim (Tokyo Night moon/day, read at
+~/.local/state/theme/spicetify.log), Neovim (Tokyo Night style, moon, read at
 startup in plugins/colorscheme.lua). Static Mocha still: GRUB.
 To restyle: edit the template, the palette.json or the app's static CSS,
 never a generated palette.* / accents.* file.

@@ -13,8 +13,12 @@
 @define-color wb-hvr-bg {{ colors.tertiary.dark.hex }};  /* hover */
 /* To follow the wallpaper again, swap in the commented line: the same hue as
  * wb-act-bg at tone 60 (5.9:1). For a second hue, use palettes.tertiary._60. */
-/* Accent block (style.css, #accent). The gradient END comes from a second
- * matugen run on the wallpaper's 2nd most dominant colour: accents-end.css. */
+/* Accent block (style.css, #accent): a gradient from the wallpaper's main
+ * colour to wb-act-end. wall-set puts the wallpaper's 2nd dominant colour in
+ * accents-end.css when its hue is close to this start (it then overrides the
+ * fallback below); a far hue (e.g. blue -> crimson) keeps the fallback:
+ * Material's secondary, the start colour's own muted version. All at tone 40,
+ * so the white ink reads across the whole block. */
 @define-color wb-acc-start {{ palettes.primary._40.hex }};      /* deep start, white ink 6.5:1 */
+@define-color wb-act-end {{ palettes.secondary._40.hex }};      /* fallback end (see above) */
 @define-color wb-acc-light-end {{ palettes.primary._60.hex }};  /* classic mode only, dark ink */
-/* @define-color wb-act-end {{ palettes.primary._60.hex }}; */

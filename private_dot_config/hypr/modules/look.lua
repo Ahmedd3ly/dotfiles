@@ -51,7 +51,7 @@ hl.config({
         rounding_power = 2,
 
         active_opacity     = palette.opacity_active,   -- HyDE's see-through look; blur fills the gap
-        inactive_opacity   = palette.opacity_inactive, -- Mocha 0.90 / 0.75, Latte 0.96 / 0.90
+        inactive_opacity   = palette.opacity_inactive, -- Mocha 0.90 / 0.75
         fullscreen_opacity = 1,
         dim_special        = 0.3,  -- dim the desktop behind a scratchpad
 

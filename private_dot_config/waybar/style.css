@@ -19,7 +19,7 @@
 
 @import "theme.css";
 @import "accents.css";
-@import "accents-end.css";   /* wb-act-end: 2nd dominant colour (wall-set) */
+@import "accents-end.css";   /* wb-act-end override: 2nd colour when close (wall-set) */
 
 * {
     border-radius: 0;
@@ -114,8 +114,8 @@ window#waybar {
 }
 
 /* ---- Accent block: menu + workspaces ----------------------------------
- * One gradient (accents.css -> accents-end.css) under the logo and the dots;
- * children stay transparent. White ink, ~6.5:1. Dots: solid = current,
+ * One gradient (wb-acc-start -> wb-act-end: accents.css, accents-end.css)
+ * under the logo and the dots; children stay transparent. White ink, ~6.5:1. Dots: solid = current,
  * ringed = has windows, ring = empty. */
 
 #pill.left1 {
