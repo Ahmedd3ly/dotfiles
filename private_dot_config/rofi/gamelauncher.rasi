@@ -1,0 +1,73 @@
+// █▀▀ ▄▀█ █▀▄▀█ █▀▀ █▀
+// █▄█ █▀█ █░▀░█ ██▄ ▄█
+//
+// Why: the game picker (SUPER+Shift+G, ~/.local/bin/gamelauncher). HyDE's
+// steam_deck.rasi rebuilt: one row of portrait covers, title underneath,
+// accent highlight from theme.rasi (follows the wallpaper). Window size,
+// frame image, padding and cover size are set per monitor by gamelauncher
+// with -theme-str; the values here are the frameless fallback.
+// Keys: arrows or h/l, Enter to launch, Esc or q to close; typing filters.
+
+configuration {
+    show-icons:                  true;
+    kb-row-left:                 "h,Left";
+    kb-row-right:                "l,Right";
+    kb-move-char-back:           "Control+b";
+    kb-move-char-forward:        "Control+f";
+    kb-cancel:                   "q,Escape";
+}
+
+@theme "~/.config/rofi/theme.rasi"
+
+window {
+    enabled:                     true;
+    transparency:                "real";
+    location:                    center;
+    anchor:                      center;
+    padding:                     0;
+    background-color:            @main-bg;
+    border-color:                @main-br;
+    cursor:                      "default";
+}
+mainbox {
+    children:                    [ "listview" ];
+    padding:                     40px;
+    background-color:            transparent;
+}
+listview {
+    columns:                     3;
+    lines:                       1;
+    flow:                        horizontal;
+    fixed-columns:               true;
+    fixed-height:                true;
+    spacing:                     24px;
+    cycle:                       true;
+    scrollbar:                   false;
+    background-color:            transparent;
+}
+element {
+    orientation:                 vertical;
+    spacing:                     8px;
+    padding:                     10px;
+    border-radius:               14px;
+    cursor:                      pointer;
+    background-color:            transparent;
+    text-color:                  @main-fg;
+}
+element selected.normal {
+    background-color:            @select-bg;
+    text-color:                  @select-fg;
+}
+element-icon {
+    size:                        300px;
+    border-radius:               10px;
+    cursor:                      inherit;
+    background-color:            transparent;
+}
+element-text {
+    horizontal-align:            0.5;
+    vertical-align:              0.5;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}

@@ -275,3 +275,44 @@ first (Shift+Tab), Timeshift snapshot, then review `chezmoi diff` / `sudo
 etckeeper vcs diff`. Engine switch: ~/.config/ai/agent + a branch in ~/.local/bin/ai.
 Uninstall: `rm ~/.local/bin/claude; rm -rf ~/.local/share/claude ~/.config/claude`
 (the last one deletes login and history; the tracked links come back on apply).
+
+## Gaming: Steam, Heroic, and the game launcher (SUPER+Shift+G)
+
+Why: one picker for every game on the machine. `gamelauncher` lists Steam
+games (every library, including /games/SteamLibrary), Heroic's installed
+Epic/GOG/Amazon/sideloaded games, and portable games in /games, as a cover
+grid inside a handheld frame. Code: ~/.local/bin/gamelauncher (entry) and
+~/.local/lib/gamelauncher/{steam,heroic,manual}.py, standard library only.
+[multilib] is already enabled (ARCH_INSTALL.md, Phase 4).
+
+Packages: the Gaming section of pkg_minimal.lst (steam, the lib32 drivers,
+heroic-games-launcher-bin). Not installed on purpose: gamemode, mangohud,
+gamescope (the list says why).
+
+```bash
+paru -S --needed steam lib32-mesa lib32-vulkan-intel lib32-nvidia-utils heroic-games-launcher-bin
+```
+
+1. Steam: start it, Settings > Storage > add /games/SteamLibrary.
+2. Heroic: log in to the stores, then Settings > General: default install
+   path /games/Heroic and Wine prefixes /games/Heroic/Prefixes. Both names are
+   skipped by the /games scanner, so Heroic games aren't listed twice.
+3. Frame image (optional; GPL-3, from HyDE, so it isn't committed here).
+   Without it the picker is a plain glass panel:
+   ```bash
+   curl -fsSL --create-dirs -o ~/.local/share/gamelauncher/steamdeck_holographic.png \
+     https://raw.githubusercontent.com/HyDE-Project/HyDE/master/Configs/.local/share/hyde/rofi/assets/steamdeck_holographic.png
+   ```
+4. Portable games: one folder each under /games. A run_game.sh/start.sh at
+   the top or an executable in bin/ is found automatically. Anything else
+   gets a `.gamelauncher.json` in its folder:
+   ```json
+   { "name": "SuperTuxKart", "exec": "bin/supertuxkart", "icon": "data/stk_256.png" }
+   { "run": "WINEPREFIX=/games/Prefixes/foo wine Foo.exe" }
+   { "skip": true }
+   ```
+
+Check: `gamelauncher --list` prints one line per game with its backend and
+launch target (`icon=no` means no cover was cached yet: open the game's page
+once in Steam or Heroic). Each backend also runs alone for debugging:
+`python3 ~/.local/lib/gamelauncher/heroic.py`.

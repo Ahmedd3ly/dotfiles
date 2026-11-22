@@ -7,8 +7,8 @@
 #   base base-devel linux linux-firmware intel-ucode sudo btrfs-progs grub
 #   grub-btrfs inotify-tools efibootmgr networkmanager zram-generator
 #   pacman-contrib zsh neovim git cronie reflector
-# AUR (5, each justified inline): paru-bin, bibata-cursor-theme-bin,
-#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli.
+# AUR (6, each justified inline): paru-bin, bibata-cursor-theme-bin,
+#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli, heroic-games-launcher-bin.
 # Audit: compare with `pacman -Qqe` (see RUNBOOK.md, "Package audit").
 # =====================================================================
 
@@ -139,11 +139,15 @@ wkhtmltopdf-bin             # (AUR) Odoo PDF reports need the patched-Qt build; 
 # =====================================================================
 
 # --------------------------------------------------- // Gaming (needs [multilib] enabled in pacman.conf)
-# steam                     # pulls the lib32 drivers below as dependencies if absent
-# lib32-mesa
-# lib32-vulkan-icd-loader
-# lib32-vulkan-intel
-# lib32-nvidia-utils
-# gamemode
-# mangohud
-# gamescope
+# Launcher: SUPER+Shift+G (~/.local/bin/gamelauncher) lists Steam, Heroic and /games.
+steam                       # Steam client; Proton for Windows games; library on /games/SteamLibrary
+lib32-mesa                  # 32-bit Intel GL/Vulkan for Steam and older games
+lib32-vulkan-intel          # 32-bit Vulkan on the iGPU (pulls lib32-vulkan-icd-loader)
+lib32-nvidia-utils          # 32-bit NVIDIA driver; must match nvidia-utils' version
+heroic-games-launcher-bin   # (AUR) Epic, GOG, Amazon; upstream's one supported Arch package
+# Not installed, on purpose (add when a real need shows up):
+#   gamemode   Feral daemon: CPU governor/priority tweaks while a game runs; overlaps TLP
+#              here, small gains on a 24-core HX CPU, plugged in when gaming anyway
+#   mangohud   FPS/frametime overlay: for benchmarking, which this machine doesn't do
+#   gamescope  nested compositor for upscaling/frame limits/HDR; flaky on NVIDIA under
+#              Hyprland, and HDR is off on the G5. Fix per game if one misbehaves
