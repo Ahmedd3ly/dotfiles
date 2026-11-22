@@ -3,8 +3,8 @@
 # ▀▄▀▄▀ █▀█ █▄▄ █▄▄ ░░ ▄█ ██▄ ░█░
 #
 # Why: the one entry point for changing the wallpaper. Sets it with awww
-# (all outputs), recolours the desktop with matugen (its post_hooks reload
-# the apps), and rebuilds the rofi crops. No daemon, no watcher.
+# (all outputs), recolours the desktop with matugen, then reloads the apps
+# once (2c), and rebuilds the rofi crops. No daemon, no watcher.
 # matugen gets the current theme (theme-get): its light/dark mode for the
 # accents and its palette.json for the neutrals, so theme-set only has to
 # change the theme and call this.
@@ -24,8 +24,7 @@ palette=$(theme-get --palette)
 awww img "$img" --transition-type grow --transition-pos 0.5,0.5 \
     --transition-duration 1 --transition-fps 60
 
-# 2. Neutrals (theme) + accents (wallpaper): templates in ~/.config/matugen;
-# hooks reload what changed.
+# 2. Neutrals (theme) + accents (wallpaper): templates in ~/.config/matugen.
 matugen -q image "$img" -m "$mode" --import-json "$palette"
 
 # 2b. Bar gradient end: a second run on the 2nd most dominant colour, which
@@ -35,8 +34,16 @@ cfg="${XDG_CONFIG_HOME:-$HOME/.config}"
 if ! matugen -q -c "$cfg/matugen/second.toml" image "$img" -m "$mode" --source-color-index 1 2>/dev/null; then
     printf '@define-color wb-act-end #8839ef;   /* fallback: Catppuccin Latte mauve */\n' \
         > "$cfg/waybar/accents-end.css"
-    pkill -USR2 -x waybar || true
 fi
+
+# 2c. Reload the apps once, here, after matugen has exited: its own
+# post_hooks can fire before a later template is written, and kitty, mako
+# and Hyprland each read two outputs (palette + accents). The others (rofi,
+# GTK, hyprlock, hyprtoolkit, starship, Vesktop) read their files on use.
+pkill -USR1 -x kitty  || true
+pkill -USR2 -x waybar || true
+makoctl reload        || true
+hyprctl reload >/dev/null || true
 
 # 3. Rofi crops, and the link rofi-launch checks. Also remember the image
 # per theme, so theme-set brings it back when you return to this theme.

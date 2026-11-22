@@ -16,4 +16,4 @@
 [templates.waybar-end]
 input_path = "./templates/waybar-end.css"
 output_path = "../waybar/accents-end.css"
-post_hook = "pkill -USR2 -x waybar || true"
+# reload: wall-set, after both matugen runs
