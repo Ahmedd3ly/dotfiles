@@ -76,7 +76,6 @@ bind(M("R"), exec("rofi-style"), "[Menu] rofi layout per menu")
 bind(M("Tab"), exec("rofi-launch window"), "[Menu] window switcher")
 bind(M("SHIFT + D"), exec("rofi-launch files"), "[Menu] file browser")
 bind(M("SHIFT + T"), menu("theme-pick"), "[Menu] theme picker")
-bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker)")
 bind(M("SHIFT + W"), menu("wall-pick"), "[Menu] wallpaper picker")
 bind(M("SHIFT + G"), menu("gamelauncher"), "[Menu] game launcher")
 bind(M("grave"), menu("keyhint"), "[Menu] keybinding cheat sheet")
@@ -96,6 +95,8 @@ bind(M("CONTROL + S"), exec("shot freeze"), "[Screenshot] frozen region")
 -- locked = also on the lock screen (hyprlock); region/freeze need slurp, so not those
 bind(M("P"), exec("shot monitor"), "[Screenshot] focused monitor", { locked = true })
 bind("Print", exec("shot all"), "[Screenshot] all monitors", { locked = true })
+bind(M("ALT + R"), exec("record monitor"), "[Screenshot] record focused monitor (again: stop)")
+bind(M("ALT + SHIFT + R"), exec("record region"), "[Screenshot] record a region (again: stop)")
 
 ---- Workspaces ------------------------------------------------------------
 for i = 1, 10 do

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# █▀█ █▀▀ █▀▀ █▀█ █▀█ █▀▄
+# █▀▄ ██▄ █▄▄ █▄█ █▀▄ █▄▀
+#
+# Why: screen recording with wf-recorder, toggled from one key (binds.lua:
+# SUPER+Alt+R monitor, SUPER+Alt+Shift+R region). Press again to stop:
+# wf-recorder gets SIGINT, so the file is finalised properly.
+# Encoding: h264 on the Intel iGPU (VA-API), via its stable PCI path; the
+# renderD numbers swap between boots. No iGPU node: software x264.
+# No audio (showcase clips). Files: ~/Videos/Recordings/rec_<date>.mp4
+# Usage: record monitor | region
+set -euo pipefail
+
+state="${XDG_RUNTIME_DIR:-/tmp}/record.file"
+notify() { notify-send -a record -i media-record "$@" || true; }
+
+# Running: stop it (either key stops either kind of recording).
+if pgrep -x wf-recorder >/dev/null; then
+    pkill -INT -x wf-recorder
+    while pgrep -x wf-recorder >/dev/null; do sleep 0.1; done   # file finalised
+    notify "Recording saved" "$(cat "$state" 2>/dev/null || echo "~/Videos/Recordings")"
+    rm -f "$state"
+    exit 0
+fi
+
+case "${1:-}" in
+    monitor) target=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')") ;;
+    region)  geo=$(slurp) || exit 0; target=(-g "$geo") ;;   # Esc in slurp: nothing recorded
+    *) sed -n 's/^# Usage: //p' "$0" >&2; exit 2 ;;
+esac
+
+dir="$(xdg-user-dir VIDEOS 2>/dev/null || echo "$HOME/Videos")/Recordings"
+mkdir -p "$dir"
+file="$dir/rec_$(date +%Y-%m-%d_%H-%M-%S).mp4"
+printf '%s\n' "$file" > "$state"
+
+# The stable path is a symlink; wf-recorder needs the real renderD node.
+igpu=$(readlink -e /dev/dri/by-path/pci-0000:00:02.0-render 2>/dev/null || true)
+if [ -n "$igpu" ]; then enc=(-c h264_vaapi -d "$igpu"); else enc=(-c libx264); fi
+
+setsid -f wf-recorder "${target[@]}" "${enc[@]}" -f "$file" >/dev/null 2>&1
+notify "Recording" "Same key again to stop"

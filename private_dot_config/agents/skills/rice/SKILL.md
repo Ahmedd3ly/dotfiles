@@ -18,7 +18,7 @@ All paths below are deployed paths; edit them in the chezmoi source
 | Notifications | ~/.config/mako/config | `makoctl reload` |
 | Lock | ~/.config/hypr/hyprlock.conf (hyprlang, not Lua: its own format) | next lock |
 | Terminal | ~/.config/kitty | `pkill -USR1 -x kitty` |
-| Scripts | ~/.local/bin (shot, session-fade, nightlight, bar-*, wall-*, theme-*) | n/a |
+| Scripts | ~/.local/bin (shot, record, session-fade, nightlight, bar-*, wall-*, theme-*) | n/a |
 
 ## Colours
 Two layers, both rendered by matugen on every `wall-set <image>`:
@@ -45,8 +45,9 @@ waybar/accents-end.css; one --dry-run JSON query), else
 palettes.secondary._40 (waybar-accents.css). 125 keeps sakura's pink and
 accepts blue -> crimson on a few wallpapers; 60 dropped both.
 Wallpaper-coloured apps: cava (cava/themes/matugen, primary -> saturated
-tertiary left to right; wall-set sends USR2), `palette` (prints the
-wallpaper's matugen palettes as tone ramps, live via --dry-run; showcase)
+tertiary left to right; wall-set sends USR2), `palette` (kitty: HyDE-style
+round swatches + pill ramps of the wallpaper's matugen palettes, Pillow image
+via kitten icat; live via --dry-run, redraws on wallpaper change; showcase)
 and Heroic (heroic/themes/matugen.css, read at Heroic's start; RUNBOOK).
 Apps that follow the theme via palette.json "flavor" / "nvim_style": Vesktop
 (quickCss.css rendered from templates/vesktop-quickcss.css), Spotify (theme-set
