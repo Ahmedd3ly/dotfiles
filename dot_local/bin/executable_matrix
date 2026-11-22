@@ -2,26 +2,36 @@
 # █▀▄▀█ ▄▀█ ▀█▀ █▀█ █ ▀▄▀
 # █░▀░█ █▀█ ░█░ █▀▄ █ █░█
 #
-# Why: Matrix rain (neo; AUR neo-matrix installs it as neo-matrix) in the wallpaper's colours. matugen
-# writes them as hex (~/.config/neo/colors, dim -> bright); neo wants RGB as
-# 0-1000 in its own colour-file format, so this converts and starts it.
-# Background -1: the terminal's own (kitty's translucent one). 30 fps saves
-# battery. Extra arguments go to neo (e.g. matrix --charset=ascii). q quits.
+# Why: Matrix rain (neo; AUR neo-matrix installs it as neo-matrix) in the
+# wallpaper's colours, like cava: primary -> saturated tertiary. neo can't
+# colour by column, so the blend runs along each droplet instead (gradient
+# shading: tail = primary, front = tertiary, then a bright head). matugen
+# writes the three colours as hex (~/.config/neo/colors); this blends them in
+# even steps and writes neo's colour file (RGB 0-1000). Background -1: the
+# terminal's own (kitty's translucent one). 30 fps saves battery.
+# Extra arguments go to neo (e.g. matrix --charset=ascii). q quits.
 # Usage: matrix [neo options]
 set -euo pipefail
 
 src="${XDG_CONFIG_HOME:-$HOME/.config}/neo/colors"
-[ -s "$src" ] || exec neo-matrix --color=green --fps=30 "$@"   # before the first wall-set
+mapfile -t c < <(grep -E '^#[0-9a-fA-F]{6}$' "$src" 2>/dev/null || true)
+(( ${#c[@]} >= 3 )) || exec neo-matrix --color=green --fps=30 "$@"   # before the first wall-set
 
+steps=8   # tail -> front blend; more steps = smoother
 out="${XDG_RUNTIME_DIR:-/tmp}/neo-colors"
+rgb() { echo $(( 16#${1:1:2} )) $(( 16#${1:3:2} )) $(( 16#${1:5:2} )); }
+read -r r1 g1 b1 < <(rgb "${c[0]}")
+read -r r2 g2 b2 < <(rgb "${c[1]}")
+read -r rh gh bh < <(rgb "${c[2]}")
 {
     echo "neo_color_version 1"
     echo "-1"
     slot=16   # redefined colour slots; neo restores them on exit
-    grep -E '^#[0-9a-fA-F]{6}$' "$src" | while read -r hex; do
-        printf '%d,%d,%d,%d\n' "$slot" \
-            $(( 16#${hex:1:2} * 1000 / 255 )) $(( 16#${hex:3:2} * 1000 / 255 )) $(( 16#${hex:5:2} * 1000 / 255 ))
-        slot=$(( slot + 1 ))
+    for (( i = 0; i < steps; i++ )); do
+        r=$(( r1 + (r2 - r1) * i / (steps - 1) )); g=$(( g1 + (g2 - g1) * i / (steps - 1) ))
+        b=$(( b1 + (b2 - b1) * i / (steps - 1) ))
+        echo "$(( slot + i )),$(( r * 1000 / 255 )),$(( g * 1000 / 255 )),$(( b * 1000 / 255 ))"
     done
+    echo "$(( slot + steps )),$(( rh * 1000 / 255 )),$(( gh * 1000 / 255 )),$(( bh * 1000 / 255 ))"
 } > "$out"
-exec neo-matrix --colorfile="$out" --fps=30 "$@"
+exec neo-matrix --colorfile="$out" --shadingmode=1 --fps=30 "$@"
