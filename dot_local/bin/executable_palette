@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# █▀█ ▄▀█ █░░ █▀▀ ▀█▀ ▀█▀ █▀▀
+# █▀▀ █▀█ █▄▄ ██▄ ░█░ ░█░ ██▄
+#
+# Why: show the colours matugen takes from the current wallpaper, like HyDE's
+# wallbash palette window: one row per palette (primary, secondary, tertiary,
+# neutral), tones dark -> light, led by a swatch of the role colour the
+# desktop uses (mode-aware). Read live from matugen (--dry-run -j hex:
+# nothing is written), so it always matches the wallpaper that is set.
+# Showcase piece.
+# Usage: palette            (any terminal with truecolor: kitty)
+set -euo pipefail
+
+img=$(readlink -e "${XDG_CACHE_HOME:-$HOME/.cache}/wall/current") \
+    || { echo "palette: no wallpaper set yet (wall-set <image>)" >&2; exit 1; }
+json=$(matugen -q image "$img" -m "$(theme-get mode)" --dry-run -j hex)
+
+tones=(10 20 30 40 50 60 70 80 90 95)
+cols=$(tput cols 2>/dev/null || echo 80)
+w=$(( (cols - 12) / ${#tones[@]} )); (( w < 2 )) && w=2
+block=$(printf '%*s' "$w" '')
+
+bg() { printf '\e[48;2;%d;%d;%dm' "0x${1:1:2}" "0x${1:3:2}" "0x${1:5:2}"; }
+
+echo
+for p in primary secondary tertiary neutral; do
+    role=$(jq -r --arg p "$p" '.colors[$p].default.color // .palettes[$p]["80"].color' <<<"$json")
+    ramp=""
+    for t in "${tones[@]}"; do
+        ramp+="$(bg "$(jq -r --arg p "$p" --arg t "$t" '.palettes[$p][$t].color' <<<"$json")")$block"
+    done
+    for line in 1 2; do   # two rows high
+        printf '  %s    \e[0m  ' "$(bg "$role")"   # role swatch, 4 wide
+        printf '%s\e[0m\n' "$ramp"
+    done
+    echo
+done
