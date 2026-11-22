@@ -37,6 +37,9 @@ Ahmed is a software engineer (.NET, Python, Odoo): explain the why, skip basics.
   Verify with `hyprctl reload && hyprctl configerrors`.
 - Base monitor/mode values on `hyprctl monitors all` (availableModes).
 - XDG-clean: nothing new in $HOME's root (~/.config, ~/.local/share, ~/.cache).
+  Known, accepted exceptions (hard-coded upstream, recreated on every start,
+  don't "fix" or delete them): ~/.steam, ~/.steampath, ~/.steampid (Steam)
+  and ~/.pki (the old Chromium inside Steam and Heroic).
 - One concern per file; each file starts with a small block banner and a
   "Why:" line.
 - One change at a time, each with a verification command and expected output.

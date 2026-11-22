@@ -107,6 +107,9 @@ contrast-safe theming, measured power tuning, cheap recovery.
 - Battery stops improving at package C-state PC3; cause not found.
 - Hyprland's Lua API is young, so updates get a `hyprctl configerrors` check.
 - Snapshots live on the same disk, and wallpapers aren't in the repo.
+- `$HOME` is clean except for what upstream hard-codes: Steam's `.steam`,
+  `.steampath`, `.steampid`, and `.pki` from the old Chromium inside Steam and
+  Heroic. A fake-HOME wrapper could hide them, but would move native games' saves.
 - The full rebuild hasn't been rehearsed in a VM yet.
 
 </details>
