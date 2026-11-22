@@ -7,8 +7,9 @@
 #   base base-devel linux linux-firmware intel-ucode sudo btrfs-progs grub
 #   grub-btrfs inotify-tools efibootmgr networkmanager zram-generator
 #   pacman-contrib zsh neovim git cronie reflector
-# AUR (6, each justified inline): paru-bin, bibata-cursor-theme-bin,
-#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli, heroic-games-launcher-bin.
+# AUR (7, each justified inline): paru-bin, bibata-cursor-theme-bin,
+#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli, heroic-games-launcher-bin,
+#   neo-matrix.
 # Audit: compare with `pacman -Qqe` (see RUNBOOK.md, "Package audit").
 # =====================================================================
 
@@ -146,6 +147,7 @@ lib32-mesa                  # 32-bit Intel GL/Vulkan for Steam and older games
 lib32-vulkan-intel          # 32-bit Vulkan on the iGPU (pulls lib32-vulkan-icd-loader)
 lib32-nvidia-utils          # 32-bit NVIDIA driver; must match nvidia-utils' version
 heroic-games-launcher-bin   # (AUR) Epic, GOG, Amazon; upstream's one supported Arch package
+neo-matrix                  # (AUR) Matrix rain (`matrix`) with 32-bit colour files, so it follows the wallpaper; cmatrix has 8 fixed colours
 # Not installed, on purpose (add when a real need shows up):
 #   gamemode   Feral daemon: CPU governor/priority tweaks while a game runs; overlaps TLP
 #              here, small gains on a 24-core HX CPU, plugged in when gaming anyway

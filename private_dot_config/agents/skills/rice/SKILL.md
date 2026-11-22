@@ -44,8 +44,10 @@ the hue is within max_hue = 125 deg (wall-set step 2b writes
 waybar/accents-end.css; one --dry-run JSON query), else
 palettes.secondary._40 (waybar-accents.css). 125 keeps sakura's pink and
 accepts blue -> crimson on a few wallpapers; 60 dropped both.
-Wallpaper-coloured apps: cava (cava/themes/matugen; wall-set sends USR2) and
-Heroic (heroic/themes/matugen.css, read at Heroic's start; RUNBOOK).
+Wallpaper-coloured apps: cava (cava/themes/matugen, primary -> saturated
+tertiary left to right; wall-set sends USR2), `matrix` (neo rain;
+neo/colors converted at start) and Heroic (heroic/themes/matugen.css, read at
+Heroic's start; RUNBOOK).
 Apps that follow the theme via palette.json "flavor" / "nvim_style": Vesktop
 (quickCss.css rendered from templates/vesktop-quickcss.css), Spotify (theme-set
 runs spicetify config color_scheme + apply; restarts Spotify if running, log

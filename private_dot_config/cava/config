@@ -7,6 +7,11 @@
 # is cava's default (all keys: /usr/share/doc/cava/README.md). Keys r / c in
 # cava reload the config / colours by hand.
 
+[output]
+# noncurses: the only terminal output that supports horizontal gradients
+# (themes/matugen colours left to right).
+method = noncurses
+
 [color]
 # themes are read from ~/.config/cava/themes
 theme = 'matugen'

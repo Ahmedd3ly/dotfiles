@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# █▀▄▀█ ▄▀█ ▀█▀ █▀█ █ ▀▄▀
+# █░▀░█ █▀█ ░█░ █▀▄ █ █░█
+#
+# Why: Matrix rain (neo; AUR neo-matrix installs it as neo-matrix) in the wallpaper's colours. matugen
+# writes them as hex (~/.config/neo/colors, dim -> bright); neo wants RGB as
+# 0-1000 in its own colour-file format, so this converts and starts it.
+# Background -1: the terminal's own (kitty's translucent one). 30 fps saves
+# battery. Extra arguments go to neo (e.g. matrix --charset=ascii). q quits.
+# Usage: matrix [neo options]
+set -euo pipefail
+
+src="${XDG_CONFIG_HOME:-$HOME/.config}/neo/colors"
+[ -s "$src" ] || exec neo-matrix --color=green --fps=30 "$@"   # before the first wall-set
+
+out="${XDG_RUNTIME_DIR:-/tmp}/neo-colors"
+{
+    echo "neo_color_version 1"
+    echo "-1"
+    slot=16   # redefined colour slots; neo restores them on exit
+    grep -E '^#[0-9a-fA-F]{6}$' "$src" | while read -r hex; do
+        printf '%d,%d,%d,%d\n' "$slot" \
+            $(( 16#${hex:1:2} * 1000 / 255 )) $(( 16#${hex:3:2} * 1000 / 255 )) $(( 16#${hex:5:2} * 1000 / 255 ))
+        slot=$(( slot + 1 ))
+    done
+} > "$out"
+exec neo-matrix --colorfile="$out" --fps=30 "$@"
