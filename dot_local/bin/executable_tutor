@@ -6,7 +6,9 @@
 # kept apart from the desktop/dev scratchpad (ai-term). Its own folder means
 # `ai -c` reopens the last tutoring session and tutoring history never mixes
 # with dotfiles work; its own kitty class "tutor" (rules.lua) and colours make
-# it obvious which scratchpad is open.
+# it obvious which scratchpad is open. That folder's .claude/settings.json
+# turns off prompt suggestions (ghost text guessing your next answer would
+# give the answers away); ai-term keeps them.
 # Usage: tutor
 set -euo pipefail
 
