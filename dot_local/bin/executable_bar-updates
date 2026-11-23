@@ -2,35 +2,43 @@
 # █░█ █▀█ █▀▄ ▄▀█ ▀█▀ █▀▀ █▀
 # █▄█ █▀▀ █▄▀ █▀█ ░█░ ██▄ ▄█
 #
-# Why: pending update count for the bar (replaces HyDE's system.update).
-# checkupdates (pacman-contrib) syncs a private copy of the package DB, so it
-# never touches pacman's own lock. AUR count via paru. Hidden when up to date.
-# One bar runs per monitor and they all start together; two checkupdates at
-# once fight over that private DB and the loser reports nothing. So: one
-# check at a time (flock), and a result younger than 2 minutes is reused.
+# Why: the ONLY caller of checkupdates / paru -Qua. Two checkupdates at once
+# fight over their private DB and the loser fails, so every consumer goes
+# through here: one lock, one check at a time. Writes ~/.cache/waybar/:
+# repo.txt, aur.txt, repo.rc (checkupdates exit: 0 updates, 2 none, 1 failed)
+# and updates.json for the bar. The sysupdate panel reads the lists.
+# A good result younger than 2 minutes is reused; --force skips that (after
+# an upgrade). One bar per monitor: they wait on the lock and reuse.
 set -uo pipefail
 
 cache="${XDG_CACHE_HOME:-$HOME/.cache}/waybar"
 out="$cache/updates.json"
 mkdir -p "$cache"
 
-exec 9> "$cache/updates.lock"
-flock 9    # the other monitors' bars wait here, then reuse the result
+exec 9>"$cache/updates.lock"
+flock 9
 
-if [ -s "$out" ] && [ $(( $(date +%s) - $(stat -c %Y "$out") )) -lt 120 ]; then
-    cat "$out"
-    exit 0
+if [[ ${1:-} != --force && -s $out && $(cat "$cache/repo.rc" 2>/dev/null) != 1 ]] &&
+  (($(date +%s) - $(stat -c %Y "$out") < 120)); then
+  cat "$out"
+  exit 0
 fi
 
-repo=$(checkupdates 2>/dev/null | wc -l)
-aur=$(paru -Qua 2>/dev/null | wc -l)
+checkupdates >"$cache/repo.txt" 2>/dev/null
+repo_rc=$?
+paru -Qua >"$cache/aur.txt" 2>/dev/null # exits 1 when empty too: count lines
+echo "$repo_rc" >"$cache/repo.rc"
+repo=$(grep -c . "$cache/repo.txt")
+aur=$(grep -c . "$cache/aur.txt")
 total=$((repo + aur))
 
-if [ "$total" -eq 0 ]; then
-    json='{"text": "", "tooltip": "Up to date"}'
+if ((repo_rc == 1)); then
+  json=$(jq -cn '{text: "󰮯 !", tooltip: "Couldn'\''t check the official repositories\nClick to retry", class: "error"}')
+elif ((total == 0)); then
+  json='{"text": "", "tooltip": "Up to date"}'
 else
-    json=$(jq -cn --arg t "󰮯 $total" --arg tip "Official: $repo  ·  AUR: $aur" \
-        '{text: $t, tooltip: ($tip + "\nClick to upgrade"), class: "pending"}')
+  json=$(jq -cn --arg t "󰮯 $total" --arg tip "Official: $repo  ·  AUR: $aur" \
+    '{text: $t, tooltip: ($tip + "\nClick to upgrade"), class: "pending"}')
 fi
-printf '%s\n' "$json" > "$out.tmp" && mv "$out.tmp" "$out"
+printf '%s\n' "$json" >"$out.tmp" && mv "$out.tmp" "$out"
 printf '%s\n' "$json"

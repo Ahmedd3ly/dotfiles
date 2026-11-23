@@ -10,6 +10,9 @@
 # (kernel, firmware, NVIDIA, systemd, mesa: see CRITICAL), so small updates
 # don't fill Timeshift with snapshots. Afterwards it re-checks, shows the
 # summary again and refreshes the bar's count.
+# It never runs checkupdates itself: bar-updates is the single checker (one
+# lock, no collisions). This panel asks it for a result (reused if younger
+# than 2 minutes, --force after an upgrade) and reads the lists it caches.
 # Usage: sysupdate   (the bar opens it in a floating kitty, class sysupdate)
 set -uo pipefail
 
@@ -19,16 +22,18 @@ set -uo pipefail
 # (linux-firmware-intel, -nvidia, ...).
 CRITICAL='^(linux|linux-firmware[^ ]*|nvidia[^ ]*|systemd|mesa) '
 
+cache="${XDG_CACHE_HOME:-$HOME/.cache}/waybar" # written by bar-updates
+
 G=$'\e[1;32m' Y=$'\e[1;33m' R=$'\e[1;31m' B=$'\e[1m' D=$'\e[2m' N=$'\e[0m'
 rule() { printf '%s%s%s\n' "$D" "────────────────────────────────────────────────────" "$N"; }
 
-collect() {
+collect() { # pass --force after an upgrade
   printf '%sChecking for updates…%s\r' "$D" "$N"
-  # checkupdates: exit 0 = updates, 2 = none, 1 = could not check (network).
-  repo_list=$(flock -w 120 "${XDG_RUNTIME_DIR:-/tmp}/checkupdates.lock" checkupdates 2>/dev/null)
-  repo_rc=$?
-  # paru -Qua exits 1 both when there's nothing and on failure: empty = 0.
-  aur_list=$(paru -Qua 2>/dev/null)
+  "$HOME/.local/bin/bar-updates" "$@" >/dev/null
+  # repo.rc is checkupdates' exit: 0 = updates, 2 = none, 1 = couldn't check.
+  repo_list=$(<"$cache/repo.txt")
+  aur_list=$(<"$cache/aur.txt")
+  repo_rc=$(<"$cache/repo.rc")
   repo=$(grep -c . <<<"$repo_list")
   aur=$(grep -c . <<<"$aur_list")
   total=$((repo + aur))
@@ -60,10 +65,9 @@ list() { # title, "name old -> new" lines
     '{ printf "    %-28s %s%-20s%s →  %s%s%s\n", $1, d, $2, n, g, $4, n }' <<<"$2"
 }
 
-refresh_bar() {
-  rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/waybar/updates.json"
-  pkill -RTMIN+20 waybar 2>/dev/null
-}
+# The cache is already fresh (bar-updates just wrote it), so the bars only
+# re-read it: no second check.
+refresh_bar() { pkill -RTMIN+20 waybar 2>/dev/null; }
 
 collect
 summary
@@ -92,7 +96,7 @@ else
       printf '\n  %sparu -Syu (no snapshot)%s\n\n' "$B" "$N"
     fi
     if "${snap[@]}" && paru -Syu; then
-      collect
+      collect --force
       summary
     else
       printf '\n  %sUpgrade stopped or failed; nothing else was changed.%s\n' "$R" "$N"

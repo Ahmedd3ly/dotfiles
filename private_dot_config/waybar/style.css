@@ -226,6 +226,8 @@ button {
     color: @wb-hvr-bg;
 }
 
+#custom-updates.error { color: @red; }
+
 /* pomo: focus in the wallpaper accent like the other "on" toggles, breaks
  * in Mocha teal, paused dimmed. */
 #custom-pomo.focus { color: @wb-hvr-bg; }
