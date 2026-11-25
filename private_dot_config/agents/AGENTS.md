@@ -37,9 +37,11 @@ Ahmed is a software engineer (.NET, Python, Odoo): explain the why, skip basics.
   Verify with `hyprctl reload && hyprctl configerrors`.
 - Base monitor/mode values on `hyprctl monitors all` (availableModes).
 - XDG-clean: nothing new in $HOME's root (~/.config, ~/.local/share, ~/.cache).
-  Known, accepted exceptions (hard-coded upstream, recreated on every start,
-  don't "fix" or delete them): ~/.steam, ~/.steampath, ~/.steampid (Steam)
-  and ~/.pki (the old Chromium inside Steam and Heroic).
+  Known, accepted exceptions (hard-coded upstream, recreated when the app runs,
+  don't "fix" or delete them): ~/.steam, ~/.steampath, ~/.steampid (Steam),
+  ~/.pki (the old Chromium inside Steam and Heroic) and ~/.dotnet (the .NET
+  runtime's per-user X509 store, holds the ASP.NET dev cert; ignores
+  DOTNET_CLI_HOME).
 - One concern per file; each file starts with a small block banner and a
   "Why:" line.
 - One change at a time, each with a verification command and expected output.

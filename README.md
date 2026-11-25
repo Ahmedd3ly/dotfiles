@@ -108,8 +108,10 @@ contrast-safe theming, measured power tuning, cheap recovery.
 - Hyprland's Lua API is young, so updates get a `hyprctl configerrors` check.
 - Snapshots live on the same disk, and wallpapers aren't in the repo.
 - `$HOME` is clean except for what upstream hard-codes: Steam's `.steam`,
-  `.steampath`, `.steampid`, and `.pki` from the old Chromium inside Steam and
-  Heroic. A fake-HOME wrapper could hide them, but would move native games' saves.
+  `.steampath`, `.steampid`, `.pki` from the old Chromium inside Steam and
+  Heroic, and `.dotnet` (the .NET runtime's per-user certificate store, which
+  ignores `DOTNET_CLI_HOME`). A fake-HOME wrapper could hide the Steam ones, but
+  would move native games' saves.
 - The full rebuild hasn't been rehearsed in a VM yet.
 
 </details>
