@@ -136,6 +136,11 @@ postgresql                  # Odoo database
 openldap                    # headers/libs for Odoo's python-ldap
 wkhtmltopdf-bin             # (AUR) Odoo PDF reports need the patched-Qt build; not in the official repos
 
+# --------------------------------------------------- // Work: Dotnet
+dotnet-sdk-10.0             # Pinned to .NET 10 LTS
+aspnet-runtime-10           
+aspnet-targeting-pack-10.0  # Required to build Web APIs            
+
 # =====================================================================
 # LATER: uncomment when needed
 # =====================================================================
