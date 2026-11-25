@@ -200,7 +200,6 @@ label.module, label.text-button {
  * module. Icon-only modules get extra room on the right (HyDE did the same,
  * its #2206); icon + text modules use a double space in their format. */
 #custom-tray-arrow,
-#language,
 #custom-keybindhint,
 #custom-gamemode,
 #custom-nightlight,
@@ -211,6 +210,15 @@ label.module, label.text-button {
 #custom-pomo,
 #custom-menu {
     padding-right: 0.5em;
+}
+
+#language {
+    padding: 0 0.1em;
+    margin: 0 0.1em;
+}
+
+#custom-tray-arrow {
+    padding-right: 0.1em;
 }
 
 button {

@@ -83,6 +83,7 @@
       "custom/keybindhint",
       "custom/gamemode",
       "custom/nightlight",
+      "custom/pomo",
       "idle_inhibitor"
     ]
   },
@@ -91,8 +92,7 @@
     "modules": [
       "privacy",
       "group/volumecontrol",
-      // "power-profiles-daemon",
-      "custom/pomo",
+      "power-profiles-daemon",
       "custom/updates",
       "network",
       "battery"
