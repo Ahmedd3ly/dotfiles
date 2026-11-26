@@ -138,7 +138,7 @@ wkhtmltopdf-bin             # (AUR) Odoo PDF reports need the patched-Qt build; 
 
 # --------------------------------------------------- // Work: Dotnet
 dotnet-sdk-10.0             # Pinned to .NET 10 LTS
-aspnet-runtime-10           
+aspnet-runtime-10.0           
 aspnet-targeting-pack-10.0  # Required to build Web APIs            
 
 # =====================================================================

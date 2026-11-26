@@ -83,8 +83,8 @@
       "custom/keybindhint",
       "custom/gamemode",
       "custom/nightlight",
-      "custom/pomo",
-      "idle_inhibitor"
+      "idle_inhibitor",
+      "custom/pomo"
     ]
   },
   "group/pill#right2": {
