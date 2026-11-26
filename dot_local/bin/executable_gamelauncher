@@ -11,6 +11,7 @@
 # parsed back out of the displayed text.
 # Frame image (optional, not in the repo): ~/.local/share/gamelauncher/
 # steamdeck_holographic.png, see RUNBOOK.md. Without it: a plain glass panel.
+# Order: most launched first (usage.py, ~/.local/state/gamelauncher).
 # Usage: gamelauncher            pick and launch
 #        gamelauncher --list     what each backend found (debugging)
 
@@ -24,7 +25,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in ~/.local/lib/gamelauncher
 sys.path.insert(0, str(Path.home() / ".local/lib/gamelauncher"))
-import heroic, manual, steam  # noqa: E402
+import heroic, manual, steam, usage  # noqa: E402
 
 THEME = Path.home() / ".config/rofi/gamelauncher.rasi"
 FRAME = Path.home() / ".local/share/gamelauncher/steamdeck_holographic.png"
@@ -41,7 +42,7 @@ def catalog():
             games += backend.games()
         except Exception as e:  # one broken backend must not hide the rest
             print(f"gamelauncher: {backend.__name__}: {e}", file=sys.stderr)
-    games.sort(key=lambda g: g["name"].casefold())
+    usage.rank(games)  # most played first, then A-Z
     names = [g["name"].casefold() for g in games]
     for g in games:  # same title in two stores: say which is which
         label = html.escape(g["name"])
@@ -161,7 +162,12 @@ def main():
         text=True,
     ).stdout.strip()
     if pick.isdigit():
-        launch(games[int(pick)])
+        g = games[int(pick)]
+        launch(g)
+        try:
+            usage.record(g)
+        except OSError as e:  # never block a launch on bookkeeping
+            print(f"gamelauncher: usage: {e}", file=sys.stderr)
     return 0
 
 
