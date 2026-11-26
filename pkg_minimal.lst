@@ -7,8 +7,8 @@
 #   base base-devel linux linux-firmware intel-ucode sudo btrfs-progs grub
 #   grub-btrfs inotify-tools efibootmgr networkmanager zram-generator
 #   pacman-contrib zsh neovim git cronie reflector
-# AUR (6, each justified inline): paru-bin, bibata-cursor-theme-bin,
-#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli, heroic-games-launcher-bin.
+# AUR (7, each justified inline): paru-bin, bibata-cursor-theme-bin,
+#   wkhtmltopdf-bin, vesktop-bin, spicetify-cli, heroic-games-launcher-bin, iptvnator-bin.
 # Audit: compare with `pacman -Qqe` (see RUNBOOK.md, "Package audit").
 # =====================================================================
 
@@ -110,6 +110,7 @@ file-roller                 # engine behind Thunar's Extract here / Create archi
 unzip                       # Mason needs it to unpack language servers
 fastfetch                   # runs on every new shell
 mpv                         # video player
+iptvnator-bin               # (AUR) IPTV client for my Xtream/M3U sub (football); EPG + catch-up, zero new deps; -bin = upstream prebuilt
 spotify-launcher            # official Spotify client, per-user install in ~/.local/share (self-updates; Spicetify can write to it)
 spicetify-cli               # (AUR) Spotify theming (static Catppuccin Mocha); nothing official can theme Spotify
 vesktop-bin                 # (AUR) Discord with Vencord built in and working Wayland screenshare; -bin = no Electron build

@@ -325,3 +325,19 @@ Check: `gamelauncher --list` prints one line per game with its backend and
 launch target (`icon=no` means no cover was cached yet: open the game's page
 once in Steam or Heroic). Each backend also runs alone for debugging:
 `python3 ~/.local/lib/gamelauncher/heroic.py`.
+
+## Fonts: Arabic renders in Noto Naskh Arabic
+
+Why: ~/.config/fontconfig/conf.d/60-arabic-naskh.conf makes Naskh the Arabic
+font everywhere, including Electron apps (IPTVnator) whose pages are tagged
+lang=en. Part of that is a scan rule, which fontconfig stores in the font
+cache, so the cache has to be rebuilt after the file changes and after a
+noto-fonts update. Until then those apps fall back to Noto Kufi Arabic.
+
+```bash
+fc-cache -f
+fc-match 'sans-serif:charset=0627:lang=en'   # expect "Noto Naskh Arabic"
+fc-match 'sans-serif:lang=en'                # expect "Noto Sans" (Latin unchanged)
+```
+
+Then restart the app (Electron reads fontconfig at startup).
