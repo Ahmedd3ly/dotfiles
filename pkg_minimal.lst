@@ -20,6 +20,7 @@ sof-firmware                # Intel audio DSP firmware: no speakers/mic on this 
 chezmoi                     # this repo
 pacutils                    # pacreport: unowned files and package audit (RUNBOOK.md, "Package audit")
 etckeeper                   # /etc under git (local only)
+sbctl                       # Secure Boot: own keys + Microsoft's, signs GRUB and the kernel (RUNBOOK.md, "Secure Boot")
 man-db
 man-pages
 paru-bin                    # (AUR) AUR helper; -bin = prebuilt, no Rust toolchain to build it

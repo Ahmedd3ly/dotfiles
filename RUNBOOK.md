@@ -93,6 +93,77 @@ grub-btrfs snapshot submenu is themed too.
 Undo: comment out GRUB_THEME, `sudo grub-mkconfig -o /boot/grub/grub.cfg`,
 `sudo rm -r /usr/share/grub/themes/catppuccin-mocha-grub-theme`.
 
+## Secure Boot: sbctl (own keys + Microsoft's), GRUB without shim
+
+Why: the firmware only runs a bootloader and kernel signed by keys we own.
+No shim or MOK: sbctl makes our PK/KEK/db and enrolls them **with
+Microsoft's** (`-m`): the RTX 4070's option ROM is signed by Microsoft, so
+dropping their keys can leave the dGPU (or the whole POST) dead, and a
+Windows USB keeps booting. GRUB is built without shim_lock; the `tpm`
+module gives GRUB's lockdown a verifier, so it loads its own modules, theme
+and fonts. The Arch kernel does not lock down under Secure Boot
+(`LOCK_DOWN_KERNEL_FORCE_NONE`, `sig_enforce=N`), so the unsigned
+nvidia-open modules still load: no DKMS signing.
+
+**Recovery first.** Secure Boot Violation, GRUB "bad signature" or a black
+screen after GRUB: power on, **Del**, Security -> Secure Boot -> Disabled,
+boot as before. Broken key store: same menu, "Restore Factory Keys" (MSI's)
+or reset to Setup Mode, then repeat from step 3.
+
+1. Firmware in **Setup Mode** (BIOS: Secure Boot -> reset to Setup Mode /
+   delete all keys), Secure Boot off. `sbctl status` shows
+   `Setup Mode: ✗ Enabled`.
+2. GRUB without shim (both copies, see ARCH_INSTALL Phase 4), Secure Boot
+   still off; reboot once to prove GRUB alone:
+
+   ```bash
+   sudo grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock --recheck
+   sudo grub-install --target=x86_64-efi --efi-directory=/efi --removable --modules="tpm" --disable-shim-lock
+   sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```
+
+3. Keys, then sign (`-s` saves each path in sbctl's database):
+
+   ```bash
+   sudo sbctl create-keys
+   sudo sbctl enroll-keys -m
+   sudo sbctl sign -s /efi/EFI/GRUB/grubx64.efi
+   sudo sbctl sign -s /efi/EFI/BOOT/BOOTX64.EFI
+   sudo sbctl sign -s /boot/vmlinuz-linux
+   sudo sbctl verify          # all three ✓
+   ```
+
+   On this MSI (AMI firmware) `sbctl status` still says Setup Mode
+   Enabled until the next reset; PK/KEK/db are written all the same.
+4. Reboot to the BIOS (`systemctl reboot --firmware-setup`): the Secure Boot
+   page shows User mode; set Secure Boot **Enabled**. Never "Restore
+   Factory/Default Keys" or "Standard" mode: that replaces our keys.
+5. Back up the keys (`/var/lib/sbctl/`) to offline storage (encrypted stick,
+   password manager). Without them, a wiped / means Secure Boot off until
+   new keys are enrolled.
+
+Upkeep, automatic: kernel upgrades are re-signed by sbctl's mkinitcpio post
+hook and its pacman hook (`Signing EFI binaries...`).
+
+Rules:
+- After any manual `grub-install` (new GRUB, chroot rescue):
+  `sudo sbctl sign-all`, then `sudo sbctl verify`, before rebooting.
+- grub-btrfs snapshot entries boot the kernel stored in that snapshot.
+  Snapshots from before 2026-11-27 16:05 hold an unsigned kernel: turn
+  Secure Boot off to boot them. Newer ones boot normally.
+- Rescue USBs (Arch ISO, Ventoy, Hiren's) aren't signed by our keys: turn
+  Secure Boot off to boot them.
+- No dbx (revocation list) is installed; harmless for booting. Optional:
+  Microsoft's current dbx through fwupd (`fwupdmgr update`).
+
+Check: `sbctl status` shows `Setup Mode: ✓ Disabled`, `Secure Boot: ✓
+Enabled`, `Vendor Keys: microsoft`; `bootctl status | grep 'Secure Boot'`
+shows `enabled (user)`; `sudo sbctl verify` all ✓; `nvidia-smi` lists the
+4070 (on AC).
+
+Undo: BIOS Secure Boot -> Disabled (keys can stay); for MSI's keys,
+"Restore Factory Keys"; `sudo pacman -Rns sbctl`.
+
 ## Login: tty1 autologin, hyprlock as the login screen
 
 Why: no username to type and no display manager package; the first screen

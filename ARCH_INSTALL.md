@@ -22,7 +22,7 @@ What comes after (GRUB theme, autologin, watchdogs, AI agent, app themes) is in
 ## Phase 0: Pre-flight
 
 - Back up what you need. Everything on `nvme0n1` is destroyed.
-- Secure Boot off in the firmware (GRUB is unsigned). You already run Arch, so this is probably set.
+- Secure Boot off in the firmware for the install (the ISO and the new GRUB aren't signed by your keys yet). It is turned back on afterwards with your own keys: RUNBOOK.md, "Secure Boot".
 - The dotfiles repo ([github.com/Ahmedd3ly/dotfiles](https://github.com/Ahmedd3ly/dotfiles)) is fetched in Phase 5; it holds `pkg_minimal.lst`.
 
 ## Phase 1: Live ISO (network and clock)
@@ -162,8 +162,8 @@ mkinitcpio -P
 Bootloader:
 
 ```
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --recheck
-grub-install --target=x86_64-efi --efi-directory=/efi --removable
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock --recheck
+grub-install --target=x86_64-efi --efi-directory=/efi --removable --modules="tpm" --disable-shim-lock
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 zswap.enabled=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1"/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 grep -m1 rootflags /boot/grub/grub.cfg
@@ -173,7 +173,7 @@ ls /efi/EFI/GRUB /efi/EFI/BOOT
 
 Before you reboot, check all three: the `grep` shows `rootflags=subvol=@`, `efibootmgr -v` lists a `GRUB` entry, and both `grubx64.efi` (in `/efi/EFI/GRUB`) and `BOOTX64.EFI` (in `/efi/EFI/BOOT`) exist.
 
-GRUB is installed twice on purpose. Some firmware, this MSI included, silently drops the boot entry that the first command creates, and the machine then goes straight to firmware setup. The `--removable` copy sits at the fallback path every UEFI firmware checks on its own, so boot works either way. Afterwards the firmware may list both a `GRUB` entry and a `UEFI OS` entry. Both start the same GRUB, so leave them alone.
+`--modules="tpm" --disable-shim-lock` build GRUB for Secure Boot with your own keys (no shim); with Secure Boot off they change nothing. GRUB is installed twice on purpose. Some firmware, this MSI included, silently drops the boot entry that the first command creates, and the machine then goes straight to firmware setup. The `--removable` copy sits at the fallback path every UEFI firmware checks on its own, so boot works either way. Afterwards the firmware may list both a `GRUB` entry and a `UEFI OS` entry. Both start the same GRUB, so leave them alone.
 
 zram and VM tuning (the generator creates the device at boot; nothing to start):
 
@@ -350,10 +350,12 @@ arch-chroot /mnt
 
 From there you can fix configs, rebuild with `mkinitcpio -P`, and re-run `grub-mkconfig -o /boot/grub/grub.cfg`.
 
+Secure Boot: the ISO only boots with Secure Boot off (Del -> Security -> Secure Boot -> Disabled). After any `grub-install` or kernel rebuild in the chroot, run `sbctl sign-all` and `sbctl verify` (all ✓) before turning it back on.
+
 **Firmware goes straight to setup, no GRUB entry.** From the same chroot, repeat the two `grub-install` lines from Phase 4, then run `efibootmgr -v`. If there is still no `GRUB` entry, create one by hand:
 
 ```
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --recheck
-grub-install --target=x86_64-efi --efi-directory=/efi --removable
+grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock --recheck
+grub-install --target=x86_64-efi --efi-directory=/efi --removable --modules="tpm" --disable-shim-lock
 efibootmgr --create --disk /dev/nvme0n1 --part 1 --loader '\EFI\GRUB\grubx64.efi' --label 'GRUB'
 ```
