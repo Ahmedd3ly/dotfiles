@@ -24,6 +24,10 @@ if [[ ${1:-} != --force && -s $out && $(cat "$cache/repo.rc" 2>/dev/null) != 1 ]
   exit 0
 fi
 
+# Boot race: waybar starts ~2 s before Wi-Fi connects, and with a 6 h
+# interval a failed first check would stick. Returns at once when online.
+nm-online -q -t 60 || true
+
 checkupdates >"$cache/repo.txt" 2>/dev/null
 repo_rc=$?
 paru -Qua >"$cache/aur.txt" 2>/dev/null # exits 1 when empty too: count lines
@@ -33,6 +37,14 @@ aur=$(grep -c . "$cache/aur.txt")
 total=$((repo + aur))
 
 if ((repo_rc == 1)); then
+  # Retry once in 5 min via the module's signal (20). retry.lock keeps one
+  # pending retry across bars; fds closed so waybar and flock aren't held.
+  (
+    flock -n 8 || exit 0
+    sleep 300
+    pkill -RTMIN+20 -x waybar
+  ) 8>"$cache/retry.lock" 9>&- </dev/null >/dev/null 2>&1 &
+  disown
   json=$(jq -cn '{text: "󰮯 !", tooltip: "Couldn'\''t check the official repositories\nClick to retry", class: "error"}')
 elif ((total == 0)); then
   json='{"text": "", "tooltip": "Up to date"}'
