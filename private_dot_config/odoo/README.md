@@ -7,13 +7,14 @@
 └── clients/<client>/
     ├── .odoo-version                  e.g. 19.0 (the runner reads this)
     ├── odoo.conf                      from ~/.config/odoo/client.conf.template; addons_path lives here
-    ├── .venv/                         Odoo requirements + client extras + pylint, pylint-odoo
+    ├── .venv/                         Odoo requirements + client extras + pylint, pylint-odoo;
+    │                                  site-packages/odoo-src.pth makes `import odoo` work (pylint)
     ├── .pylintrc                      -> ~/.config/odoo/client.pylintrc.template (only if src/ has none)
     └── src/                           client repo (stage branch)
 ```
 
 `<client>` is used three times: as the folder name, in `odoo <client>`, and as the
-database prefix (`<client>_dev`, `<client>_demo`). Keep it to lowercase letters, digits and `_`.
+database prefix (`<client>_dev`, `<client>_demo`). Keep it to lowercase letters, digits, `_` and `-`.
 
 The commands live in `~/.config/zsh/conf.d/45-odoo.zsh` (tracked in the dotfiles repo).
 
@@ -26,7 +27,8 @@ odoo-new <client> 19.0 stage git@github.com:<org>/<repo>.git
 What it does, in order, stopping at the first failure:
 
 1. creates `clients/<client>/src`, writes `.odoo-version`, clones the repo with submodules
-2. `uv venv --python 3.12 .venv`, then installs Odoo's and the repo's `requirements.txt`
+2. `uv venv --python 3.12 .venv`, writes `odoo-src.pth` (so linters can `import odoo`), then installs
+   Odoo's and the repo's `requirements.txt`
 3. installs `pylint pylint-odoo` and links `.pylintrc` (skipped when `src/.pylintrc` exists)
 4. writes `odoo.conf` from the template
 5. runs `odoo-lsconf` (adds the client's odoo-ls profile) and `odoo <client> --version`
@@ -65,7 +67,7 @@ Database manager: <http://127.0.0.1:8069/web/database/manager>. Name every datab
 
 ```zsh
 dropdb -U odoo <client>_dev            # repeat for each <client>_ database
-rm -rf ~/.local/share/odoo/v19/filestore/<client>_dev
+rm -rf ~/.local/share/odoo/v<NN>/filestore/<client>_dev   # v19 for 19.0, v20 for 20.0
 rm -rf ~/Projects/odoo/clients/<client>
 odoo-lsconf                            # drop its odoo-ls profile
 ```
