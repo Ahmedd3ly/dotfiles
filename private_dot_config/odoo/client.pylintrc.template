@@ -1,0 +1,8 @@
+# pylint for Odoo client workspaces; symlinked as <client>/.pylintrc by odoo-new.
+# A repo's own src/.pylintrc wins (nvim-lint uses the nearest one).
+[MAIN]
+load-plugins=pylint_odoo
+
+[MESSAGES CONTROL]
+# Odoo models that only declare fields always trip this
+disable=no-member,abstract-method,too-few-public-methods
