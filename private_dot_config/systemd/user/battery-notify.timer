@@ -1,0 +1,17 @@
+# █▄▄ ▄▀█ ▀█▀ ▀█▀ █▀▀ █▀█ █▄█
+# █▄█ █▀█ ░█░ ░█░ ██▄ █▀▄ ░█░
+#
+# Why: check the battery once a minute for battery-notify (sysfs read, a few
+# ms). Lives with the graphical session, since it needs mako.
+[Unit]
+Description=Check for low battery every minute
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Timer]
+OnActiveSec=15s
+OnUnitActiveSec=60s
+AccuracySec=15s
+
+[Install]
+WantedBy=graphical-session.target

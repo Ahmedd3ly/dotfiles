@@ -11,6 +11,7 @@
 # at login, before the graphical session): holds the unlocked SSH key, so the
 # passphrase is asked once per login (see ~/.ssh/config AddKeysToAgent).
 # crash-notify.path (ours, ~/.config/systemd/user): crash notifications.
+# battery-notify.timer (ours): low-battery alerts.
 set -eu
 
 systemctl --user enable \
@@ -21,4 +22,5 @@ systemctl --user enable \
     hyprsunset.service \
     waybar.service \
     ssh-agent.service \
-    crash-notify.path
+    crash-notify.path \
+    battery-notify.timer

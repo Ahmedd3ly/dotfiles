@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# █▄▄ ▄▀█ ▀█▀ ▀█▀ █▀▀ █▀█ █▄█
+# █▄█ █▀█ ░█░ ░█░ ██▄ █▀▄ ░█░
+#
+# Why: mako alert when the battery runs low. Run once a minute by
+# battery-notify.timer; no daemon, reads sysfs. Alerts once per level on the
+# way down (20% low, 10% and 5% critical: critical stays until dismissed and
+# shows through do-not-disturb). Plugging in closes the alert and re-arms.
+# Levels sit between waybar's (25/10) and UPower's own policy (critical 5%,
+# CriticalPowerAction at 2%), so the last alert comes before that action.
+set -euo pipefail
+
+state="${XDG_STATE_HOME:-$HOME/.local/state}/battery-notify"
+mkdir -p "$state"
+
+bat=$(compgen -G '/sys/class/power_supply/BAT*' | head -n1) || exit 0
+cap=$(<"$bat/capacity")
+status=$(<"$bat/status")
+
+# Not discharging: close any alert we showed and re-arm every level.
+if [[ $status != Discharging ]]; then
+    if [[ -s $state/id ]]; then
+        makoctl dismiss -n "$(<"$state/id")" 2>/dev/null || true
+    fi
+    rm -f "$state/id" "$state/level"
+    exit 0
+fi
+
+level=0
+for l in 20 10 5; do (( cap <= l )) && level=$l; done
+(( level == 0 )) && exit 0
+
+shown=$(cat "$state/level" 2>/dev/null || echo 100)
+(( level >= shown )) && exit 0          # this level (or a lower one) already shown
+
+if (( level == 20 )); then
+    args=(-u normal -t 15000 -i battery-low)
+    body="Plug in soon."
+else
+    args=(-u critical -i battery-caution)
+    body="Plug in now: the system suspends or hibernates at 2%."
+fi
+
+replace=()
+[[ -s $state/id ]] && replace=(-r "$(<"$state/id")")
+notify-send -a battery -p "${args[@]}" "${replace[@]}" \
+    "Battery low: ${cap}%" "$body" > "$state/id"
+echo "$level" > "$state/level"
